@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Phone, Menu, X } from 'lucide-react';
 
 const navLinks = [
-  { name: 'Home', href: '#' },
-  { name: 'Services', href: '#services' },
-  { name: 'About', href: '#about' },
-  { name: 'Testimonials', href: '#testimonials' },
-  { name: 'Contact', href: '#contact' },
+  { name: 'Home', href: '/' },
+  { name: 'Services', href: '/#services' },
+  { name: 'About', href: '/#about' },
+  { name: 'How-To Videos', href: '/how-to-videos' },
+  { name: 'Testimonials', href: '/#testimonials' },
+  { name: 'Contact', href: '/#contact' },
 ];
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +24,28 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const isActive = (href: string) => {
+    if (href === '/') return location.pathname === '/';
+    return location.pathname === href || location.pathname.startsWith(href.split('#')[0]);
+  };
+
+  const handleNavClick = (href: string) => {
+    setIsMobileMenuOpen(false);
+    
+    // If it's a hash link on the same page or home page
+    if (href.includes('#')) {
+      const [path, hash] = href.split('#');
+      if (location.pathname === '/' || path === '/') {
+        setTimeout(() => {
+          const element = document.getElementById(hash);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    }
+  };
 
   return (
     <nav
@@ -33,7 +58,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-heading font-bold text-xl">BC</span>
             </div>
@@ -41,20 +66,21 @@ const Navbar = () => {
               <span className="font-heading font-bold text-lg">Big City</span>
               <span className="font-heading text-sm block -mt-1 opacity-80">Plumbing & Heating</span>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
+                to={link.href}
+                onClick={() => handleNavClick(link.href)}
                 className={`font-medium transition-colors hover:text-secondary ${
                   isScrolled ? 'text-foreground' : 'text-primary-foreground'
-                }`}
+                } ${isActive(link.href) ? 'text-secondary' : ''}`}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -88,16 +114,16 @@ const Navbar = () => {
           <div className="lg:hidden mt-4 pb-4 border-t border-border/20">
             <div className="flex flex-col gap-4 pt-4">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.name}
-                  href={link.href}
+                  to={link.href}
+                  onClick={() => handleNavClick(link.href)}
                   className={`font-medium transition-colors ${
                     isScrolled ? 'text-foreground' : 'text-primary-foreground'
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  } ${isActive(link.href) ? 'text-secondary' : ''}`}
                 >
                   {link.name}
-                </a>
+                </Link>
               ))}
               <a
                 href="tel:631-361-9500"
