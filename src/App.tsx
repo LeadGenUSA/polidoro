@@ -24,6 +24,8 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      {/* @ts-ignore - ElevenLabs custom element */}
+      <elevenlabs-convai agent-id="agent_5901kecrjd4eftdvkj840myqyfh4"></elevenlabs-convai>
     </TooltipProvider>
   </QueryClientProvider>
 );
