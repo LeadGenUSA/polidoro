@@ -1,10 +1,23 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Shield, Clock, Award } from 'lucide-react';
 import heroImage from '@/assets/hero-plumbing.jpg';
+import nycSkyline from '@/assets/nyc-skyline.png';
 
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center hero-gradient overflow-hidden">
+      {/* NYC Skyline Background */}
+      <div className="absolute inset-0">
+        <img 
+          src={nycSkyline} 
+          alt="" 
+          className="w-full h-full object-cover object-center"
+        />
+        {/* Overlay to blend with hero gradient */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/85 to-primary/80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-transparent to-primary/70" />
+      </div>
+      
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-72 h-72 bg-secondary rounded-full blur-3xl" />
