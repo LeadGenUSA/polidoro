@@ -4,101 +4,9 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Star, Quote, MapPin, Calendar, Filter, Send, MessageSquarePlus, ThumbsUp, Award, Users } from 'lucide-react';
+import { Star, Quote, MapPin, Calendar, Filter, Send, MessageSquarePlus, ThumbsUp, Award, Users, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
-const testimonials = [
-  {
-    id: 1,
-    title: 'Prompt, Professional and Knowledgeable',
-    name: 'Byron',
-    date: 'March 1, 2024',
-    location: 'South Setauket',
-    text: 'I reached out to Big City Plumbing for an urgent repair on my Navien Combi unit, which had stopped supplying heat. To my relief, they were able to send over a plumber without any delay. Benny arrived and wasted no time in getting to the root of the problem. He was not only swift in diagnosing the issue but also took the time to explain everything in a way that was easy to understand. I\'m truly grateful for Benny\'s expertise and professionalism.',
-    rating: 5,
-    category: 'navien',
-  },
-  {
-    id: 2,
-    title: 'Impeccable Workmanship',
-    name: 'Joel and Linda',
-    date: 'April 4, 2023',
-    location: 'E. Setauket, NY',
-    text: 'Mike did a conversion from fuel oil to gas 10 years ago. Removed all old sooty oily furnace and piping after covering all carpets and walls, job done perfectly and clean. Saved thousands in heating first year plus Diane did all rebate paperwork for over $7000 back, she\'s a gem. System works like a charm with no maintenance since.',
-    rating: 5,
-    category: 'gas-conversion',
-  },
-  {
-    id: 3,
-    title: 'Big City Plumbing RULES!!!',
-    name: 'Branko Yurisak',
-    date: 'December 20, 2022',
-    location: 'Kings Park, NY',
-    text: 'I would like to recommend Big City Plumbing for anyone who is considering converting from Oil to Gas. When dealing with getting my oil conversion done, I was referred by National Grid to Big City Plumbing as well as several other certified plumbing companies. My first encounter was with Diane from the office, she was friendly and prompt all the time. She scheduled my appointments and assisted the entire way with the application, permits, and rebates. Diane is the bright star of the office!',
-    rating: 5,
-    category: 'gas-conversion',
-  },
-  {
-    id: 4,
-    title: 'Finally a Honest Company!',
-    name: 'Judy',
-    date: 'December 22, 2021',
-    location: 'W. Hempstead, NY',
-    text: 'My Navien Heat Exchanger was about to breach. I had many companies in who wanted to sell me a new heating system. My system was only 7 years old, and could not believe I needed a new system so soon. As it turns out, Navien warranties the heat exchanger for 10 years. I called them, and they send me a new Heat Exchanger free of charge. So, all the companies who wanted to sell me a new system would not help me - but Big City Plumbing did!',
-    rating: 5,
-    category: 'navien',
-  },
-  {
-    id: 5,
-    title: 'Saint Mike to the Rescue',
-    name: 'Kathleen Rodriguez',
-    date: 'April 15, 2021',
-    location: 'Brooklyn, NY',
-    text: 'Once again Mike came to my rescue. I called Big City Plumbing after 3 on Tuesday. I had no hot water - my tankless water heater just died. Diane was kind and cared about my situation. She connected me with Mike who immediately made arrangements for the guys to come the next day. Benny came and installed tankless heater, explained what he was doing and asked if I had any questions. Benny is very professional and has a great sense of humor. Without a doubt he is a Master plumber!',
-    rating: 5,
-    category: 'water-heater',
-  },
-  {
-    id: 6,
-    title: 'Great Service!',
-    name: 'Angelo Strazzera',
-    date: 'October 17, 2019',
-    location: 'South Setauket',
-    text: 'My old school boiler/hot water heater combination unit finally gave out. I was scrambling trying to find a reputable company. I walked into Big City Plumbing\'s store front and Diane was very nice as I explained my situation. Michael came out and we talked about the Navien system. His crew was at my house the next morning installing the unit. We now have hot water and heat and also have additional space in my boiler room. I highly recommend you give Big City Plumbing a call!',
-    rating: 5,
-    category: 'installation',
-  },
-  {
-    id: 7,
-    title: 'Old School Quality and Service with a Smile',
-    name: 'Bob Scottaline',
-    date: 'December 8, 2018',
-    location: 'Lake Grove',
-    text: 'Mike is honest and provides only the work that is necessary or requested. The crew is friendly and polite and respect your home. Benny is an exceptional plumber and is very tech-savvy when it comes to dealing with today\'s modern heating equipment. All work is performed according to the manufacturer\'s specifications with the highest quality materials. If you get a lower price, you are not getting the same job.',
-    rating: 5,
-    category: 'heating',
-  },
-  {
-    id: 8,
-    title: 'Amazing Bathroom Renovation',
-    name: 'Jimmy V.',
-    date: 'June 13, 2015',
-    location: 'Smithtown, L.I.',
-    text: 'The job involved a complete gutting of my master Bathroom. From walls to ceiling, to floor! With the addition of a whirlpool one wall had to be moved. None of the existing plumbing remained in its original place. What really impressed me was how professional and courteous he was. The real surprise was the quality of work! They really took care and made sure I was happy. Needless to say - my new Bathroom is MAGNIFICENT!!! Hire these gentlemen now!! I guarantee you\'ll be totally happy!!!',
-    rating: 5,
-    category: 'plumbing',
-  },
-  {
-    id: 9,
-    title: 'Professional Service!',
-    name: 'Shikui Chen',
-    date: 'June 13, 2018',
-    location: 'Stony Brook',
-    text: 'We contacted Big City Plumbing to convert our oil boiler into a tankless gas boiler and foam the oil tank. Mike provided a reasonable quotation and Diane could always provide prompt answers to our questions. Benny and his team carried out the boiler installation project. They arrived at 8:00 a.m. and by 3:00 p.m., the new boiler was installed. They also cleaned the laundry room after the project was finished. The installed gas boiler looks really awesome!',
-    rating: 5,
-    category: 'gas-conversion',
-  },
-];
+import { useApprovedReviews, Review } from '@/hooks/useReviews';
 
 const categories = [
   { id: 'all', label: 'All Reviews' },
@@ -118,8 +26,9 @@ const stats = [
 
 const TestimonialsPage = () => {
   const { toast } = useToast();
+  const { reviews, isLoading } = useApprovedReviews();
   const [activeCategory, setActiveCategory] = useState('all');
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -128,9 +37,9 @@ const TestimonialsPage = () => {
     testimonial: '',
   });
 
-  const filteredTestimonials = activeCategory === 'all'
-    ? testimonials
-    : testimonials.filter(t => t.category === activeCategory);
+  const filteredReviews = activeCategory === 'all'
+    ? reviews
+    : reviews.filter(t => t.category === activeCategory);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -139,6 +48,15 @@ const TestimonialsPage = () => {
       description: "Your testimonial has been submitted for approval.",
     });
     setFormData({ name: '', email: '', location: '', title: '', testimonial: '' });
+  };
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
   };
 
   return (
@@ -167,9 +85,9 @@ const TestimonialsPage = () => {
       {/* Stats Bar */}
       <section className="relative -mt-10 z-10">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="bg-card rounded-2xl shadow-large p-6 md:p-8">
+          <div className="bg-card rounded-2xl shadow-lg p-6 md:p-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-              {stats.map((stat, index) => (
+              {stats.map((stat) => (
                 <div key={stat.label} className="text-center">
                   <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl cta-gradient mb-3">
                     <stat.icon className="w-6 h-6 text-secondary-foreground" />
@@ -208,68 +126,98 @@ const TestimonialsPage = () => {
               </div>
 
               {/* Testimonials List */}
-              <div className="space-y-6">
-                {filteredTestimonials.map((testimonial, index) => (
-                  <div
-                    key={testimonial.id}
-                    className="bg-card p-6 md:p-8 rounded-2xl shadow-card hover:shadow-large transition-all duration-300 animate-fade-in"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    {/* Header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full hero-gradient flex items-center justify-center flex-shrink-0">
-                          <span className="text-primary-foreground font-bold text-lg">
-                            {testimonial.name.charAt(0)}
-                          </span>
-                        </div>
-                        <div>
-                          <h3 className="font-heading font-bold text-foreground">{testimonial.name}</h3>
-                          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <MapPin className="w-3 h-3" />
-                              {testimonial.location}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
-                              {testimonial.date}
-                            </span>
+              {isLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : filteredReviews.length === 0 ? (
+                <div className="text-center py-12 bg-card rounded-xl">
+                  <Star className="w-12 h-12 mx-auto text-muted-foreground/30 mb-4" />
+                  <h3 className="font-heading font-semibold text-lg text-foreground mb-2">
+                    No reviews yet
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Be the first to leave a review!
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {filteredReviews.map((testimonial, index) => (
+                    <div
+                      key={testimonial.id}
+                      className="bg-card p-6 md:p-8 rounded-2xl shadow-card hover:shadow-lg transition-all duration-300 animate-fade-in"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      {/* Header */}
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-4">
+                          {testimonial.author_photo_url ? (
+                            <img 
+                              src={testimonial.author_photo_url} 
+                              alt={testimonial.author_name}
+                              className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 rounded-full hero-gradient flex items-center justify-center flex-shrink-0">
+                              <span className="text-primary-foreground font-bold text-lg">
+                                {testimonial.author_name.charAt(0)}
+                              </span>
+                            </div>
+                          )}
+                          <div>
+                            <h3 className="font-heading font-bold text-foreground">{testimonial.author_name}</h3>
+                            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                              {testimonial.location && (
+                                <span className="flex items-center gap-1">
+                                  <MapPin className="w-3 h-3" />
+                                  {testimonial.location}
+                                </span>
+                              )}
+                              {testimonial.review_date && (
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" />
+                                  {formatDate(testimonial.review_date)}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
+                        <Quote className="w-8 h-8 text-secondary/20 flex-shrink-0" />
                       </div>
-                      <Quote className="w-8 h-8 text-secondary/20 flex-shrink-0" />
+
+                      {/* Rating */}
+                      <div className="flex gap-1 mb-3">
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-secondary text-secondary" />
+                        ))}
+                      </div>
+
+                      {/* Title */}
+                      {testimonial.title && (
+                        <h4 className="font-heading font-semibold text-lg text-foreground mb-3">
+                          "{testimonial.title}"
+                        </h4>
+                      )}
+
+                      {/* Content */}
+                      <p className={`text-muted-foreground leading-relaxed ${
+                        expandedId === testimonial.id ? '' : 'line-clamp-3'
+                      }`}>
+                        {testimonial.text}
+                      </p>
+                      
+                      {testimonial.text.length > 200 && (
+                        <button
+                          onClick={() => setExpandedId(expandedId === testimonial.id ? null : testimonial.id)}
+                          className="text-secondary font-medium text-sm mt-2 hover:underline"
+                        >
+                          {expandedId === testimonial.id ? 'Show less' : 'Read more...'}
+                        </button>
+                      )}
                     </div>
-
-                    {/* Rating */}
-                    <div className="flex gap-1 mb-3">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-secondary text-secondary" />
-                      ))}
-                    </div>
-
-                    {/* Title */}
-                    <h4 className="font-heading font-semibold text-lg text-foreground mb-3">
-                      "{testimonial.title}"
-                    </h4>
-
-                    {/* Content */}
-                    <p className={`text-muted-foreground leading-relaxed ${
-                      expandedId === testimonial.id ? '' : 'line-clamp-3'
-                    }`}>
-                      {testimonial.text}
-                    </p>
-                    
-                    {testimonial.text.length > 200 && (
-                      <button
-                        onClick={() => setExpandedId(expandedId === testimonial.id ? null : testimonial.id)}
-                        className="text-secondary font-medium text-sm mt-2 hover:underline"
-                      >
-                        {expandedId === testimonial.id ? 'Show less' : 'Read more...'}
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Sidebar - Submit Form */}

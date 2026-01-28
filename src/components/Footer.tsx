@@ -1,4 +1,5 @@
-import { Phone, Mail, MapPin, Facebook, Linkedin, Youtube } from 'lucide-react';
+import { Phone, Mail, MapPin, Facebook, Linkedin, Youtube, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -87,13 +88,20 @@ const Footer = () => {
           <p className="text-primary-foreground/60 text-sm">
             © {currentYear} Big City Plumbing & Heating. All rights reserved.
           </p>
-          <div className="flex gap-6">
+          <div className="flex items-center gap-6">
             <a href="#" className="text-primary-foreground/60 hover:text-primary-foreground text-sm transition-colors">
               Privacy Policy
             </a>
             <a href="#" className="text-primary-foreground/60 hover:text-primary-foreground text-sm transition-colors">
               Terms of Service
             </a>
+            <Link 
+              to="/admin/login" 
+              className="text-primary-foreground/40 hover:text-primary-foreground/60 text-sm transition-colors flex items-center gap-1"
+            >
+              <Lock className="w-3 h-3" />
+              Admin
+            </Link>
           </div>
         </div>
       </div>
