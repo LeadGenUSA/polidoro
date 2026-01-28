@@ -29,9 +29,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
-        {/* @ts-ignore - ElevenLabs custom element */}
-        <elevenlabs-convai agent-id="agent_5901kecrjd4eftdvkj840myqyfh4"></elevenlabs-convai>
+      </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
