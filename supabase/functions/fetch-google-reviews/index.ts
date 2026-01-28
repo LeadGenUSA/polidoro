@@ -21,16 +21,18 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Create Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    
+    // Create client with user's auth for role checking
+    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } },
     });
 
     // Verify user is authenticated and has admin role
     const token = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
     
     if (claimsError || !claimsData?.claims) {
       return new Response(
@@ -42,7 +44,7 @@ Deno.serve(async (req) => {
     const userId = claimsData.claims.sub;
 
     // Check if user has admin role
-    const { data: roleData, error: roleError } = await supabase
+    const { data: roleData, error: roleError } = await supabaseAuth
       .from('user_roles')
       .select('role')
       .eq('user_id', userId)
@@ -100,8 +102,11 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Create service role client for database operations (bypasses RLS)
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+
     // Get existing google_review_ids to avoid duplicates
-    const { data: existingReviews } = await supabase
+    const { data: existingReviews } = await supabaseAdmin
       .from('reviews')
       .select('google_review_id')
       .not('google_review_id', 'is', null);
@@ -135,8 +140,8 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Insert new reviews
-    const { error: insertError } = await supabase
+    // Insert new reviews using service role client (bypasses RLS)
+    const { error: insertError } = await supabaseAdmin
       .from('reviews')
       .insert(newReviews);
 
