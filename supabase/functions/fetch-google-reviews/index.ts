@@ -68,8 +68,7 @@ Deno.serve(async (req) => {
     }
 
     // Big City Plumbing & Heating Inc. Place ID
-    // Located at 2639 Middle Country Rd, Centereach, NY 11720
-    const placeId = 'ChIJy_v6m76x6IkRf87Y0v6X2mI';
+    const placeId = 'ChIJX_YHUWE46IkRZM8fGulCPik';
     
     console.log('Fetching reviews for place ID:', placeId);
 
