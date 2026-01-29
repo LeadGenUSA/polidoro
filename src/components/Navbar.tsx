@@ -7,6 +7,7 @@ import logo from '@/assets/big-city-plumbing-and-heating.png';
 const navLinks = [
   { name: 'Home', href: '/' },
   { name: 'Plumbing Services', href: '/plumbing-services' },
+  { name: 'Heating Services', href: '/heating-services' },
   { name: 'Services', href: '/#services' },
   { name: 'About', href: '/#about' },
   { name: 'How-To Videos', href: '/how-to-videos' },
