@@ -2,6 +2,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Phone, Flame, Thermometer, Fuel, Gauge, Droplets, Zap, Settings, RefreshCw, ThermometerSun, Home, Waves } from 'lucide-react';
+import industryLeadingProducts from '@/assets/industry-leading-products.webp';
 
 const heatingServices = [
   {
@@ -125,6 +126,17 @@ const HeatingServices = () => {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Industry Leading Products Section */}
+      <section className="py-16 lg:py-20 bg-background">
+        <div className="container mx-auto px-4 lg:px-8">
+          <img 
+            src={industryLeadingProducts} 
+            alt="Industry Leading Products - Energy Star certified boilers and heating equipment"
+            className="w-full h-auto rounded-2xl shadow-card"
+          />
         </div>
       </section>
 
