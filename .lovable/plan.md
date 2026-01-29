@@ -1,64 +1,55 @@
 
 
-## Create Plumbing Services Page
+## Add Industry Leading Products Image to Heating Services Page
 
-This task involves creating a new dedicated page for plumbing services based on the content from your existing website, and adding it to the site navigation.
+This task involves adding the uploaded "Industry Leading Products" image below the heating services grid section on the Heating Services page.
 
-### Content to Include
+### What Will Be Done
 
-Based on your website, the new page will feature:
+The image showcasing Energy Star certified boilers and heating equipment will be added as a new section between the services grid and the Oil to Gas Conversion section.
 
-**Services List (12 items):**
-- Plumbing repairs and installation
-- Plumbing permits and violations removed
-- RPZ installation
-- Hot water heaters (Tank and Tankless, gas and oil)
-- Fiberglass one piece shower enclosures
-- Faucets/Sinks/Toilets repaired and installed
-- Slab leaks repaired
-- Circulator pumps repaired and installed
-- Consulting services available
-- Water Filtration Systems
-- Emergency Service
-- Gas Line repairs and installations
+### Implementation Steps
 
-**Additional Sections:**
-- Cost/Estimates section with written estimate guarantee
-- Emergency service messaging
-- Contact call-to-action (631-361-9500)
+**1. Copy the uploaded image to the project**
+- Copy `user-uploads://Industryleadingproducts.jpg.webp` to `src/assets/industry-leading-products.webp`
 
-### Files to Create/Modify
+**2. Update `src/pages/HeatingServices.tsx`**
+- Import the new image at the top of the file
+- Add a new section after the services grid (after line 129) displaying the image
+- The image will be displayed full-width within a container for proper responsive sizing
+- Add appropriate alt text for accessibility
 
-**1. Create `src/pages/PlumbingServices.tsx`**
-- Hero section with gradient background (matching existing page style)
-- Services grid with icons for each service
-- "Worried about cost?" section with estimate guarantee info
-- Emergency services callout
-- Contact CTA section
-- Navbar and Footer components included
+### New Section Structure
 
-**2. Update `src/App.tsx`**
-- Import the new PlumbingServices component
-- Add route: `/plumbing-services`
+The new section will be inserted between the services grid and the Gas Conversion section:
 
-**3. Update `src/components/Navbar.tsx`**
-- Add "Plumbing Services" to the navigation links array
-
-### Design Approach
-
-The page will follow the existing design patterns seen in HowToVideos and TestimonialsPage:
-- Hero section with `hero-gradient` background
-- Service items displayed in a responsive grid with cards
-- Icons from lucide-react for each service type
-- Consistent typography using the `font-heading` class
-- CTA buttons using the existing `hero` variant
+```text
+┌─────────────────────────────────────────┐
+│           Services Grid Section          │
+│        (existing - ends at line 129)     │
+└─────────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────┐
+│     NEW: Industry Leading Products       │
+│                                          │
+│   [Full-width responsive image with      │
+│    the uploaded boiler equipment photo]  │
+│                                          │
+└─────────────────────────────────────────┘
+                     ↓
+┌─────────────────────────────────────────┐
+│       Gas Conversion Section             │
+│        (existing - starts at line 131)   │
+└─────────────────────────────────────────┘
+```
 
 ### Technical Details
 
-| Component | Description |
-|-----------|-------------|
-| Layout | Navbar + Hero + Content + Footer |
-| Styling | Tailwind CSS with existing custom classes |
-| Icons | lucide-react (Wrench, Droplets, Flame, etc.) |
-| Responsive | Mobile-first grid (1 col → 2 col → 3 col) |
+| Aspect | Implementation |
+|--------|----------------|
+| Image Location | `src/assets/industry-leading-products.webp` |
+| Import Method | ES6 module import for optimization |
+| Styling | Full-width container with rounded corners |
+| Responsive | Image scales appropriately on all devices |
+| Alt Text | "Industry Leading Products - Energy Star certified boilers and heating equipment" |
 
