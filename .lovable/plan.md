@@ -1,30 +1,64 @@
 
 
-## Replace BC Logo with Company Logo
+## Create Plumbing Services Page
 
-This task involves replacing the current "BC" text placeholder in both the header (Navbar) and footer with your uploaded circular logo image.
+This task involves creating a new dedicated page for plumbing services based on the content from your existing website, and adding it to the site navigation.
 
-### Changes Required
+### Content to Include
 
-**1. Copy Logo to Assets**
-- Copy the uploaded logo (`big-city-plumbing-and-heating.png`) to `src/assets/` folder for proper bundling and optimization
+Based on your website, the new page will feature:
 
-**2. Update src/components/Navbar.tsx**
-- Import the logo image at the top of the file
-- Replace the current "BC" div placeholder (lines 57-59) with an `<img>` element displaying the logo
-- Style the image to fit properly (approximately 40x40px to match current size, with rounded styling)
+**Services List (12 items):**
+- Plumbing repairs and installation
+- Plumbing permits and violations removed
+- RPZ installation
+- Hot water heaters (Tank and Tankless, gas and oil)
+- Fiberglass one piece shower enclosures
+- Faucets/Sinks/Toilets repaired and installed
+- Slab leaks repaired
+- Circulator pumps repaired and installed
+- Consulting services available
+- Water Filtration Systems
+- Emergency Service
+- Gas Line repairs and installations
 
-**3. Update src/components/Footer.tsx**
-- Import the logo image at the top of the file  
-- Replace the current "BC" div placeholder (lines 13-15) with an `<img>` element displaying the logo
-- Apply matching styling for consistency
+**Additional Sections:**
+- Cost/Estimates section with written estimate guarantee
+- Emergency service messaging
+- Contact call-to-action (631-361-9500)
+
+### Files to Create/Modify
+
+**1. Create `src/pages/PlumbingServices.tsx`**
+- Hero section with gradient background (matching existing page style)
+- Services grid with icons for each service
+- "Worried about cost?" section with estimate guarantee info
+- Emergency services callout
+- Contact CTA section
+- Navbar and Footer components included
+
+**2. Update `src/App.tsx`**
+- Import the new PlumbingServices component
+- Add route: `/plumbing-services`
+
+**3. Update `src/components/Navbar.tsx`**
+- Add "Plumbing Services" to the navigation links array
+
+### Design Approach
+
+The page will follow the existing design patterns seen in HowToVideos and TestimonialsPage:
+- Hero section with `hero-gradient` background
+- Service items displayed in a responsive grid with cards
+- Icons from lucide-react for each service type
+- Consistent typography using the `font-heading` class
+- CTA buttons using the existing `hero` variant
 
 ### Technical Details
 
-| Component | Current Implementation | New Implementation |
-|-----------|----------------------|-------------------|
-| Navbar | `<div className="w-10 h-10..."><span>BC</span></div>` | `<img src={logo} className="w-10 h-10 rounded-xl object-cover" />` |
-| Footer | `<div className="w-10 h-10..."><span>BC</span></div>` | `<img src={logo} className="w-10 h-10 rounded-xl object-cover" />` |
-
-The circular logo will be displayed at 40x40 pixels with rounded corners to maintain the current design aesthetic while showing your actual company branding.
+| Component | Description |
+|-----------|-------------|
+| Layout | Navbar + Hero + Content + Footer |
+| Styling | Tailwind CSS with existing custom classes |
+| Icons | lucide-react (Wrench, Droplets, Flame, etc.) |
+| Responsive | Mobile-first grid (1 col → 2 col → 3 col) |
 
