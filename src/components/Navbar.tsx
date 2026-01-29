@@ -17,7 +17,7 @@ const serviceLinks = [
 
 const navLinks = [
   { name: 'Home', href: '/' },
-  { name: 'About', href: '/#about' },
+  { name: 'About', href: '/about-us' },
   { name: 'How-To Videos', href: '/how-to-videos' },
   { name: 'Testimonials', href: '/testimonials' },
   { name: 'Contact', href: '/#contact' },
