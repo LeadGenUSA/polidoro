@@ -2,17 +2,11 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Shield, Clock, Award } from 'lucide-react';
 import heroImage from '@/assets/hero-plumbing.jpg';
 import nycSkyline from '@/assets/nyc-skyline.png';
-
 const Hero = () => {
-  return (
-    <section className="relative min-h-screen flex items-center hero-gradient overflow-hidden">
+  return <section className="relative min-h-screen flex items-center hero-gradient overflow-hidden">
       {/* NYC Skyline Background */}
       <div className="absolute inset-0">
-        <img 
-          src={nycSkyline} 
-          alt="" 
-          className="w-full h-full object-cover object-center"
-        />
+        <img src={nycSkyline} alt="" className="w-full h-full object-cover object-center" />
         {/* Overlay to blend with hero gradient */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/85 to-primary/80" />
         <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-transparent to-primary/70" />
@@ -35,7 +29,7 @@ const Hero = () => {
             
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
               Expert Plumbing &
-              <span className="text-gradient block">Heating Solutions</span>
+              <span className="text-gradient block py-[7px]">Heating Solutions</span>
             </h1>
             
             <p className="text-lg md:text-xl opacity-90 mb-8 max-w-xl">
@@ -88,11 +82,7 @@ const Hero = () => {
           {/* Right Image */}
           <div className="relative animate-slide-up animation-delay-200">
             <div className="relative rounded-3xl overflow-hidden shadow-large">
-              <img 
-                src={heroImage} 
-                alt="Professional plumbing and heating services" 
-                className="w-full h-auto object-cover"
-              />
+              <img src={heroImage} alt="Professional plumbing and heating services" className="w-full h-auto object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
             </div>
             
@@ -115,14 +105,9 @@ const Hero = () => {
       {/* Bottom Wave */}
       <div className="absolute bottom-0 left-0 right-0">
         <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-          <path 
-            d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" 
-            fill="hsl(210, 25%, 97%)"
-          />
+          <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="hsl(210, 25%, 97%)" />
         </svg>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
