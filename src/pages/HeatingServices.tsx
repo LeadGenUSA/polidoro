@@ -74,11 +74,13 @@ const HeatingServices = () => {
               Professional Heating Services
             </span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-              Expert Heating Solutions
+              Heating And Boiler Services In The City That Never Sleeps
             </h1>
-            <p className="text-xl text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
-              From boiler repairs to radiant heat installation, our licensed technicians deliver 
-              reliable heating solutions to keep your home comfortable year-round.
+            <p className="text-xl text-primary-foreground/80 mb-4 max-w-3xl mx-auto">
+              There are few things as frustrating as trying to find a heating service company to respond to your emergency needs especially after normal business hours and on weekends. Once you locate a company how do you know that they are qualified, reliable and ethical?
+            </p>
+            <p className="text-2xl font-heading font-bold text-secondary mb-8">
+              Big City Plumbing & Heating Inc. is the name to trust.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="tel:631-361-9500">
