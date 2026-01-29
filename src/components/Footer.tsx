@@ -1,5 +1,6 @@
 import { Phone, Mail, MapPin, Facebook, Linkedin, Youtube, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import logo from '@/assets/big-city-plumbing-and-heating.png';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -11,9 +12,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center">
-                <span className="text-secondary-foreground font-heading font-bold text-xl">BC</span>
-              </div>
+              <img src={logo} alt="Big City Plumbing & Heating" className="w-10 h-10 rounded-xl object-cover" />
               <div className="text-primary-foreground">
                 <span className="font-heading font-bold text-lg">Big City</span>
                 <span className="font-heading text-sm block -mt-1 opacity-80">Plumbing & Heating</span>

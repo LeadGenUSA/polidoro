@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Phone, Menu, X } from 'lucide-react';
+import logo from '@/assets/big-city-plumbing-and-heating.png';
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -59,9 +60,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-heading font-bold text-xl">BC</span>
-            </div>
+            <img src={logo} alt="Big City Plumbing & Heating" className="w-10 h-10 rounded-xl object-cover" />
             <div className={`transition-colors ${isScrolled ? 'text-foreground' : 'text-primary-foreground'}`}>
               <span className="font-heading font-bold text-lg">Big City</span>
               <span className="font-heading text-sm block -mt-1 opacity-80">Plumbing & Heating</span>
