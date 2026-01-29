@@ -1,14 +1,22 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Phone, Menu, X } from 'lucide-react';
+import { Phone, Menu, X, ChevronDown } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import logo from '@/assets/big-city-plumbing-and-heating.png';
+
+const serviceLinks = [
+  { name: 'Plumbing Services', href: '/plumbing-services' },
+  { name: 'Heating Services', href: '/heating-services' },
+];
 
 const navLinks = [
   { name: 'Home', href: '/' },
-  { name: 'Plumbing Services', href: '/plumbing-services' },
-  { name: 'Heating Services', href: '/heating-services' },
-  { name: 'Services', href: '/#services' },
   { name: 'About', href: '/#about' },
   { name: 'How-To Videos', href: '/how-to-videos' },
   { name: 'Testimonials', href: '/testimonials' },
@@ -71,7 +79,40 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
+            <Link
+              to="/"
+              onClick={() => handleNavClick('/')}
+              className={`font-medium transition-colors hover:text-secondary ${
+                isScrolled ? 'text-foreground' : 'text-primary-foreground'
+              } ${isActive('/') ? 'text-secondary' : ''}`}
+            >
+              Home
+            </Link>
+            
+            {/* Services Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className={`flex items-center gap-1 font-medium transition-colors hover:text-secondary ${
+                isScrolled ? 'text-foreground' : 'text-primary-foreground'
+              } ${serviceLinks.some(link => isActive(link.href)) ? 'text-secondary' : ''}`}>
+                Services
+                <ChevronDown className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="bg-card border-border">
+                {serviceLinks.map((link) => (
+                  <DropdownMenuItem key={link.name} asChild>
+                    <Link
+                      to={link.href}
+                      onClick={() => handleNavClick(link.href)}
+                      className={`w-full cursor-pointer ${isActive(link.href) ? 'text-secondary' : ''}`}
+                    >
+                      {link.name}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {navLinks.slice(1).map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
@@ -114,7 +155,38 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <div className="lg:hidden mt-4 pb-4 border-t border-border/20">
             <div className="flex flex-col gap-4 pt-4">
-              {navLinks.map((link) => (
+              <Link
+                to="/"
+                onClick={() => handleNavClick('/')}
+                className={`font-medium transition-colors ${
+                  isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                } ${isActive('/') ? 'text-secondary' : ''}`}
+              >
+                Home
+              </Link>
+              
+              {/* Mobile Services Section */}
+              <div className="flex flex-col gap-2">
+                <span className={`font-semibold ${isScrolled ? 'text-foreground' : 'text-primary-foreground'}`}>
+                  Services
+                </span>
+                <div className="flex flex-col gap-2 pl-4">
+                  {serviceLinks.map((link) => (
+                    <Link
+                      key={link.name}
+                      to={link.href}
+                      onClick={() => handleNavClick(link.href)}
+                      className={`font-medium transition-colors ${
+                        isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                      } ${isActive(link.href) ? 'text-secondary' : ''}`}
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {navLinks.slice(1).map((link) => (
                 <Link
                   key={link.name}
                   to={link.href}
