@@ -138,7 +138,12 @@ const CustomerSurveyForm = () => {
             Customer Survey
           </h1>
           <p className="text-primary-foreground/80">
-            We value your feedback! Please take a moment to share your experience with us.
+            Please help us to better serve you by completing the short survey below.
+            <br />
+            We like to stay ahead of our competition and your feedback is important to us!
+          </p>
+          <p className="text-primary-foreground font-semibold mt-4">
+            We will meet any licensed plumber's quote.
           </p>
         </div>
       </section>
