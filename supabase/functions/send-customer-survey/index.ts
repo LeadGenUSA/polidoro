@@ -23,6 +23,11 @@ interface SurveyData {
   valueForMoney?: string;
   wouldRecommend?: string;
   useAgain?: string;
+  estimateOverpriced?: string;
+  satisfiedWithRecommendation?: string;
+  wereWeProfessional?: string;
+  comfortableWithTech?: string;
+  considerInstallation?: string;
   whatDidWell?: string;
   areasToImprove?: string;
   additionalComments?: string;
@@ -126,6 +131,30 @@ const handler = async (req: Request): Promise<Response> => {
             <div class="field">
               <span class="label">Would Use Again:</span> 
               <span class="value">${formatYesNoMaybe(data.useAgain)}</span>
+            </div>
+          </div>
+          
+          <div class="section">
+            <div class="section-title">Sales Lead Questions</div>
+            <div class="field">
+              <span class="label">Was the estimate overpriced?</span> 
+              <span class="value">${data.estimateOverpriced === 'yes' ? 'Yes' : 'No'}</span>
+            </div>
+            <div class="field">
+              <span class="label">Satisfied with recommendation?</span> 
+              <span class="value">${data.satisfiedWithRecommendation === 'yes' ? 'Yes' : 'No'}</span>
+            </div>
+            <div class="field">
+              <span class="label">Were we professional?</span> 
+              <span class="value">${data.wereWeProfessional === 'yes' ? 'Yes' : 'No'}</span>
+            </div>
+            <div class="field">
+              <span class="label">Comfortable with service tech?</span> 
+              <span class="value">${data.comfortableWithTech === 'yes' ? 'Yes' : 'No'}</span>
+            </div>
+            <div class="field">
+              <span class="label">Consider installation with better price?</span> 
+              <span class="value">${data.considerInstallation === 'yes_call_me' ? 'Yes - Call Me' : data.considerInstallation === 'obtained_another' ? 'Obtained Another Plumber' : 'Not Doing Job Now'}</span>
             </div>
           </div>
           
