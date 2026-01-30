@@ -70,7 +70,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <img src={logo} alt="Big City Plumbing & Heating" className="w-14 h-14 rounded-xl object-cover" />
+            <img src={logo} alt="Big City Plumbing & Heating" className="w-20 h-20 rounded-full object-cover" />
             <div className={`transition-colors ${isScrolled ? 'text-foreground' : 'text-primary-foreground'}`}>
               <span className="font-heading font-bold text-lg">Big City</span>
               <span className="font-heading text-sm block -mt-1 opacity-80">Plumbing & Heating</span>
