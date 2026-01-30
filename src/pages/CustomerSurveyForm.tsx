@@ -154,7 +154,7 @@ const CustomerSurveyForm = () => {
           <Card className="mb-8 bg-primary text-primary-foreground text-center">
             <CardContent className="py-8">
               <h2 className="text-2xl font-heading font-bold mb-2">Big City Plumbing & Heating</h2>
-              <p className="text-xl font-semibold mb-4">631-361-9500</p>
+              <a href="tel:631-361-9500" className="text-xl font-semibold mb-4 block underline hover:no-underline">631-361-9500</a>
               <p className="text-lg">
                 Please complete the short survey below and we will provide you with
               </p>
