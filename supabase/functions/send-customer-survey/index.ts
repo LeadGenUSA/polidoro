@@ -162,12 +162,18 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "Big City Plumbing <onboarding@resend.dev>",
+      from: "Big City Plumbing <noreply@bigcityph.com>",
       to: ["mike@bigcityph.com"],
       subject: `Customer Survey from ${data.customerName}`,
       html: emailHtml,
       reply_to: data.email,
     });
+
+    // Check for Resend errors
+    if (emailResponse.error) {
+      console.error("Resend API error:", emailResponse.error);
+      throw new Error(emailResponse.error.message);
+    }
 
     console.log("Survey email sent successfully:", emailResponse);
 
