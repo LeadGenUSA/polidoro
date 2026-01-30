@@ -363,25 +363,7 @@ const CustomerSurveyForm = () => {
                 <CardTitle className="text-primary">Additional Feedback</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="whatDidWell">What did we do well?</Label>
-                  <Textarea 
-                    id="whatDidWell" 
-                    {...register('whatDidWell')} 
-                    placeholder="Tell us what you liked about our service..."
-                    rows={3}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="areasToImprove">How can we improve?</Label>
-                  <Textarea 
-                    id="areasToImprove" 
-                    {...register('areasToImprove')} 
-                    placeholder="Let us know how we can serve you better..."
-                    rows={3}
-                  />
-                </div>
-                {/* New Required Questions */}
+                {/* Required Questions */}
                 <div>
                   <Label>Was the estimate overpriced? *</Label>
                   <RadioGroup
@@ -474,6 +456,25 @@ const CustomerSurveyForm = () => {
                     </div>
                   </RadioGroup>
                   {errors.considerInstallation && <p className="text-destructive text-sm mt-1">{errors.considerInstallation.message}</p>}
+                </div>
+
+                <div>
+                  <Label htmlFor="whatDidWell">What did we do well?</Label>
+                  <Textarea 
+                    id="whatDidWell" 
+                    {...register('whatDidWell')} 
+                    placeholder="Tell us what you liked about our service..."
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="areasToImprove">How can we improve?</Label>
+                  <Textarea 
+                    id="areasToImprove" 
+                    {...register('areasToImprove')} 
+                    placeholder="Let us know how we can serve you better..."
+                    rows={3}
+                  />
                 </div>
 
                 <div>
