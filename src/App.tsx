@@ -10,6 +10,7 @@ import PlumbingServices from "./pages/PlumbingServices";
 import HeatingServices from "./pages/HeatingServices";
 import TestimonialsPage from "./pages/TestimonialsPage";
 import AboutUs from "./pages/AboutUs";
+import WorkOrderForm from "./pages/WorkOrderForm";
 import AdminLogin from "./pages/AdminLogin";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/how-to-videos" element={<HowToVideos />} />
             <Route path="/testimonials" element={<TestimonialsPage />} />
             <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/work-order" element={<WorkOrderForm />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
