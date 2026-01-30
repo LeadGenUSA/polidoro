@@ -17,6 +17,7 @@ const serviceLinks = [
 
 const externalLinks = [
   { name: 'Work Order Form', href: '/work-order', external: false },
+  { name: 'Customer Survey Form', href: '/customer-survey', external: false },
 ];
 
 const navLinks = [
