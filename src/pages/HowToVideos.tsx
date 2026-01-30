@@ -104,10 +104,15 @@ const HowToVideos = () => {
       <section className="hero-gradient pt-32 pb-20">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/20 backdrop-blur-sm border border-secondary/30 mb-6">
+            <a 
+              href="https://www.youtube.com/channel/UC8fcDyolqilmFXHt8pg377Q"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/20 backdrop-blur-sm border border-secondary/30 mb-6 hover:bg-secondary/30 transition-colors"
+            >
               <Youtube className="w-4 h-4 text-secondary" />
               <span className="text-sm font-medium text-primary-foreground">Our YouTube Channel</span>
-            </div>
+            </a>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
               How-To Videos
             </h1>
