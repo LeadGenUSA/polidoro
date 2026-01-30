@@ -16,6 +16,7 @@ const serviceLinks = [
 ];
 
 const externalLinks = [
+  { name: 'Work Order Form', href: '/work-order', external: false },
   { name: 'YouTube Channel', href: 'https://www.youtube.com/channel/UC8fcDyolqilmFXHt8pg377Q', external: true },
   { name: 'Facebook', href: 'http://www.facebook.com/bigcityplumbing?ref=tn_tnmn%20/bigcityplumbing.heating', external: true },
   { name: 'Yelp', href: 'http://www.yelp.com/biz/big-city-plumbing-and-heating-centereach', external: true },
@@ -130,14 +131,24 @@ const Navbar = () => {
               <DropdownMenuContent align="start" className="bg-card border-border">
                 {externalLinks.map((link) => (
                   <DropdownMenuItem key={link.name} asChild>
-                    <a
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full cursor-pointer"
-                    >
-                      {link.name}
-                    </a>
+                    {link.external ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full cursor-pointer"
+                      >
+                        {link.name}
+                      </a>
+                    ) : (
+                      <Link
+                        to={link.href}
+                        onClick={() => handleNavClick(link.href)}
+                        className="w-full cursor-pointer"
+                      >
+                        {link.name}
+                      </Link>
+                    )}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -224,18 +235,31 @@ const Navbar = () => {
                 </span>
                 <div className="flex flex-col gap-2 pl-4">
                   {externalLinks.map((link) => (
-                    <a
-                      key={link.name}
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`font-medium transition-colors ${
-                        isScrolled ? 'text-foreground' : 'text-primary-foreground'
-                      }`}
-                    >
-                      {link.name}
-                    </a>
+                    link.external ? (
+                      <a
+                        key={link.name}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`font-medium transition-colors ${
+                          isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                        }`}
+                      >
+                        {link.name}
+                      </a>
+                    ) : (
+                      <Link
+                        key={link.name}
+                        to={link.href}
+                        onClick={() => handleNavClick(link.href)}
+                        className={`font-medium transition-colors ${
+                          isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                        }`}
+                      >
+                        {link.name}
+                      </Link>
+                    )
                   ))}
                 </div>
               </div>
