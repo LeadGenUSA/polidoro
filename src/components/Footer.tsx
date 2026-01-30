@@ -1,6 +1,6 @@
 import { Phone, MapPin, Facebook, Linkedin, Youtube, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import logo from '@/assets/big-city-plumbing-and-heating.png';
+import logo from '@/assets/big-city-plumbing-and-heating-logo-2.png';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();

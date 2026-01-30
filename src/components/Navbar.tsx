@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import logo from '@/assets/big-city-plumbing-and-heating.png';
+import logo from '@/assets/big-city-plumbing-and-heating-logo-2.png';
 
 const serviceLinks = [
   { name: 'Plumbing Services', href: '/plumbing-services' },
