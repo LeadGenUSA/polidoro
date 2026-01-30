@@ -159,8 +159,10 @@ const CustomerSurveyForm = () => {
                 Please complete the short survey below and we will provide you with
               </p>
               <p className="text-3xl font-bold mt-2">$50.00 off your next plumbing job.</p>
-            </CardContent>
+          </CardContent>
           </Card>
+
+          <p className="text-muted-foreground mb-4">* = Required</p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             {/* Customer Info */}
