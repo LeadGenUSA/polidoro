@@ -15,6 +15,13 @@ const serviceLinks = [
   { name: 'Heating Services', href: '/heating-services' },
 ];
 
+const externalLinks = [
+  { name: 'YouTube Channel', href: 'https://www.youtube.com/channel/UC8fcDyolqilmFXHt8pg377Q', external: true },
+  { name: 'Facebook', href: 'http://www.facebook.com/bigcityplumbing?ref=tn_tnmn%20/bigcityplumbing.heating', external: true },
+  { name: 'Yelp', href: 'http://www.yelp.com/biz/big-city-plumbing-and-heating-centereach', external: true },
+  { name: 'LinkedIn', href: 'https://www.linkedin.com/profile/view?id=AAkAAAUWvLUB1msy7omBhpMetwl7zMHANsC8wzs', external: true },
+];
+
 const navLinks = [
   { name: 'Home', href: '/' },
   { name: 'About', href: '/about-us' },
@@ -112,6 +119,30 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
+            {/* Links Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className={`flex items-center gap-1 font-medium transition-colors hover:text-secondary ${
+                isScrolled ? 'text-foreground' : 'text-primary-foreground'
+              }`}>
+                Links
+                <ChevronDown className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="bg-card border-border">
+                {externalLinks.map((link) => (
+                  <DropdownMenuItem key={link.name} asChild>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full cursor-pointer"
+                    >
+                      {link.name}
+                    </a>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {navLinks.slice(1).map((link) => (
               <Link
                 key={link.name}
@@ -182,6 +213,29 @@ const Navbar = () => {
                     >
                       {link.name}
                     </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Mobile Links Section */}
+              <div className="flex flex-col gap-2">
+                <span className={`font-semibold ${isScrolled ? 'text-foreground' : 'text-primary-foreground'}`}>
+                  Links
+                </span>
+                <div className="flex flex-col gap-2 pl-4">
+                  {externalLinks.map((link) => (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`font-medium transition-colors ${
+                        isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                      }`}
+                    >
+                      {link.name}
+                    </a>
                   ))}
                 </div>
               </div>
