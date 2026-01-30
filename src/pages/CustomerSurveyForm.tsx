@@ -145,6 +145,18 @@ const CustomerSurveyForm = () => {
       
       <main className="flex-1 py-12 bg-muted/30">
         <div className="container mx-auto px-4 max-w-4xl">
+          {/* Promotional Box */}
+          <Card className="mb-8 bg-primary text-primary-foreground text-center">
+            <CardContent className="py-8">
+              <h2 className="text-2xl font-heading font-bold mb-2">Big City Plumbing & Heating</h2>
+              <p className="text-xl font-semibold mb-4">631-361-9500</p>
+              <p className="text-lg">
+                Please complete the short survey below and we will provide you with
+              </p>
+              <p className="text-3xl font-bold mt-2">$50.00 off your next plumbing job.</p>
+            </CardContent>
+          </Card>
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             {/* Customer Info */}
             <Card>
