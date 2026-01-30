@@ -17,10 +17,6 @@ const serviceLinks = [
 
 const externalLinks = [
   { name: 'Work Order Form', href: '/work-order', external: false },
-  { name: 'YouTube Channel', href: 'https://www.youtube.com/channel/UC8fcDyolqilmFXHt8pg377Q', external: true },
-  { name: 'Facebook', href: 'http://www.facebook.com/bigcityplumbing?ref=tn_tnmn%20/bigcityplumbing.heating', external: true },
-  { name: 'Yelp', href: 'http://www.yelp.com/biz/big-city-plumbing-and-heating-centereach', external: true },
-  { name: 'LinkedIn', href: 'https://www.linkedin.com/profile/view?id=AAkAAAUWvLUB1msy7omBhpMetwl7zMHANsC8wzs', external: true },
 ];
 
 const navLinks = [
