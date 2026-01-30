@@ -131,16 +131,21 @@ const WorkOrderForm = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 pt-32 pb-20 bg-muted/30">
+      
+      {/* Hero Section with blue background for navbar consistency */}
+      <section className="relative bg-primary pt-32 pb-16">
+        <div className="container mx-auto px-4 max-w-4xl text-center">
+          <h1 className="text-4xl font-heading font-bold text-primary-foreground mb-4">
+            Work Order Form
+          </h1>
+          <p className="text-primary-foreground/80">
+            Please fill out your Work Order details below.
+          </p>
+        </div>
+      </section>
+      
+      <main className="flex-1 py-12 bg-muted/30">
         <div className="container mx-auto px-4 max-w-4xl">
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-heading font-bold text-foreground mb-4">
-              Work Order Form
-            </h1>
-            <p className="text-muted-foreground">
-              Please fill out your Work Order details below.
-            </p>
-          </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             {/* Customer Info */}
