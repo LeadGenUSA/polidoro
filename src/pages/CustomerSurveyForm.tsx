@@ -36,6 +36,13 @@ const surveySchema = z.object({
   whatDidWell: z.string().max(1000).optional(),
   areasToImprove: z.string().max(1000).optional(),
   additionalComments: z.string().max(2000).optional(),
+  
+  // New Required Feedback Questions
+  estimateOverpriced: z.enum(['yes', 'no'], { required_error: 'This field is required' }),
+  satisfiedWithRecommendation: z.enum(['yes', 'no'], { required_error: 'This field is required' }),
+  wereWeProfessional: z.enum(['yes', 'no'], { required_error: 'This field is required' }),
+  comfortableWithTech: z.enum(['yes', 'no'], { required_error: 'This field is required' }),
+  considerInstallation: z.enum(['yes_call_me', 'obtained_another_plumber', 'not_doing_job_now'], { required_error: 'This field is required' }),
 });
 
 type SurveyFormData = z.infer<typeof surveySchema>;
@@ -374,11 +381,106 @@ const CustomerSurveyForm = () => {
                     rows={3}
                   />
                 </div>
+                {/* New Required Questions */}
+                <div>
+                  <Label>Was the estimate overpriced? *</Label>
+                  <RadioGroup
+                    onValueChange={(value) => setValue('estimateOverpriced', value as any)}
+                    className="flex gap-6 mt-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="yes" id="estimate-yes" />
+                      <Label htmlFor="estimate-yes" className="font-normal">Y</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no" id="estimate-no" />
+                      <Label htmlFor="estimate-no" className="font-normal">N</Label>
+                    </div>
+                  </RadioGroup>
+                  {errors.estimateOverpriced && <p className="text-destructive text-sm mt-1">{errors.estimateOverpriced.message}</p>}
+                </div>
+
+                <div>
+                  <Label>Were you satisfied with our recommendation? *</Label>
+                  <RadioGroup
+                    onValueChange={(value) => setValue('satisfiedWithRecommendation', value as any)}
+                    className="flex gap-6 mt-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="yes" id="recommendation-yes" />
+                      <Label htmlFor="recommendation-yes" className="font-normal">Y</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no" id="recommendation-no" />
+                      <Label htmlFor="recommendation-no" className="font-normal">N</Label>
+                    </div>
+                  </RadioGroup>
+                  {errors.satisfiedWithRecommendation && <p className="text-destructive text-sm mt-1">{errors.satisfiedWithRecommendation.message}</p>}
+                </div>
+
+                <div>
+                  <Label>Did you feel we were professional? *</Label>
+                  <RadioGroup
+                    onValueChange={(value) => setValue('wereWeProfessional', value as any)}
+                    className="flex gap-6 mt-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="yes" id="professional-yes" />
+                      <Label htmlFor="professional-yes" className="font-normal">Y</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no" id="professional-no" />
+                      <Label htmlFor="professional-no" className="font-normal">N</Label>
+                    </div>
+                  </RadioGroup>
+                  {errors.wereWeProfessional && <p className="text-destructive text-sm mt-1">{errors.wereWeProfessional.message}</p>}
+                </div>
+
+                <div>
+                  <Label>Did you feel comfortable with our service tech? *</Label>
+                  <RadioGroup
+                    onValueChange={(value) => setValue('comfortableWithTech', value as any)}
+                    className="flex gap-6 mt-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="yes" id="comfortable-yes" />
+                      <Label htmlFor="comfortable-yes" className="font-normal">Y</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no" id="comfortable-no" />
+                      <Label htmlFor="comfortable-no" className="font-normal">N</Label>
+                    </div>
+                  </RadioGroup>
+                  {errors.comfortableWithTech && <p className="text-destructive text-sm mt-1">{errors.comfortableWithTech.message}</p>}
+                </div>
+
+                <div>
+                  <Label>If we could work up a better price would you consider doing the installation? *</Label>
+                  <RadioGroup
+                    onValueChange={(value) => setValue('considerInstallation', value as any)}
+                    className="flex flex-wrap gap-4 mt-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="yes_call_me" id="install-yes" />
+                      <Label htmlFor="install-yes" className="font-normal">Yes Call Me</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="obtained_another_plumber" id="install-other" />
+                      <Label htmlFor="install-other" className="font-normal">Obtained another plumber</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="not_doing_job_now" id="install-not" />
+                      <Label htmlFor="install-not" className="font-normal">Not Doing Job Now</Label>
+                    </div>
+                  </RadioGroup>
+                  {errors.considerInstallation && <p className="text-destructive text-sm mt-1">{errors.considerInstallation.message}</p>}
+                </div>
+
                 <div>
                   <Label htmlFor="additionalComments">Any additional comments?</Label>
                   <Textarea 
                     id="additionalComments" 
-                    {...register('additionalComments')} 
+                    {...register('additionalComments')}
                     placeholder="Share any other thoughts or experiences..."
                     rows={4}
                   />
