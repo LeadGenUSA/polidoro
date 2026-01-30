@@ -163,7 +163,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const emailResponse = await resend.emails.send({
       from: "Big City Plumbing <onboarding@resend.dev>",
-      to: ["mike@bigcityplumbing.com"],
+      to: ["mike@bigcityph.com"],
       subject: `Customer Survey from ${data.customerName}`,
       html: emailHtml,
       reply_to: data.email,

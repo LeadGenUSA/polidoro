@@ -145,7 +145,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     // Send to main email
-    const recipients = ['mike@bigcityplumbing.com'];
+    const recipients = ['mike@bigcityph.com'];
     
     // Also send a copy to the emailTo field if provided
     if (data.emailTo) {
