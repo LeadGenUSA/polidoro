@@ -101,6 +101,39 @@ export type Database = {
         }
         Relationships: []
       }
+      slideshow_items: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          display_order: number
+          file_url: string
+          id: string
+          is_active: boolean
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          display_order?: number
+          file_url: string
+          id?: string
+          is_active?: boolean
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          display_order?: number
+          file_url?: string
+          id?: string
+          is_active?: boolean
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
