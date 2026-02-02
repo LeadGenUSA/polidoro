@@ -105,14 +105,24 @@ const WorkOrderForm = () => {
     return (
       <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="flex-1 pt-32 pb-20">
+        
+        {/* Blue header for navbar consistency */}
+        <section className="relative bg-primary pt-32 pb-16">
+          <div className="container mx-auto px-4 max-w-4xl text-center">
+            <h1 className="text-4xl font-heading font-bold text-primary-foreground mb-4">
+              Work Order Submitted
+            </h1>
+          </div>
+        </section>
+        
+        <main className="flex-1 py-12 bg-muted/30">
           <div className="container mx-auto px-4 max-w-2xl">
             <Card className="text-center py-16">
               <CardContent className="space-y-6">
                 <CheckCircle className="w-20 h-20 text-primary mx-auto" />
-                <h1 className="text-3xl font-heading font-bold text-foreground">
+                <h2 className="text-3xl font-heading font-bold text-foreground">
                   Thank You!
-                </h1>
+                </h2>
                 <p className="text-muted-foreground text-lg">
                   Your work order has been submitted successfully. We will review it and get back to you shortly.
                 </p>
