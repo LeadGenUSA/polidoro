@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Shield, Clock, Award, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import type { CarouselApi } from '@/components/ui/carousel';
 import { supabase } from '@/integrations/supabase/client';
 import heroImage from '@/assets/hero-plumbing.jpg';
@@ -13,11 +13,13 @@ interface SlideItem {
   type: 'video' | 'image';
   src: string;
   alt?: string;
+  duration_seconds: number;
+  overlay_text?: string | null;
 }
 
 const defaultSlides: SlideItem[] = [
-  { type: 'video', src: heroVideo },
-  { type: 'image', src: heroImage, alt: 'Professional plumbing and heating services' },
+  { type: 'video', src: heroVideo, duration_seconds: 15 },
+  { type: 'image', src: heroImage, alt: 'Professional plumbing and heating services', duration_seconds: 15 },
 ];
 
 const Hero = () => {
@@ -25,6 +27,18 @@ const Hero = () => {
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
   const [slides, setSlides] = useState<SlideItem[]>(defaultSlides);
+  const autoplayRef = useRef<ReturnType<typeof Autoplay> | null>(null);
+
+  // Create autoplay plugin with dynamic delay based on current slide
+  const autoplayPlugin = useMemo(() => {
+    const plugin = Autoplay({
+      delay: slides[0]?.duration_seconds ? slides[0].duration_seconds * 1000 : 15000,
+      stopOnInteraction: false,
+      stopOnMouseEnter: true,
+    });
+    autoplayRef.current = plugin;
+    return plugin;
+  }, []);
 
   // Fetch slides from database
   useEffect(() => {
@@ -40,6 +54,8 @@ const Hero = () => {
           type: item.type as 'video' | 'image',
           src: item.file_url,
           alt: item.alt_text || undefined,
+          duration_seconds: item.duration_seconds || 15,
+          overlay_text: item.overlay_text,
         }));
         setSlides(dbSlides);
       }
@@ -48,16 +64,26 @@ const Hero = () => {
     fetchSlides();
   }, []);
 
+  // Update autoplay delay when slide changes
   useEffect(() => {
-    if (!api) return;
+    if (!api || !autoplayRef.current) return;
+
+    const updateDelay = () => {
+      const currentSlide = slides[api.selectedScrollSnap()];
+      if (currentSlide && autoplayRef.current) {
+        // Reset autoplay with new delay
+        autoplayRef.current.reset();
+      }
+    };
 
     setCount(api.scrollSnapList().length);
     setCurrent(api.selectedScrollSnap());
 
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap());
+      updateDelay();
     });
-  }, [api]);
+  }, [api, slides]);
 
   const scrollPrev = useCallback(() => {
     api?.scrollPrev();
@@ -156,34 +182,38 @@ const Hero = () => {
                 opts={{
                   loop: true,
                 }}
-                plugins={[
-                  Autoplay({
-                    delay: 15000,
-                    stopOnInteraction: false,
-                    stopOnMouseEnter: true,
-                  }),
-                ]}
+                plugins={[autoplayPlugin]}
                 className="w-full"
               >
                 <CarouselContent>
                   {slides.map((slide, index) => (
                     <CarouselItem key={index}>
-                      {slide.type === 'video' ? (
-                        <video
-                          src={slide.src}
-                          autoPlay
-                          muted
-                          loop
-                          playsInline
-                          className="w-full h-auto object-cover aspect-video"
-                        />
-                      ) : (
-                        <img
-                          src={slide.src}
-                          alt={slide.alt}
-                          className="w-full h-auto object-cover aspect-video"
-                        />
-                      )}
+                      <div className="relative">
+                        {slide.type === 'video' ? (
+                          <video
+                            src={slide.src}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            className="w-full h-auto object-cover aspect-video"
+                          />
+                        ) : (
+                          <img
+                            src={slide.src}
+                            alt={slide.alt}
+                            className="w-full h-auto object-cover aspect-video"
+                          />
+                        )}
+                        {/* Overlay Text */}
+                        {slide.overlay_text && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-primary/40">
+                            <p className="text-primary-foreground text-xl md:text-2xl lg:text-3xl font-heading font-bold text-center px-6 drop-shadow-lg max-w-[80%]">
+                              {slide.overlay_text}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </CarouselItem>
                   ))}
                 </CarouselContent>
