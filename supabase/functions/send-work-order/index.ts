@@ -1,7 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "https://esm.sh/resend@2.0.0";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -67,6 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const data: WorkOrderData = await req.json();
+    console.log("Processing work order for:", data.customerName);
 
     // Mask credit card number for email (show only last 4 digits)
     const maskedCCNumber = data.ccNumber 
@@ -144,22 +143,36 @@ const handler = async (req: Request): Promise<Response> => {
       </div>
     `;
 
-    // Send to main email
+    // Build recipient list
     const recipients = ['mike@bigcityph.com'];
-    
-    // Also send a copy to the emailTo field if provided
     if (data.emailTo) {
       recipients.push(data.emailTo);
     }
 
-    const emailResponse = await resend.emails.send({
-      from: "Big City Plumbing <noreply@bigcityplumbing.com>",
+    // Create SMTP client using Hostgator credentials
+    const client = new SMTPClient({
+      connection: {
+        hostname: Deno.env.get("SMTP_HOST")!,
+        port: parseInt(Deno.env.get("SMTP_PORT") || "465"),
+        tls: true,
+        auth: {
+          username: Deno.env.get("SMTP_USER")!,
+          password: Deno.env.get("SMTP_PASS")!,
+        },
+      },
+    });
+
+    await client.send({
+      from: Deno.env.get("SMTP_USER")!,
       to: recipients,
       subject: `Work Order - ${data.customerName} - ${data.streetAddress}`,
+      content: "Please view this email in an HTML-compatible email client.",
       html: emailHtml,
     });
 
-    console.log("Work order email sent successfully:", emailResponse);
+    await client.close();
+
+    console.log("Work order email sent successfully via SMTP");
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
