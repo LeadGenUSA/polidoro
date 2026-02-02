@@ -58,6 +58,17 @@ const formatBillingStatus = (status?: string): string => {
   return status ? statuses[status] || status : 'Not specified';
 };
 
+// Keep HTML to a single compact line to avoid transport re-wrapping that can
+// show up as quoted-printable artifacts (e.g. "=20") in some mail clients.
+const compactEmailHtml = (html: string) =>
+  html
+    .replace(/\r\n/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .replace(/\n{2,}/g, "\n")
+    .replace(/\n/g, "")
+    .trim();
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -167,12 +178,7 @@ const handler = async (req: Request): Promise<Response> => {
       to: recipients,
       subject: `Work Order - ${data.customerName} - ${data.streetAddress}`,
       content: "Please view this email in an HTML-compatible email client.",
-      // Reduce indentation/trailing whitespace that can show up as '=20' in some clients
-      // and explicitly mark as quoted-printable so clients decode correctly.
-      headers: {
-        "Content-Transfer-Encoding": "quoted-printable",
-      },
-      html: emailHtml.replace(/\r?\n[ \t]*/g, "\n").trim(),
+      html: compactEmailHtml(emailHtml),
     });
 
     await client.close();
