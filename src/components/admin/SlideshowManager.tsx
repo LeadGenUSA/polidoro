@@ -29,6 +29,7 @@ export const SlideshowManager = () => {
   const { items, isLoading, isUploading, hasCustomSlides, addItem, updateItem, deleteItem, reorderItems } = useSlideshow();
   const [altText, setAltText] = useState('');
   const [duration, setDuration] = useState('15');
+  const [overlayTitle, setOverlayTitle] = useState('');
   const [overlayText, setOverlayText] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -43,9 +44,10 @@ export const SlideshowManager = () => {
       return;
     }
 
-    await addItem(file, altText, parseInt(duration) || 15, overlayText || undefined, linkUrl || undefined);
+    await addItem(file, altText, parseInt(duration) || 15, overlayTitle || undefined, overlayText || undefined, linkUrl || undefined);
     setAltText('');
     setDuration('15');
+    setOverlayTitle('');
     setOverlayText('');
     setLinkUrl('');
     if (fileInputRef.current) fileInputRef.current.value = '';
@@ -98,6 +100,17 @@ export const SlideshowManager = () => {
               placeholder="15"
             />
           </div>
+        </div>
+        <div className="mb-4">
+          <Label htmlFor="overlayTitle" className="mb-2 block">
+            Overlay Title (optional)
+          </Label>
+          <Input
+            id="overlayTitle"
+            value={overlayTitle}
+            onChange={(e) => setOverlayTitle(e.target.value)}
+            placeholder="Bold title displayed above the text"
+          />
         </div>
         <div className="mb-4">
           <Label htmlFor="overlayText" className="mb-2 block">
@@ -202,7 +215,7 @@ interface SlideItemProps {
   totalItems: number;
   onMoveUp: () => void;
   onMoveDown: () => void;
-  onUpdate: (updates: Partial<Pick<SlideshowItem, 'is_active' | 'duration_seconds' | 'overlay_text' | 'link_url'>>) => void;
+  onUpdate: (updates: Partial<Pick<SlideshowItem, 'is_active' | 'duration_seconds' | 'overlay_title' | 'overlay_text' | 'link_url'>>) => void;
   onDelete: () => void;
   isDefault: boolean;
   hasCustomSlides: boolean;
@@ -221,6 +234,7 @@ const SlideItem = ({
 }: SlideItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editDuration, setEditDuration] = useState(item.duration_seconds.toString());
+  const [editOverlayTitle, setEditOverlayTitle] = useState(item.overlay_title || '');
   const [editOverlay, setEditOverlay] = useState(item.overlay_text || '');
   const [editLinkUrl, setEditLinkUrl] = useState(item.link_url || '');
   
@@ -230,6 +244,7 @@ const SlideItem = ({
   const handleSave = () => {
     onUpdate({
       duration_seconds: parseInt(editDuration) || 15,
+      overlay_title: editOverlayTitle || null,
       overlay_text: editOverlay || null,
       link_url: editLinkUrl || null,
     });
@@ -373,6 +388,17 @@ const SlideItem = ({
                 onChange={(e) => setEditDuration(e.target.value)}
               />
             </div>
+          </div>
+          <div className="mb-4">
+            <Label htmlFor={`overlay-title-${item.id}`} className="mb-2 block text-sm">
+              Overlay Title
+            </Label>
+            <Input
+              id={`overlay-title-${item.id}`}
+              value={editOverlayTitle}
+              onChange={(e) => setEditOverlayTitle(e.target.value)}
+              placeholder="Bold title displayed above the text"
+            />
           </div>
           <div className="mb-4">
             <Label htmlFor={`overlay-${item.id}`} className="mb-2 block text-sm">

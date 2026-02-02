@@ -14,6 +14,7 @@ interface SlideItem {
   src: string;
   alt?: string;
   duration_seconds: number;
+  overlay_title?: string | null;
   overlay_text?: string | null;
   link_url?: string | null;
 }
@@ -56,6 +57,7 @@ const Hero = () => {
           src: item.file_url,
           alt: item.alt_text || undefined,
           duration_seconds: item.duration_seconds || 15,
+          overlay_title: item.overlay_title,
           overlay_text: item.overlay_text,
           link_url: item.link_url,
         }));
@@ -214,11 +216,18 @@ const Hero = () => {
                             />
                           )}
                           {/* Overlay Text */}
-                          {slide.overlay_text && (
-                            <div className="absolute inset-x-0 bottom-0 flex items-end justify-center bg-gradient-to-t from-primary/60 via-primary/40 to-transparent pb-8">
-                              <p className="text-primary-foreground text-sm md:text-base lg:text-lg font-heading font-semibold text-center px-4 drop-shadow-lg max-w-[90%]">
-                                {slide.overlay_text}
-                              </p>
+                          {(slide.overlay_title || slide.overlay_text) && (
+                            <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end bg-gradient-to-t from-primary/60 via-primary/40 to-transparent pb-8 px-4">
+                              {slide.overlay_title && (
+                                <h3 className="text-primary-foreground text-base md:text-lg lg:text-xl font-heading font-bold text-center drop-shadow-lg max-w-[90%]">
+                                  {slide.overlay_title}
+                                </h3>
+                              )}
+                              {slide.overlay_text && (
+                                <p className="text-primary-foreground text-sm md:text-base lg:text-lg font-heading font-semibold text-center drop-shadow-lg max-w-[90%] mt-1">
+                                  {slide.overlay_text}
+                                </p>
+                              )}
                             </div>
                           )}
                           {/* Click indicator on hover */}
@@ -243,11 +252,18 @@ const Hero = () => {
                             />
                           )}
                           {/* Overlay Text */}
-                          {slide.overlay_text && (
-                            <div className="absolute inset-x-0 bottom-0 flex items-end justify-center bg-gradient-to-t from-primary/60 via-primary/40 to-transparent pb-8">
-                              <p className="text-primary-foreground text-sm md:text-base lg:text-lg font-heading font-semibold text-center px-4 drop-shadow-lg max-w-[90%]">
-                                {slide.overlay_text}
-                              </p>
+                          {(slide.overlay_title || slide.overlay_text) && (
+                            <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end bg-gradient-to-t from-primary/60 via-primary/40 to-transparent pb-8 px-4">
+                              {slide.overlay_title && (
+                                <h3 className="text-primary-foreground text-base md:text-lg lg:text-xl font-heading font-bold text-center drop-shadow-lg max-w-[90%]">
+                                  {slide.overlay_title}
+                                </h3>
+                              )}
+                              {slide.overlay_text && (
+                                <p className="text-primary-foreground text-sm md:text-base lg:text-lg font-heading font-semibold text-center drop-shadow-lg max-w-[90%] mt-1">
+                                  {slide.overlay_text}
+                                </p>
+                              )}
                             </div>
                           )}
                         </div>
