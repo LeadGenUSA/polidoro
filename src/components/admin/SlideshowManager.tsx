@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Image,
   Video,
@@ -18,11 +19,16 @@ import {
   EyeOff,
   Info,
   Lock,
+  Clock,
+  Type,
+  Settings2,
 } from 'lucide-react';
 
 export const SlideshowManager = () => {
   const { items, isLoading, isUploading, hasCustomSlides, addItem, updateItem, deleteItem, reorderItems } = useSlideshow();
   const [altText, setAltText] = useState('');
+  const [duration, setDuration] = useState('15');
+  const [overlayText, setOverlayText] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,8 +41,10 @@ export const SlideshowManager = () => {
       return;
     }
 
-    await addItem(file, altText);
+    await addItem(file, altText, parseInt(duration) || 15, overlayText || undefined);
     setAltText('');
+    setDuration('15');
+    setOverlayText('');
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -61,8 +69,8 @@ export const SlideshowManager = () => {
       {/* Upload Section */}
       <div className="bg-card rounded-xl p-6 shadow-card">
         <h3 className="font-heading font-semibold text-lg mb-4">Add New Slide</h3>
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
+        <div className="grid md:grid-cols-2 gap-4 mb-4">
+          <div>
             <Label htmlFor="altText" className="mb-2 block">
               Alt Text (optional)
             </Label>
@@ -73,33 +81,59 @@ export const SlideshowManager = () => {
               placeholder="Describe the image for accessibility"
             />
           </div>
-          <div className="flex items-end">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*,video/*"
-              onChange={handleFileSelect}
-              className="hidden"
-              id="slideshow-upload"
+          <div>
+            <Label htmlFor="duration" className="mb-2 block">
+              Duration (seconds)
+            </Label>
+            <Input
+              id="duration"
+              type="number"
+              min="3"
+              max="60"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              placeholder="15"
             />
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className="gap-2"
-            >
-              {isUploading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Uploading...
-                </>
-              ) : (
-                <>
-                  <Upload className="w-4 h-4" />
-                  Upload Image/Video
-                </>
-              )}
-            </Button>
           </div>
+        </div>
+        <div className="mb-4">
+          <Label htmlFor="overlayText" className="mb-2 block">
+            Overlay Text (optional)
+          </Label>
+          <Textarea
+            id="overlayText"
+            value={overlayText}
+            onChange={(e) => setOverlayText(e.target.value)}
+            placeholder="Text to display over the image/video"
+            rows={2}
+          />
+        </div>
+        <div className="flex justify-end">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*,video/*"
+            onChange={handleFileSelect}
+            className="hidden"
+            id="slideshow-upload"
+          />
+          <Button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+            className="gap-2"
+          >
+            {isUploading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                <Upload className="w-4 h-4" />
+                Upload Image/Video
+              </>
+            )}
+          </Button>
         </div>
       </div>
 
@@ -134,7 +168,7 @@ export const SlideshowManager = () => {
                 totalItems={items.length}
                 onMoveUp={() => moveItem(index, 'up')}
                 onMoveDown={() => moveItem(index, 'down')}
-                onToggleActive={(isActive) => updateItem(item.id, { is_active: isActive })}
+                onUpdate={(updates) => updateItem(item.id, updates)}
                 onDelete={() => deleteItem(item.id)}
                 isDefault={item.isDefault || false}
                 hasCustomSlides={hasCustomSlides}
@@ -153,7 +187,7 @@ interface SlideItemProps {
   totalItems: number;
   onMoveUp: () => void;
   onMoveDown: () => void;
-  onToggleActive: (isActive: boolean) => void;
+  onUpdate: (updates: Partial<Pick<SlideshowItem, 'is_active' | 'duration_seconds' | 'overlay_text'>>) => void;
   onDelete: () => void;
   isDefault: boolean;
   hasCustomSlides: boolean;
@@ -165,94 +199,172 @@ const SlideItem = ({
   totalItems,
   onMoveUp,
   onMoveDown,
-  onToggleActive,
+  onUpdate,
   onDelete,
   isDefault,
   hasCustomSlides,
 }: SlideItemProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editDuration, setEditDuration] = useState(item.duration_seconds.toString());
+  const [editOverlay, setEditOverlay] = useState(item.overlay_text || '');
+  
   // Default items are read-only
   const isReadOnly = isDefault && !hasCustomSlides;
+
+  const handleSave = () => {
+    onUpdate({
+      duration_seconds: parseInt(editDuration) || 15,
+      overlay_text: editOverlay || null,
+    });
+    setIsEditing(false);
+  };
   
   return (
-    <div className={`flex items-center gap-4 p-4 rounded-lg border ${item.is_active ? 'bg-background' : 'bg-muted/50 opacity-60'} ${isReadOnly ? 'border-dashed' : ''}`}>
-      {isReadOnly ? (
-        <div className="flex flex-col items-center justify-center w-6">
-          <Lock className="w-4 h-4 text-muted-foreground" />
-        </div>
-      ) : (
-        <div className="flex flex-col gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6"
-            onClick={onMoveUp}
-            disabled={index === 0}
-          >
-            <ChevronUp className="w-4 h-4" />
-          </Button>
-          <GripVertical className="w-4 h-4 text-muted-foreground mx-auto" />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6"
-            onClick={onMoveDown}
-            disabled={index === totalItems - 1}
-          >
-            <ChevronDown className="w-4 h-4" />
-          </Button>
-        </div>
-      )}
-
-      {/* Thumbnail */}
-      <div className="w-24 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-        {item.type === 'video' ? (
-          <video src={item.file_url} className="w-full h-full object-cover" muted />
+    <div className={`rounded-lg border ${item.is_active ? 'bg-background' : 'bg-muted/50 opacity-60'} ${isReadOnly ? 'border-dashed' : ''}`}>
+      <div className="flex items-center gap-4 p-4">
+        {isReadOnly ? (
+          <div className="flex flex-col items-center justify-center w-6">
+            <Lock className="w-4 h-4 text-muted-foreground" />
+          </div>
         ) : (
-          <img src={item.file_url} alt={item.alt_text || ''} className="w-full h-full object-cover" />
+          <div className="flex flex-col gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={onMoveUp}
+              disabled={index === 0}
+            >
+              <ChevronUp className="w-4 h-4" />
+            </Button>
+            <GripVertical className="w-4 h-4 text-muted-foreground mx-auto" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={onMoveDown}
+              disabled={index === totalItems - 1}
+            >
+              <ChevronDown className="w-4 h-4" />
+            </Button>
+          </div>
         )}
-      </div>
 
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
+        {/* Thumbnail */}
+        <div className="w-24 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0 relative">
           {item.type === 'video' ? (
-            <Video className="w-4 h-4 text-primary" />
+            <video src={item.file_url} className="w-full h-full object-cover" muted />
           ) : (
-            <Image className="w-4 h-4 text-primary" />
+            <img src={item.file_url} alt={item.alt_text || ''} className="w-full h-full object-cover" />
           )}
-          <span className="font-medium capitalize">{item.type}</span>
-          <span className="text-xs text-muted-foreground">#{index + 1}</span>
-          {isReadOnly && (
-            <span className="text-xs px-2 py-0.5 bg-muted rounded-full text-muted-foreground">Default</span>
+          {item.overlay_text && (
+            <div className="absolute inset-0 bg-primary/50 flex items-center justify-center">
+              <Type className="w-4 h-4 text-primary-foreground" />
+            </div>
           )}
         </div>
-        {item.alt_text && (
-          <p className="text-sm text-muted-foreground truncate">{item.alt_text}</p>
+
+        {/* Info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            {item.type === 'video' ? (
+              <Video className="w-4 h-4 text-primary" />
+            ) : (
+              <Image className="w-4 h-4 text-primary" />
+            )}
+            <span className="font-medium capitalize">{item.type}</span>
+            <span className="text-xs text-muted-foreground">#{index + 1}</span>
+            <span className="text-xs px-2 py-0.5 bg-muted rounded-full text-muted-foreground flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {item.duration_seconds}s
+            </span>
+            {isReadOnly && (
+              <span className="text-xs px-2 py-0.5 bg-muted rounded-full text-muted-foreground">Default</span>
+            )}
+          </div>
+          {item.alt_text && (
+            <p className="text-sm text-muted-foreground truncate">{item.alt_text}</p>
+          )}
+          {item.overlay_text && (
+            <p className="text-xs text-primary truncate mt-1">
+              <Type className="w-3 h-3 inline mr-1" />
+              {item.overlay_text}
+            </p>
+          )}
+        </div>
+
+        {/* Actions */}
+        {!isReadOnly && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsEditing(!isEditing)}
+              className="h-8 w-8"
+            >
+              <Settings2 className="w-4 h-4" />
+            </Button>
+            <div className="flex items-center gap-2">
+              {item.is_active ? (
+                <Eye className="w-4 h-4 text-primary" />
+              ) : (
+                <EyeOff className="w-4 h-4 text-muted-foreground" />
+              )}
+              <Switch
+                checked={item.is_active}
+                onCheckedChange={(isActive) => onUpdate({ is_active: isActive })}
+              />
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-destructive hover:text-destructive h-8 w-8"
+              onClick={onDelete}
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </div>
         )}
       </div>
-
-      {/* Actions */}
-      {!isReadOnly && (
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            {item.is_active ? (
-              <Eye className="w-4 h-4 text-primary" />
-            ) : (
-              <EyeOff className="w-4 h-4 text-muted-foreground" />
-            )}
-            <Switch
-              checked={item.is_active}
-              onCheckedChange={onToggleActive}
+      
+      {/* Edit Panel */}
+      {isEditing && !isReadOnly && (
+        <div className="border-t p-4 bg-muted/30">
+          <div className="grid md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <Label htmlFor={`duration-${item.id}`} className="mb-2 block text-sm">
+                Duration (seconds)
+              </Label>
+              <Input
+                id={`duration-${item.id}`}
+                type="number"
+                min="3"
+                max="60"
+                value={editDuration}
+                onChange={(e) => setEditDuration(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="mb-4">
+            <Label htmlFor={`overlay-${item.id}`} className="mb-2 block text-sm">
+              Overlay Text
+            </Label>
+            <Textarea
+              id={`overlay-${item.id}`}
+              value={editOverlay}
+              onChange={(e) => setEditOverlay(e.target.value)}
+              placeholder="Text to display over this slide"
+              rows={2}
             />
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-destructive hover:text-destructive"
-            onClick={onDelete}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" size="sm" onClick={() => setIsEditing(false)}>
+              Cancel
+            </Button>
+            <Button size="sm" onClick={handleSave}>
+              Save Changes
+            </Button>
+          </div>
         </div>
       )}
     </div>

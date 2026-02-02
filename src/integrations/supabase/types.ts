@@ -106,9 +106,11 @@ export type Database = {
           alt_text: string | null
           created_at: string
           display_order: number
+          duration_seconds: number
           file_url: string
           id: string
           is_active: boolean
+          overlay_text: string | null
           type: string
           updated_at: string
         }
@@ -116,9 +118,11 @@ export type Database = {
           alt_text?: string | null
           created_at?: string
           display_order?: number
+          duration_seconds?: number
           file_url: string
           id?: string
           is_active?: boolean
+          overlay_text?: string | null
           type: string
           updated_at?: string
         }
@@ -126,9 +130,11 @@ export type Database = {
           alt_text?: string | null
           created_at?: string
           display_order?: number
+          duration_seconds?: number
           file_url?: string
           id?: string
           is_active?: boolean
+          overlay_text?: string | null
           type?: string
           updated_at?: string
         }
