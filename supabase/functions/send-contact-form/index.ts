@@ -7,6 +7,18 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Some mail clients will display quoted-printable escapes (like "=20") if the
+// MIME/encoding headers don't line up perfectly end-to-end. Keeping HTML to a
+// single compact line avoids transport re-wrapping artifacts.
+const compactEmailHtml = (html: string) =>
+  html
+    .replace(/\r\n/g, "\n")
+    .replace(/[ \t]+\n/g, "\n") // strip trailing whitespace
+    .replace(/\n[ \t]+/g, "\n") // strip indentation
+    .replace(/\n{2,}/g, "\n") // collapse blank lines
+    .replace(/\n/g, "") // one line
+    .trim();
+
 interface ContactFormData {
   name: string;
   email: string;
@@ -83,10 +95,7 @@ This message was submitted via the Big City Plumbing & Heating website contact f
       to: "mike@bigcityph.com",
       subject: `Website Contact: ${data.name}`,
       content: "Please view this email in an HTML-compatible email client.",
-      headers: {
-        "Content-Transfer-Encoding": "quoted-printable",
-      },
-      html: emailHtml.replace(/\r?\n[ \t]*/g, "\n").trim(),
+      html: compactEmailHtml(emailHtml),
       replyTo: data.email,
     });
 

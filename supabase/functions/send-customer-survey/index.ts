@@ -41,6 +41,17 @@ const formatYesNoMaybe = (value?: string): string => {
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
 
+// Keep HTML to a single compact line to avoid transport re-wrapping that can
+// show up as quoted-printable artifacts (e.g. "=20") in some mail clients.
+const compactEmailHtml = (html: string) =>
+  html
+    .replace(/\r\n/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .replace(/\n{2,}/g, "\n")
+    .replace(/\n/g, "")
+    .trim();
+
 const handler = async (req: Request): Promise<Response> => {
   console.log("Customer survey submission received");
   
@@ -206,12 +217,7 @@ const handler = async (req: Request): Promise<Response> => {
       to: "mike@bigcityph.com",
       subject: `Customer Survey from ${data.customerName}`,
       content: "Please view this email in an HTML-compatible email client.",
-      // Reduce indentation/trailing whitespace that can show up as '=20' in some clients
-      // and explicitly mark as quoted-printable so clients decode correctly.
-      headers: {
-        "Content-Transfer-Encoding": "quoted-printable",
-      },
-      html: emailHtml.replace(/\r?\n[ \t]*/g, "\n").trim(),
+      html: compactEmailHtml(emailHtml),
       replyTo: data.email,
     });
 
