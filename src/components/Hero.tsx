@@ -179,8 +179,8 @@ const Hero = () => {
           </div>
           
           {/* Right Slideshow */}
-          <div className="relative animate-slide-up animation-delay-200">
-            <div className="relative rounded-3xl overflow-hidden shadow-large">
+          <div className="relative animate-slide-up animation-delay-200 lg:scale-105 origin-center">
+            <div className="relative rounded-3xl overflow-hidden shadow-large border border-white/80">
               <Carousel
                 setApi={setApi}
                 opts={{
@@ -217,14 +217,14 @@ const Hero = () => {
                           )}
                           {/* Overlay Text */}
                           {(slide.overlay_title || slide.overlay_text) && (
-                            <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end bg-gradient-to-t from-primary/60 via-primary/40 to-transparent pb-8 px-4">
+                            <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
                               {slide.overlay_title && (
-                                <h3 className="text-primary-foreground text-base md:text-lg lg:text-xl font-heading font-bold text-center drop-shadow-lg max-w-[90%]">
+                                <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
                                   {slide.overlay_title}
                                 </h3>
                               )}
                               {slide.overlay_text && (
-                                <p className="text-primary-foreground text-sm md:text-base lg:text-lg font-heading font-semibold text-center drop-shadow-lg max-w-[90%] mt-1">
+                                <p className="text-primary-foreground text-xs md:text-sm lg:text-base font-heading font-medium text-left drop-shadow-lg leading-tight mt-0.5">
                                   {slide.overlay_text}
                                 </p>
                               )}
@@ -253,14 +253,14 @@ const Hero = () => {
                           )}
                           {/* Overlay Text */}
                           {(slide.overlay_title || slide.overlay_text) && (
-                            <div className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end bg-gradient-to-t from-primary/60 via-primary/40 to-transparent pb-8 px-4">
+                            <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
                               {slide.overlay_title && (
-                                <h3 className="text-primary-foreground text-base md:text-lg lg:text-xl font-heading font-bold text-center drop-shadow-lg max-w-[90%]">
+                                <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
                                   {slide.overlay_title}
                                 </h3>
                               )}
                               {slide.overlay_text && (
-                                <p className="text-primary-foreground text-sm md:text-base lg:text-lg font-heading font-semibold text-center drop-shadow-lg max-w-[90%] mt-1">
+                                <p className="text-primary-foreground text-xs md:text-sm lg:text-base font-heading font-medium text-left drop-shadow-lg leading-tight mt-0.5">
                                   {slide.overlay_text}
                                 </p>
                               )}
