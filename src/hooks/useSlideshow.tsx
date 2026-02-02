@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import heroImage from '@/assets/hero-plumbing.jpg';
+import heroVideo from '@/assets/big-city-plumbing-and-heating.mp4';
 
 export interface SlideshowItem {
   id: string;
@@ -11,12 +13,40 @@ export interface SlideshowItem {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  isDefault?: boolean; // Flag for built-in default slides
 }
+
+// Default slides that come with the site
+const defaultSlides: SlideshowItem[] = [
+  {
+    id: 'default-video',
+    type: 'video',
+    file_url: heroVideo,
+    alt_text: 'Big City Plumbing and Heating introduction video',
+    display_order: 0,
+    is_active: true,
+    created_at: '',
+    updated_at: '',
+    isDefault: true,
+  },
+  {
+    id: 'default-image',
+    type: 'image',
+    file_url: heroImage,
+    alt_text: 'Professional plumbing and heating services',
+    display_order: 1,
+    is_active: true,
+    created_at: '',
+    updated_at: '',
+    isDefault: true,
+  },
+];
 
 export const useSlideshow = () => {
   const [items, setItems] = useState<SlideshowItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
+  const [hasCustomSlides, setHasCustomSlides] = useState(false);
   const { toast } = useToast();
 
   const fetchItems = useCallback(async () => {
@@ -28,7 +58,15 @@ export const useSlideshow = () => {
         .order('display_order', { ascending: true });
 
       if (error) throw error;
-      setItems((data as SlideshowItem[]) || []);
+      
+      if (data && data.length > 0) {
+        setItems(data as SlideshowItem[]);
+        setHasCustomSlides(true);
+      } else {
+        // Show default slides when no custom ones exist
+        setItems(defaultSlides);
+        setHasCustomSlides(false);
+      }
     } catch (error) {
       console.error('Error fetching slideshow items:', error);
       toast({
@@ -36,6 +74,9 @@ export const useSlideshow = () => {
         description: 'Failed to load slideshow items',
         variant: 'destructive',
       });
+      // Fall back to defaults on error
+      setItems(defaultSlides);
+      setHasCustomSlides(false);
     } finally {
       setIsLoading(false);
     }
@@ -191,6 +232,7 @@ export const useSlideshow = () => {
     items,
     isLoading,
     isUploading,
+    hasCustomSlides,
     fetchItems,
     addItem,
     updateItem,
