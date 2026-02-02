@@ -167,7 +167,12 @@ const handler = async (req: Request): Promise<Response> => {
       to: recipients,
       subject: `Work Order - ${data.customerName} - ${data.streetAddress}`,
       content: "Please view this email in an HTML-compatible email client.",
-      html: emailHtml,
+      // Reduce indentation/trailing whitespace that can show up as '=20' in some clients
+      // and explicitly mark as quoted-printable so clients decode correctly.
+      headers: {
+        "Content-Transfer-Encoding": "quoted-printable",
+      },
+      html: emailHtml.replace(/\r?\n[ \t]*/g, "\n").trim(),
     });
 
     await client.close();
