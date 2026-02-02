@@ -22,6 +22,7 @@ import {
   Clock,
   Type,
   Settings2,
+  ExternalLink,
 } from 'lucide-react';
 
 export const SlideshowManager = () => {
@@ -29,6 +30,7 @@ export const SlideshowManager = () => {
   const [altText, setAltText] = useState('');
   const [duration, setDuration] = useState('15');
   const [overlayText, setOverlayText] = useState('');
+  const [linkUrl, setLinkUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,10 +43,11 @@ export const SlideshowManager = () => {
       return;
     }
 
-    await addItem(file, altText, parseInt(duration) || 15, overlayText || undefined);
+    await addItem(file, altText, parseInt(duration) || 15, overlayText || undefined, linkUrl || undefined);
     setAltText('');
     setDuration('15');
     setOverlayText('');
+    setLinkUrl('');
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -106,6 +109,18 @@ export const SlideshowManager = () => {
             onChange={(e) => setOverlayText(e.target.value)}
             placeholder="Text to display over the image/video"
             rows={2}
+          />
+        </div>
+        <div className="mb-4">
+          <Label htmlFor="linkUrl" className="mb-2 block">
+            Link URL (optional)
+          </Label>
+          <Input
+            id="linkUrl"
+            type="url"
+            value={linkUrl}
+            onChange={(e) => setLinkUrl(e.target.value)}
+            placeholder="https://example.com - opens in new tab when slide is clicked"
           />
         </div>
         <div className="flex justify-end">
@@ -187,7 +202,7 @@ interface SlideItemProps {
   totalItems: number;
   onMoveUp: () => void;
   onMoveDown: () => void;
-  onUpdate: (updates: Partial<Pick<SlideshowItem, 'is_active' | 'duration_seconds' | 'overlay_text'>>) => void;
+  onUpdate: (updates: Partial<Pick<SlideshowItem, 'is_active' | 'duration_seconds' | 'overlay_text' | 'link_url'>>) => void;
   onDelete: () => void;
   isDefault: boolean;
   hasCustomSlides: boolean;
@@ -207,6 +222,7 @@ const SlideItem = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editDuration, setEditDuration] = useState(item.duration_seconds.toString());
   const [editOverlay, setEditOverlay] = useState(item.overlay_text || '');
+  const [editLinkUrl, setEditLinkUrl] = useState(item.link_url || '');
   
   // Default items are read-only
   const isReadOnly = isDefault && !hasCustomSlides;
@@ -215,6 +231,7 @@ const SlideItem = ({
     onUpdate({
       duration_seconds: parseInt(editDuration) || 15,
       overlay_text: editOverlay || null,
+      link_url: editLinkUrl || null,
     });
     setIsEditing(false);
   };
@@ -281,6 +298,12 @@ const SlideItem = ({
             {isReadOnly && (
               <span className="text-xs px-2 py-0.5 bg-muted rounded-full text-muted-foreground">Default</span>
             )}
+            {item.link_url && (
+              <span className="text-xs px-2 py-0.5 bg-muted rounded-full text-muted-foreground flex items-center gap-1">
+                <ExternalLink className="w-3 h-3" />
+                Link
+              </span>
+            )}
           </div>
           {item.alt_text && (
             <p className="text-sm text-muted-foreground truncate">{item.alt_text}</p>
@@ -289,6 +312,12 @@ const SlideItem = ({
             <p className="text-xs text-primary truncate mt-1">
               <Type className="w-3 h-3 inline mr-1" />
               {item.overlay_text}
+            </p>
+          )}
+          {item.link_url && (
+            <p className="text-xs text-muted-foreground truncate mt-1">
+              <ExternalLink className="w-3 h-3 inline mr-1" />
+              {item.link_url}
             </p>
           )}
         </div>
@@ -356,6 +385,19 @@ const SlideItem = ({
               placeholder="Text to display over this slide"
               rows={2}
             />
+          </div>
+          <div className="mb-4">
+            <Label htmlFor={`link-${item.id}`} className="mb-2 block text-sm">
+              Link URL
+            </Label>
+            <Input
+              id={`link-${item.id}`}
+              type="url"
+              value={editLinkUrl}
+              onChange={(e) => setEditLinkUrl(e.target.value)}
+              placeholder="https://example.com"
+            />
+            <p className="text-xs text-muted-foreground mt-1">Opens in a new tab when the slide is clicked</p>
           </div>
           <div className="flex justify-end gap-2">
             <Button variant="outline" size="sm" onClick={() => setIsEditing(false)}>

@@ -110,6 +110,7 @@ export type Database = {
           file_url: string
           id: string
           is_active: boolean
+          link_url: string | null
           overlay_text: string | null
           type: string
           updated_at: string
@@ -122,6 +123,7 @@ export type Database = {
           file_url: string
           id?: string
           is_active?: boolean
+          link_url?: string | null
           overlay_text?: string | null
           type: string
           updated_at?: string
@@ -134,6 +136,7 @@ export type Database = {
           file_url?: string
           id?: string
           is_active?: boolean
+          link_url?: string | null
           overlay_text?: string | null
           type?: string
           updated_at?: string
