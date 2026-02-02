@@ -214,7 +214,7 @@ const Navbar = () => {
             <Button variant="navCta" size="lg" asChild>
               <a href="tel:631-361-9500" className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                CALL US 631-361-9500
+                CALL US! 631-361-9500
               </a>
             </Button>
           </div>
@@ -357,7 +357,7 @@ const Navbar = () => {
               <Button variant="navCta" size="lg" className="mt-2" asChild>
                 <a href="tel:631-361-9500" className="flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  CALL US 631-361-9500
+                  CALL US! 631-361-9500
                 </a>
               </Button>
             </div>
