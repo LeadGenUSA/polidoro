@@ -27,7 +27,7 @@ const Footer = () => {
           <div>
             <h4 className="font-heading font-bold text-primary-foreground mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              {['Home', 'Services', 'About', 'Testimonials', 'Contact'].map((link) => (
+              {['Home', 'Services', 'About', 'Reviews', 'Contact'].map((link) => (
                 <li key={link}>
                   <a href={`#${link.toLowerCase()}`} className="text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
                     {link}
