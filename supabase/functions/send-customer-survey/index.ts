@@ -1,7 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "https://esm.sh/resend@2.0.0";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -190,23 +188,33 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    const emailResponse = await resend.emails.send({
-      from: "Big City Plumbing <noreply@bigcityph.com>",
-      to: ["mike@bigcityph.com"],
-      subject: `Customer Survey from ${data.customerName}`,
-      html: emailHtml,
-      reply_to: data.email,
+    // Create SMTP client using Hostgator credentials
+    const client = new SMTPClient({
+      connection: {
+        hostname: Deno.env.get("SMTP_HOST")!,
+        port: parseInt(Deno.env.get("SMTP_PORT") || "465"),
+        tls: true,
+        auth: {
+          username: Deno.env.get("SMTP_USER")!,
+          password: Deno.env.get("SMTP_PASS")!,
+        },
+      },
     });
 
-    // Check for Resend errors
-    if (emailResponse.error) {
-      console.error("Resend API error:", emailResponse.error);
-      throw new Error(emailResponse.error.message);
-    }
+    await client.send({
+      from: Deno.env.get("SMTP_USER")!,
+      to: "mike@bigcityph.com",
+      subject: `Customer Survey from ${data.customerName}`,
+      content: "Please view this email in an HTML-compatible email client.",
+      html: emailHtml,
+      replyTo: data.email,
+    });
 
-    console.log("Survey email sent successfully:", emailResponse);
+    await client.close();
 
-    return new Response(JSON.stringify({ success: true, data: emailResponse }), {
+    console.log("Survey email sent successfully via SMTP");
+
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });
