@@ -22,9 +22,9 @@ const externalLinks = [
 
 const navLinks = [
   { name: 'Home', href: '/' },
-  { name: 'About Us', href: '/about-us' },
-  { name: 'Projects Gallery', href: '/projects-gallery' },
-  { name: 'Testimonials', href: '/testimonials' },
+  { name: 'About', href: '/about-us' },
+  { name: 'Projects', href: '/projects-gallery' },
+  { name: 'Reviews', href: '/testimonials' },
   { name: 'How-To Videos', href: '/how-to-videos' },
   { name: 'Contact', href: '/#contact' },
 ];
@@ -96,7 +96,7 @@ const Navbar = () => {
               Home
             </Link>
 
-            {/* About Us */}
+            {/* About */}
             <Link
               to="/about-us"
               onClick={() => handleNavClick('/about-us')}
@@ -104,7 +104,7 @@ const Navbar = () => {
                 isScrolled ? 'text-foreground' : 'text-primary-foreground'
               } ${isActive('/about-us') ? 'text-secondary' : ''}`}
             >
-              About Us
+              About
             </Link>
             
             {/* Services Dropdown */}
@@ -130,7 +130,7 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Projects Gallery */}
+            {/* Projects */}
             <Link
               to="/projects-gallery"
               onClick={() => handleNavClick('/projects-gallery')}
@@ -138,10 +138,10 @@ const Navbar = () => {
                 isScrolled ? 'text-foreground' : 'text-primary-foreground'
               } ${isActive('/projects-gallery') ? 'text-secondary' : ''}`}
             >
-              Projects Gallery
+              Projects
             </Link>
 
-            {/* Testimonials */}
+            {/* Reviews */}
             <Link
               to="/testimonials"
               onClick={() => handleNavClick('/testimonials')}
@@ -149,7 +149,7 @@ const Navbar = () => {
                 isScrolled ? 'text-foreground' : 'text-primary-foreground'
               } ${isActive('/testimonials') ? 'text-secondary' : ''}`}
             >
-              Testimonials
+              Reviews
             </Link>
 
             {/* How-To Videos */}
@@ -209,19 +209,13 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* CTA Buttons */}
-          <div className="hidden lg:flex items-center gap-4">
-            <a
-              href="tel:631-361-9500"
-              className={`flex items-center gap-2 font-semibold transition-colors ${
-                isScrolled ? 'text-foreground' : 'text-primary-foreground'
-              }`}
-            >
-              <Phone className="w-4 h-4" />
-              631-361-9500
-            </a>
-            <Button variant="navCta" size="lg">
-              Free Estimate
+          {/* CTA Button */}
+          <div className="hidden lg:flex items-center">
+            <Button variant="navCta" size="lg" asChild>
+              <a href="tel:631-361-9500" className="flex items-center gap-2">
+                <Phone className="w-4 h-4" />
+                CALL US 631-361-9500
+              </a>
             </Button>
           </div>
 
@@ -249,7 +243,7 @@ const Navbar = () => {
                 Home
               </Link>
 
-              {/* About Us */}
+              {/* About */}
               <Link
                 to="/about-us"
                 onClick={() => handleNavClick('/about-us')}
@@ -257,7 +251,7 @@ const Navbar = () => {
                   isScrolled ? 'text-foreground' : 'text-primary-foreground'
                 } ${isActive('/about-us') ? 'text-secondary' : ''}`}
               >
-                About Us
+                About
               </Link>
               
               {/* Mobile Services Section */}
@@ -281,7 +275,7 @@ const Navbar = () => {
                 </div>
               </div>
 
-              {/* Projects Gallery */}
+              {/* Projects */}
               <Link
                 to="/projects-gallery"
                 onClick={() => handleNavClick('/projects-gallery')}
@@ -289,10 +283,10 @@ const Navbar = () => {
                   isScrolled ? 'text-foreground' : 'text-primary-foreground'
                 } ${isActive('/projects-gallery') ? 'text-secondary' : ''}`}
               >
-                Projects Gallery
+                Projects
               </Link>
 
-              {/* Testimonials */}
+              {/* Reviews */}
               <Link
                 to="/testimonials"
                 onClick={() => handleNavClick('/testimonials')}
@@ -300,7 +294,7 @@ const Navbar = () => {
                   isScrolled ? 'text-foreground' : 'text-primary-foreground'
                 } ${isActive('/testimonials') ? 'text-secondary' : ''}`}
               >
-                Testimonials
+                Reviews
               </Link>
 
               {/* How-To Videos */}
@@ -360,17 +354,11 @@ const Navbar = () => {
               >
                 Contact
               </Link>
-              <a
-                href="tel:631-361-9500"
-                className={`flex items-center gap-2 font-semibold ${
-                  isScrolled ? 'text-foreground' : 'text-primary-foreground'
-                }`}
-              >
-                <Phone className="w-4 h-4" />
-                631-361-9500
-              </a>
-              <Button variant="navCta" size="lg" className="mt-2">
-                Free Estimate
+              <Button variant="navCta" size="lg" className="mt-2" asChild>
+                <a href="tel:631-361-9500" className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  CALL US 631-361-9500
+                </a>
               </Button>
             </div>
           </div>
