@@ -293,11 +293,11 @@ const Hero = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent pointer-events-none" />
             </div>
             
-            {/* Floating Card */}
-            <div className="absolute -bottom-6 -left-6 bg-card p-6 rounded-2xl shadow-large animate-float">
+            {/* Floating Card - Below Slideshow */}
+            <div className="mt-6 bg-card p-4 rounded-2xl shadow-large animate-float inline-block">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-xl cta-gradient flex items-center justify-center">
-                  <span className="text-secondary-foreground font-heading font-bold text-2xl">5★</span>
+                <div className="w-12 h-12 rounded-xl cta-gradient flex items-center justify-center">
+                  <span className="text-secondary-foreground font-heading font-bold text-xl">5★</span>
                 </div>
                 <div>
                   <p className="font-heading font-bold text-foreground">Excellent Service</p>
