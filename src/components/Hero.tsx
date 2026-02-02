@@ -215,8 +215,8 @@ const Hero = () => {
                           )}
                           {/* Overlay Text */}
                           {slide.overlay_text && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-primary/40">
-                              <p className="text-primary-foreground text-xl md:text-2xl lg:text-3xl font-heading font-bold text-center px-6 drop-shadow-lg max-w-[80%]">
+                            <div className="absolute inset-x-0 bottom-0 flex items-end justify-center bg-gradient-to-t from-primary/60 via-primary/40 to-transparent pb-8">
+                              <p className="text-primary-foreground text-sm md:text-base lg:text-lg font-heading font-semibold text-center px-4 drop-shadow-lg max-w-[90%]">
                                 {slide.overlay_text}
                               </p>
                             </div>
@@ -244,8 +244,8 @@ const Hero = () => {
                           )}
                           {/* Overlay Text */}
                           {slide.overlay_text && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-primary/40">
-                              <p className="text-primary-foreground text-xl md:text-2xl lg:text-3xl font-heading font-bold text-center px-6 drop-shadow-lg max-w-[80%]">
+                            <div className="absolute inset-x-0 bottom-0 flex items-end justify-center bg-gradient-to-t from-primary/60 via-primary/40 to-transparent pb-8">
+                              <p className="text-primary-foreground text-sm md:text-base lg:text-lg font-heading font-semibold text-center px-4 drop-shadow-lg max-w-[90%]">
                                 {slide.overlay_text}
                               </p>
                             </div>
