@@ -1,16 +1,33 @@
 
-## Add Required Field Indicator Text
+# Connect Contact Form to Email
 
-Add a simple text note "* = Required" above the survey form to indicate which fields are mandatory.
+## Overview
+Make the homepage contact form send real emails to mike@bigcityph.com using the same Hostgator SMTP server already configured for Work Orders and Customer Surveys.
 
-### Change Summary
+## Changes
 
-**File: `src/pages/CustomerSurveyForm.tsx`**
+### 1. Create New Backend Function
+Create `supabase/functions/send-contact-form/index.ts`:
+- Accept form data: name, email, phone, message
+- Build professional HTML email template matching the site's styling
+- Send via Hostgator SMTP (uses existing secrets: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS)
+- Include sender's email as reply-to for easy response
+- Apply same encoding fix to prevent "=20" artifacts
 
-Add a paragraph element between the promotional box and the form (after line 163, before line 165):
+### 2. Update Contact Form Component
+Modify `src/components/Contact.tsx`:
+- Add loading state while sending
+- Call the new backend function with form data
+- Show success toast on completion
+- Show error toast if sending fails
+- Disable submit button during submission
 
-```tsx
-<p className="text-muted-foreground mb-4">* = Required</p>
-```
+## Technical Details
 
-This will display the required field indicator in regular, muted text directly above the form as requested.
+**Email Template Structure:**
+- Header with "New Contact Form Submission" title
+- Customer details table (Name, Email, Phone)
+- Message section
+- Footer noting it came from the website
+
+**No new secrets needed** - reuses existing SMTP configuration already set up for other forms.
