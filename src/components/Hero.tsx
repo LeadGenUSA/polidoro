@@ -15,6 +15,7 @@ interface SlideItem {
   alt?: string;
   duration_seconds: number;
   overlay_text?: string | null;
+  link_url?: string | null;
 }
 
 const defaultSlides: SlideItem[] = [
@@ -56,6 +57,7 @@ const Hero = () => {
           alt: item.alt_text || undefined,
           duration_seconds: item.duration_seconds || 15,
           overlay_text: item.overlay_text,
+          link_url: item.link_url,
         }));
         setSlides(dbSlides);
       }
@@ -188,32 +190,68 @@ const Hero = () => {
                 <CarouselContent>
                   {slides.map((slide, index) => (
                     <CarouselItem key={index}>
-                      <div className="relative">
-                        {slide.type === 'video' ? (
-                          <video
-                            src={slide.src}
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            className="w-full h-auto object-cover aspect-video"
-                          />
-                        ) : (
-                          <img
-                            src={slide.src}
-                            alt={slide.alt}
-                            className="w-full h-auto object-cover aspect-video"
-                          />
-                        )}
-                        {/* Overlay Text */}
-                        {slide.overlay_text && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-primary/40">
-                            <p className="text-primary-foreground text-xl md:text-2xl lg:text-3xl font-heading font-bold text-center px-6 drop-shadow-lg max-w-[80%]">
-                              {slide.overlay_text}
-                            </p>
-                          </div>
-                        )}
-                      </div>
+                      {slide.link_url ? (
+                        <a
+                          href={slide.link_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block relative cursor-pointer group"
+                        >
+                          {slide.type === 'video' ? (
+                            <video
+                              src={slide.src}
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              className="w-full h-auto object-cover aspect-video"
+                            />
+                          ) : (
+                            <img
+                              src={slide.src}
+                              alt={slide.alt}
+                              className="w-full h-auto object-cover aspect-video"
+                            />
+                          )}
+                          {/* Overlay Text */}
+                          {slide.overlay_text && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-primary/40">
+                              <p className="text-primary-foreground text-xl md:text-2xl lg:text-3xl font-heading font-bold text-center px-6 drop-shadow-lg max-w-[80%]">
+                                {slide.overlay_text}
+                              </p>
+                            </div>
+                          )}
+                          {/* Click indicator on hover */}
+                          <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors pointer-events-none" />
+                        </a>
+                      ) : (
+                        <div className="relative">
+                          {slide.type === 'video' ? (
+                            <video
+                              src={slide.src}
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              className="w-full h-auto object-cover aspect-video"
+                            />
+                          ) : (
+                            <img
+                              src={slide.src}
+                              alt={slide.alt}
+                              className="w-full h-auto object-cover aspect-video"
+                            />
+                          )}
+                          {/* Overlay Text */}
+                          {slide.overlay_text && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-primary/40">
+                              <p className="text-primary-foreground text-xl md:text-2xl lg:text-3xl font-heading font-bold text-center px-6 drop-shadow-lg max-w-[80%]">
+                                {slide.overlay_text}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </CarouselItem>
                   ))}
                 </CarouselContent>
