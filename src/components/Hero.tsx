@@ -4,19 +4,49 @@ import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carouse
 import Autoplay from 'embla-carousel-autoplay';
 import { useCallback, useEffect, useState } from 'react';
 import type { CarouselApi } from '@/components/ui/carousel';
+import { supabase } from '@/integrations/supabase/client';
 import heroImage from '@/assets/hero-plumbing.jpg';
 import nycSkyline from '@/assets/nyc-skyline.png';
 import heroVideo from '@/assets/big-city-plumbing-and-heating.mp4';
+
+interface SlideItem {
+  type: 'video' | 'image';
+  src: string;
+  alt?: string;
+}
+
+const defaultSlides: SlideItem[] = [
+  { type: 'video', src: heroVideo },
+  { type: 'image', src: heroImage, alt: 'Professional plumbing and heating services' },
+];
 
 const Hero = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
+  const [slides, setSlides] = useState<SlideItem[]>(defaultSlides);
 
-  const slides = [
-    { type: 'video' as const, src: heroVideo },
-    { type: 'image' as const, src: heroImage, alt: 'Professional plumbing and heating services' },
-  ];
+  // Fetch slides from database
+  useEffect(() => {
+    const fetchSlides = async () => {
+      const { data, error } = await supabase
+        .from('slideshow_items')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true });
+
+      if (!error && data && data.length > 0) {
+        const dbSlides: SlideItem[] = data.map((item) => ({
+          type: item.type as 'video' | 'image',
+          src: item.file_url,
+          alt: item.alt_text || undefined,
+        }));
+        setSlides(dbSlides);
+      }
+    };
+
+    fetchSlides();
+  }, []);
 
   useEffect(() => {
     if (!api) return;
