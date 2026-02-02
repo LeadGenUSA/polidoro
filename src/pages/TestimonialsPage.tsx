@@ -228,7 +228,7 @@ const TestimonialsPage = () => {
                     ...formData,
                     title: e.target.value
                   })} />
-                    <Textarea placeholder="Your testimonial *" value={formData.testimonial} onChange={e => setFormData({
+                    <Textarea placeholder="Your review*" value={formData.testimonial} onChange={e => setFormData({
                     ...formData,
                     testimonial: e.target.value
                   })} required className="min-h-[120px] resize-none" />
