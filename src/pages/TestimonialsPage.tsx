@@ -7,26 +7,50 @@ import { Textarea } from '@/components/ui/textarea';
 import { Star, Quote, MapPin, Calendar, Filter, Send, MessageSquarePlus, ThumbsUp, Award, Users, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useApprovedReviews, Review } from '@/hooks/useReviews';
-
-const categories = [
-  { id: 'all', label: 'All Reviews' },
-  { id: 'navien', label: 'Navien' },
-  { id: 'gas-conversion', label: 'Gas Conversion' },
-  { id: 'water-heater', label: 'Water Heaters' },
-  { id: 'plumbing', label: 'Plumbing' },
-  { id: 'heating', label: 'Heating' },
-];
-
-const stats = [
-  { icon: Star, value: '5.0', label: 'Average Rating' },
-  { icon: Users, value: '500+', label: 'Happy Customers' },
-  { icon: ThumbsUp, value: '99%', label: 'Recommend Us' },
-  { icon: Award, value: '35+', label: 'Years Trusted' },
-];
-
+const categories = [{
+  id: 'all',
+  label: 'All Reviews'
+}, {
+  id: 'navien',
+  label: 'Navien'
+}, {
+  id: 'gas-conversion',
+  label: 'Gas Conversion'
+}, {
+  id: 'water-heater',
+  label: 'Water Heaters'
+}, {
+  id: 'plumbing',
+  label: 'Plumbing'
+}, {
+  id: 'heating',
+  label: 'Heating'
+}];
+const stats = [{
+  icon: Star,
+  value: '5.0',
+  label: 'Average Rating'
+}, {
+  icon: Users,
+  value: '500+',
+  label: 'Happy Customers'
+}, {
+  icon: ThumbsUp,
+  value: '99%',
+  label: 'Recommend Us'
+}, {
+  icon: Award,
+  value: '35+',
+  label: 'Years Trusted'
+}];
 const TestimonialsPage = () => {
-  const { toast } = useToast();
-  const { reviews, isLoading } = useApprovedReviews();
+  const {
+    toast
+  } = useToast();
+  const {
+    reviews,
+    isLoading
+  } = useApprovedReviews();
   const [activeCategory, setActiveCategory] = useState('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -34,33 +58,32 @@ const TestimonialsPage = () => {
     email: '',
     location: '',
     title: '',
-    testimonial: '',
+    testimonial: ''
   });
-
-  const filteredReviews = activeCategory === 'all'
-    ? reviews
-    : reviews.filter(t => t.category === activeCategory);
-
+  const filteredReviews = activeCategory === 'all' ? reviews : reviews.filter(t => t.category === activeCategory);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
       title: "Thank you for your review!",
-      description: "Your testimonial has been submitted for approval.",
+      description: "Your testimonial has been submitted for approval."
     });
-    setFormData({ name: '', email: '', location: '', title: '', testimonial: '' });
+    setFormData({
+      name: '',
+      email: '',
+      location: '',
+      title: '',
+      testimonial: ''
+    });
   };
-
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '';
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric',
+      day: 'numeric'
     });
   };
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Navbar />
       
       {/* Hero Section */}
@@ -71,9 +94,7 @@ const TestimonialsPage = () => {
               <Star className="w-4 h-4 text-secondary fill-secondary" />
               <span className="text-sm font-medium text-primary-foreground">Customer Reviews</span>
             </div>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-              Testimonials
-            </h1>
+            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">Reviews</h1>
             <p className="text-lg md:text-xl text-primary-foreground/80 max-w-2xl">
               Don't just take our word for it. See what our customers across Nassau, Suffolk, 
               and NYC have to say about our plumbing and heating services.
@@ -87,15 +108,13 @@ const TestimonialsPage = () => {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="bg-card rounded-2xl shadow-lg p-6 md:p-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-              {stats.map((stat) => (
-                <div key={stat.label} className="text-center">
+              {stats.map(stat => <div key={stat.label} className="text-center">
                   <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl cta-gradient mb-3">
                     <stat.icon className="w-6 h-6 text-secondary-foreground" />
                   </div>
                   <p className="font-heading text-2xl md:text-3xl font-bold text-foreground">{stat.value}</p>
                   <p className="text-sm text-muted-foreground">{stat.label}</p>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </div>
@@ -110,28 +129,15 @@ const TestimonialsPage = () => {
               {/* Category Filters */}
               <div className="flex flex-wrap items-center gap-3 mb-8">
                 <Filter className="w-5 h-5 text-muted-foreground" />
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setActiveCategory(cat.id)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                      activeCategory === cat.id
-                        ? 'cta-gradient text-secondary-foreground shadow-glow'
-                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                    }`}
-                  >
+                {categories.map(cat => <button key={cat.id} onClick={() => setActiveCategory(cat.id)} className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${activeCategory === cat.id ? 'cta-gradient text-secondary-foreground shadow-glow' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
                     {cat.label}
-                  </button>
-                ))}
+                  </button>)}
               </div>
 
               {/* Testimonials List */}
-              {isLoading ? (
-                <div className="flex items-center justify-center py-12">
+              {isLoading ? <div className="flex items-center justify-center py-12">
                   <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                </div>
-              ) : filteredReviews.length === 0 ? (
-                <div className="text-center py-12 bg-card rounded-xl">
+                </div> : filteredReviews.length === 0 ? <div className="text-center py-12 bg-card rounded-xl">
                   <Star className="w-12 h-12 mx-auto text-muted-foreground/30 mb-4" />
                   <h3 className="font-heading font-semibold text-lg text-foreground mb-2">
                     No reviews yet
@@ -139,46 +145,29 @@ const TestimonialsPage = () => {
                   <p className="text-muted-foreground">
                     Be the first to leave a review!
                   </p>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {filteredReviews.map((testimonial, index) => (
-                    <div
-                      key={testimonial.id}
-                      className="bg-card p-6 md:p-8 rounded-2xl shadow-card hover:shadow-lg transition-all duration-300 animate-fade-in"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
+                </div> : <div className="space-y-6">
+                  {filteredReviews.map((testimonial, index) => <div key={testimonial.id} className="bg-card p-6 md:p-8 rounded-2xl shadow-card hover:shadow-lg transition-all duration-300 animate-fade-in" style={{
+                animationDelay: `${index * 50}ms`
+              }}>
                       {/* Header */}
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-4">
-                          {testimonial.author_photo_url ? (
-                            <img 
-                              src={testimonial.author_photo_url} 
-                              alt={testimonial.author_name}
-                              className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                            />
-                          ) : (
-                            <div className="w-12 h-12 rounded-full hero-gradient flex items-center justify-center flex-shrink-0">
+                          {testimonial.author_photo_url ? <img src={testimonial.author_photo_url} alt={testimonial.author_name} className="w-12 h-12 rounded-full object-cover flex-shrink-0" /> : <div className="w-12 h-12 rounded-full hero-gradient flex items-center justify-center flex-shrink-0">
                               <span className="text-primary-foreground font-bold text-lg">
                                 {testimonial.author_name.charAt(0)}
                               </span>
-                            </div>
-                          )}
+                            </div>}
                           <div>
                             <h3 className="font-heading font-bold text-foreground">{testimonial.author_name}</h3>
                             <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                              {testimonial.location && (
-                                <span className="flex items-center gap-1">
+                              {testimonial.location && <span className="flex items-center gap-1">
                                   <MapPin className="w-3 h-3" />
                                   {testimonial.location}
-                                </span>
-                              )}
-                              {testimonial.review_date && (
-                                <span className="flex items-center gap-1">
+                                </span>}
+                              {testimonial.review_date && <span className="flex items-center gap-1">
                                   <Calendar className="w-3 h-3" />
                                   {formatDate(testimonial.review_date)}
-                                </span>
-                              )}
+                                </span>}
                             </div>
                           </div>
                         </div>
@@ -187,37 +176,24 @@ const TestimonialsPage = () => {
 
                       {/* Rating */}
                       <div className="flex gap-1 mb-3">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-secondary text-secondary" />
-                        ))}
+                        {[...Array(testimonial.rating)].map((_, i) => <Star key={i} className="w-4 h-4 fill-secondary text-secondary" />)}
                       </div>
 
                       {/* Title */}
-                      {testimonial.title && (
-                        <h4 className="font-heading font-semibold text-lg text-foreground mb-3">
+                      {testimonial.title && <h4 className="font-heading font-semibold text-lg text-foreground mb-3">
                           "{testimonial.title}"
-                        </h4>
-                      )}
+                        </h4>}
 
                       {/* Content */}
-                      <p className={`text-muted-foreground leading-relaxed ${
-                        expandedId === testimonial.id ? '' : 'line-clamp-3'
-                      }`}>
+                      <p className={`text-muted-foreground leading-relaxed ${expandedId === testimonial.id ? '' : 'line-clamp-3'}`}>
                         {testimonial.text}
                       </p>
                       
-                      {testimonial.text.length > 200 && (
-                        <button
-                          onClick={() => setExpandedId(expandedId === testimonial.id ? null : testimonial.id)}
-                          className="text-secondary font-medium text-sm mt-2 hover:underline"
-                        >
+                      {testimonial.text.length > 200 && <button onClick={() => setExpandedId(expandedId === testimonial.id ? null : testimonial.id)} className="text-secondary font-medium text-sm mt-2 hover:underline">
                           {expandedId === testimonial.id ? 'Show less' : 'Read more...'}
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
+                        </button>}
+                    </div>)}
+                </div>}
             </div>
 
             {/* Sidebar - Submit Form */}
@@ -228,9 +204,7 @@ const TestimonialsPage = () => {
                     <div className="w-10 h-10 rounded-xl cta-gradient flex items-center justify-center">
                       <MessageSquarePlus className="w-5 h-5 text-secondary-foreground" />
                     </div>
-                    <h3 className="font-heading text-xl font-bold text-foreground">
-                      Add a Testimonial
-                    </h3>
+                    <h3 className="font-heading text-xl font-bold text-foreground">Add a Review</h3>
                   </div>
                   
                   <p className="text-muted-foreground text-sm mb-6">
@@ -238,36 +212,26 @@ const TestimonialsPage = () => {
                   </p>
 
                   <form onSubmit={handleSubmit} className="space-y-4">
-                    <Input
-                      placeholder="Your Name *"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                    />
-                    <Input
-                      type="email"
-                      placeholder="Email *"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      required
-                    />
-                    <Input
-                      placeholder="Location (City, NY)"
-                      value={formData.location}
-                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    />
-                    <Input
-                      placeholder="Title of Review"
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    />
-                    <Textarea
-                      placeholder="Your testimonial *"
-                      value={formData.testimonial}
-                      onChange={(e) => setFormData({ ...formData, testimonial: e.target.value })}
-                      required
-                      className="min-h-[120px] resize-none"
-                    />
+                    <Input placeholder="Your Name *" value={formData.name} onChange={e => setFormData({
+                    ...formData,
+                    name: e.target.value
+                  })} required />
+                    <Input type="email" placeholder="Email *" value={formData.email} onChange={e => setFormData({
+                    ...formData,
+                    email: e.target.value
+                  })} required />
+                    <Input placeholder="Location (City, NY)" value={formData.location} onChange={e => setFormData({
+                    ...formData,
+                    location: e.target.value
+                  })} />
+                    <Input placeholder="Title of Review" value={formData.title} onChange={e => setFormData({
+                    ...formData,
+                    title: e.target.value
+                  })} />
+                    <Textarea placeholder="Your testimonial *" value={formData.testimonial} onChange={e => setFormData({
+                    ...formData,
+                    testimonial: e.target.value
+                  })} required className="min-h-[120px] resize-none" />
                     <Button variant="hero" className="w-full group">
                       Submit Review
                       <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -281,8 +245,6 @@ const TestimonialsPage = () => {
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default TestimonialsPage;
