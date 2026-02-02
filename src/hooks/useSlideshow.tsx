@@ -12,6 +12,7 @@ export interface SlideshowItem {
   display_order: number;
   is_active: boolean;
   duration_seconds: number;
+  overlay_title: string | null;
   overlay_text: string | null;
   link_url: string | null;
   created_at: string;
@@ -29,6 +30,7 @@ const defaultSlides: SlideshowItem[] = [
     display_order: 0,
     is_active: true,
     duration_seconds: 15,
+    overlay_title: null,
     overlay_text: null,
     link_url: null,
     created_at: '',
@@ -43,6 +45,7 @@ const defaultSlides: SlideshowItem[] = [
     display_order: 1,
     is_active: true,
     duration_seconds: 15,
+    overlay_title: null,
     overlay_text: null,
     link_url: null,
     created_at: '',
@@ -113,7 +116,7 @@ export const useSlideshow = () => {
     return data.publicUrl;
   };
 
-  const addItem = async (file: File, altText?: string, durationSeconds?: number, overlayText?: string, linkUrl?: string) => {
+  const addItem = async (file: File, altText?: string, durationSeconds?: number, overlayTitle?: string, overlayText?: string, linkUrl?: string) => {
     setIsUploading(true);
     try {
       const fileUrl = await uploadFile(file);
@@ -131,6 +134,7 @@ export const useSlideshow = () => {
         display_order: maxOrder + 1,
         is_active: true,
         duration_seconds: durationSeconds || 15,
+        overlay_title: overlayTitle || null,
         overlay_text: overlayText || null,
         link_url: linkUrl || null,
       });
@@ -154,7 +158,7 @@ export const useSlideshow = () => {
     }
   };
 
-  const updateItem = async (id: string, updates: Partial<Pick<SlideshowItem, 'alt_text' | 'is_active' | 'display_order' | 'duration_seconds' | 'overlay_text' | 'link_url'>>) => {
+  const updateItem = async (id: string, updates: Partial<Pick<SlideshowItem, 'alt_text' | 'is_active' | 'display_order' | 'duration_seconds' | 'overlay_title' | 'overlay_text' | 'link_url'>>) => {
     try {
       const { error } = await supabase
         .from('slideshow_items')

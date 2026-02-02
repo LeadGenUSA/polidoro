@@ -112,6 +112,7 @@ export type Database = {
           is_active: boolean
           link_url: string | null
           overlay_text: string | null
+          overlay_title: string | null
           type: string
           updated_at: string
         }
@@ -125,6 +126,7 @@ export type Database = {
           is_active?: boolean
           link_url?: string | null
           overlay_text?: string | null
+          overlay_title?: string | null
           type: string
           updated_at?: string
         }
@@ -138,6 +140,7 @@ export type Database = {
           is_active?: boolean
           link_url?: string | null
           overlay_text?: string | null
+          overlay_title?: string | null
           type?: string
           updated_at?: string
         }
