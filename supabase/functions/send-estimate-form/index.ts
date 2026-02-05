@@ -26,7 +26,9 @@ interface EstimateFormData {
   steamSystem: string;
   thermostatsIncluded: string;
   existingChimneyLined: string;
+  chimneyLinedNotes: string;
   ventLocation: string;
+  ventLocationNotes: string;
   numberOfZones: string;
   zoneSize: string;
   boilerAccess: string;
@@ -126,7 +128,9 @@ serve(async (req) => {
     <div class="field"><span class="label">Steam System:</span> <span class="value">${formatValue(formData.steamSystem)}</span></div>
     <div class="field"><span class="label">Thermostats Included:</span> <span class="value">${formatValue(formData.thermostatsIncluded)}</span></div>
     <div class="field"><span class="label">Existing Chimney Lined:</span> <span class="value">${formatValue(formData.existingChimneyLined)}</span></div>
+    <div class="field"><span class="label">Chimney Lined Notes:</span> <span class="value">${formatValue(formData.chimneyLinedNotes)}</span></div>
     <div class="field"><span class="label">Vent Location for Boiler:</span> <span class="value">${formatValue(formData.ventLocation)}</span></div>
+    <div class="field"><span class="label">Vent Location Notes:</span> <span class="value">${formatValue(formData.ventLocationNotes)}</span></div>
     <div class="field"><span class="label">Number of Zones:</span> <span class="value">${formatValue(formData.numberOfZones)}</span></div>
     <div class="field"><span class="label">Zone Size:</span> <span class="value">${formatValue(formData.zoneSize)}</span></div>
     <div class="field"><span class="label">Boiler Access:</span> <span class="value">${formatValue(formData.boilerAccess)}</span></div>
