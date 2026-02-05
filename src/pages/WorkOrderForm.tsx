@@ -255,7 +255,7 @@ const WorkOrderForm = () => {
                   </RadioGroup>
                 </div>
                 <div className="md:col-span-2">
-                  <PhotoUpload photos={photos} onPhotosChange={setPhotos} maxPhotos={5} />
+                  <PhotoUpload photos={photos} onPhotosChange={setPhotos} maxPhotos={10} />
                 </div>
               </CardContent>
             </Card>
