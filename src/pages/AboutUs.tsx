@@ -103,7 +103,7 @@ const AboutUs = () => {
               </div>
               <div className="absolute -bottom-6 -right-6 bg-secondary text-secondary-foreground p-6 rounded-2xl shadow-lg hidden lg:block">
                 <p className="font-heading font-bold text-2xl">Master Plumber</p>
-                <p className="text-sm opacity-80">License #1285</p>
+                <p className="text-sm opacity-80">Since 1988</p>
               </div>
             </div>
 
