@@ -34,6 +34,7 @@ interface EstimateFormData {
   gasInHouse: string;
   gasNotes: string;
   meterLocation: string;
+  photos: string[];
 }
 
 const formatValue = (value: string | string[] | undefined): string => {
@@ -74,6 +75,8 @@ serve(async (req) => {
     .label { font-weight: bold; color: #555; }
     .value { color: #333; }
     .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+    .photo-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .photo-thumb { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
   </style>
 </head>
 <body>
@@ -136,6 +139,19 @@ serve(async (req) => {
     <div class="field"><span class="label">Notes:</span> <span class="value">${formatValue(formData.gasNotes)}</span></div>
     <div class="field"><span class="label">Meter Location:</span> <span class="value">${formatValue(formData.meterLocation)}</span></div>
   </div>
+
+  ${formData.photos && formData.photos.length > 0 ? `
+  <div class="section">
+    <div class="section-title">PHOTOS</div>
+    <div class="photo-grid">
+      ${formData.photos.map((url, index) => `
+        <a href="${url}" target="_blank">
+          <img src="${url}" alt="Photo ${index + 1}" class="photo-thumb" />
+        </a>
+      `).join('')}
+    </div>
+  </div>
+  ` : ''}
 
   <div class="footer">
     <p>This estimate request was submitted from the Big City Plumbing & Heating website.</p>
