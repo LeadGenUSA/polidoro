@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle, Loader2 } from 'lucide-react';
+import PhotoUpload from '@/components/work-order/PhotoUpload';
 
 const workOrderSchema = z.object({
   // Customer Info
@@ -63,6 +64,7 @@ type WorkOrderFormData = z.infer<typeof workOrderSchema>;
 const WorkOrderForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [photos, setPhotos] = useState<string[]>([]);
   const { toast } = useToast();
   
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<WorkOrderFormData>({
@@ -79,7 +81,7 @@ const WorkOrderForm = () => {
     
     try {
       const { data: response, error } = await supabase.functions.invoke('send-work-order', {
-        body: data,
+        body: { ...data, photos },
       });
 
       if (error) throw error;
@@ -251,6 +253,9 @@ const WorkOrderForm = () => {
                       <Label htmlFor="warranty-no" className="font-normal">No</Label>
                     </div>
                   </RadioGroup>
+                </div>
+                <div className="md:col-span-2">
+                  <PhotoUpload photos={photos} onPhotosChange={setPhotos} maxPhotos={5} />
                 </div>
               </CardContent>
             </Card>
