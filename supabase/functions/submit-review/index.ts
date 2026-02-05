@@ -197,14 +197,18 @@ Deno.serve(async (req) => {
       )
     }
 
+    // Check if this is an admin submission (auto-approve)
+    const isAdminSubmission = body.email?.toLowerCase().trim() === 'admin@bigcityph.com'
+    
     console.log('Inserting review submission:', { 
       author_name: body.author_name, 
       rating: body.rating,
       hasTitle: !!body.title,
-      hasLocation: !!body.location 
+      hasLocation: !!body.location,
+      isAdminSubmission
     })
 
-    // Insert review with pending status
+    // Insert review - auto-approve if from admin email
     const { data, error } = await supabase
       .from('reviews')
       .insert({
@@ -214,7 +218,8 @@ Deno.serve(async (req) => {
         location: body.location?.trim() || null,
         rating: body.rating,
         source: 'manual',
-        status: 'pending',
+        status: isAdminSubmission ? 'approved' : 'pending',
+        approved_at: isAdminSubmission ? new Date().toISOString() : null,
         review_date: new Date().toISOString(),
       })
       .select()
@@ -228,10 +233,12 @@ Deno.serve(async (req) => {
       )
     }
 
-    console.log('Review submitted successfully:', data.id)
+    console.log('Review submitted successfully:', data.id, isAdminSubmission ? '(auto-approved)' : '(pending)')
 
-    // Send admin notification email (non-blocking)
-    sendAdminNotification(body).catch(err => console.error('Email notification failed:', err))
+    // Send admin notification email only for non-admin submissions
+    if (!isAdminSubmission) {
+      sendAdminNotification(body).catch(err => console.error('Email notification failed:', err))
+    }
 
     return new Response(
       JSON.stringify({ success: true, message: 'Review submitted for approval' }),
