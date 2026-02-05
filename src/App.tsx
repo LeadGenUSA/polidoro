@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import HowToVideos from "./pages/HowToVideos";
 import PlumbingServices from "./pages/PlumbingServices";
 import HeatingServices from "./pages/HeatingServices";
+import Services from "./pages/Services";
 import TestimonialsPage from "./pages/TestimonialsPage";
 import AboutUs from "./pages/AboutUs";
 import WorkOrderForm from "./pages/WorkOrderForm";
@@ -28,6 +29,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/services" element={<Services />} />
             <Route path="/plumbing-services" element={<PlumbingServices />} />
             <Route path="/heating-services" element={<HeatingServices />} />
             <Route path="/how-to-videos" element={<HowToVideos />} />

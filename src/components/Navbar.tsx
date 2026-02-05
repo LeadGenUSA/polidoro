@@ -11,6 +11,7 @@ import {
 import logo from '@/assets/big-city-plumbing-and-heating-logo-2.png';
 
 const serviceLinks = [
+  { name: 'All Services', href: '/services' },
   { name: 'Plumbing Services', href: '/plumbing-services' },
   { name: 'Heating Services', href: '/heating-services' },
 ];
