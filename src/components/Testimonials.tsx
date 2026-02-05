@@ -66,6 +66,17 @@ const Testimonials = () => {
               </div>
             </div>)}
         </div>
+        
+        {/* Link to Reviews Page */}
+        <div className="text-center mt-12">
+          <a 
+            href="/testimonials" 
+            className="inline-flex items-center gap-2 text-primary hover:text-secondary font-semibold text-lg transition-colors"
+          >
+            See Other Customer Reviews of Our Excellent Service
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
       </div>
     </section>;
 };
