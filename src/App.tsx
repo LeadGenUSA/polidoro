@@ -14,6 +14,7 @@ import WorkOrderForm from "./pages/WorkOrderForm";
 import CustomerSurveyForm from "./pages/CustomerSurveyForm";
 import AdminLogin from "./pages/AdminLogin";
 import Admin from "./pages/Admin";
+import ProjectsGallery from "./pages/ProjectsGallery";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/customer-survey" element={<CustomerSurveyForm />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/projects-gallery" element={<ProjectsGallery />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
