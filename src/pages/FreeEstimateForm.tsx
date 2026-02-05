@@ -599,10 +599,11 @@ const FreeEstimateForm = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <Label>Meter Location (select position around house)</Label>
+                  <Label>Meter Location (select position around house - top view)</Label>
                   <div className="bg-muted p-4 rounded-lg">
                     <div className="flex flex-col items-center gap-1 max-w-xs mx-auto">
-                      {/* Roof / Back of house - top buttons */}
+                      {/* Back of house - top buttons */}
+                      <p className="text-[10px] text-muted-foreground mb-1">Back Yard</p>
                       <div className="flex justify-center gap-1">
                         <button type="button" onClick={() => setMeterLocation('back-left')} className={`w-8 h-8 rounded text-xs font-medium transition-colors ${meterLocation === 'back-left' ? 'bg-secondary text-secondary-foreground' : 'bg-background border border-border hover:bg-accent'}`}>M</button>
                         <button type="button" onClick={() => setMeterLocation('back-center-left')} className={`w-8 h-8 rounded text-xs font-medium transition-colors ${meterLocation === 'back-center-left' ? 'bg-secondary text-secondary-foreground' : 'bg-background border border-border hover:bg-accent'}`}>M</button>
@@ -611,40 +612,35 @@ const FreeEstimateForm = () => {
                         <button type="button" onClick={() => setMeterLocation('back-right')} className={`w-8 h-8 rounded text-xs font-medium transition-colors ${meterLocation === 'back-right' ? 'bg-secondary text-secondary-foreground' : 'bg-background border border-border hover:bg-accent'}`}>M</button>
                       </div>
                       
-                      {/* House body with roof shape */}
+                      {/* House body - top view rectangle */}
                       <div className="flex items-stretch gap-1">
                         {/* Left side buttons */}
                         <div className="flex flex-col justify-center gap-1">
                           <button type="button" onClick={() => setMeterLocation('left-upper')} className={`w-8 h-8 rounded text-xs font-medium transition-colors ${meterLocation === 'left-upper' ? 'bg-secondary text-secondary-foreground' : 'bg-background border border-border hover:bg-accent'}`}>M</button>
+                          <button type="button" onClick={() => setMeterLocation('left-middle')} className={`w-8 h-8 rounded text-xs font-medium transition-colors ${meterLocation === 'left-middle' ? 'bg-secondary text-secondary-foreground' : 'bg-background border border-border hover:bg-accent'}`}>M</button>
                           <button type="button" onClick={() => setMeterLocation('left-lower')} className={`w-8 h-8 rounded text-xs font-medium transition-colors ${meterLocation === 'left-lower' ? 'bg-secondary text-secondary-foreground' : 'bg-background border border-border hover:bg-accent'}`}>M</button>
                         </div>
                         
-                        {/* House shape with roof */}
-                        <div className="flex flex-col items-center">
-                          {/* Roof triangle */}
-                          <div 
-                            className="w-0 h-0 border-l-[60px] border-r-[60px] border-b-[30px] border-l-transparent border-r-transparent border-b-primary/30"
-                          />
-                          {/* House body */}
-                          <div className="w-[120px] h-16 bg-primary/20 flex items-center justify-center text-xs font-medium text-muted-foreground rounded-b">
-                            House
-                          </div>
+                        {/* House rectangle (top view) */}
+                        <div className="w-[120px] h-24 bg-primary/20 border-2 border-primary/40 flex items-center justify-center text-xs font-medium text-muted-foreground">
+                          House
                         </div>
                         
                         {/* Right side buttons */}
                         <div className="flex flex-col justify-center gap-1">
                           <button type="button" onClick={() => setMeterLocation('right-upper')} className={`w-8 h-8 rounded text-xs font-medium transition-colors ${meterLocation === 'right-upper' ? 'bg-secondary text-secondary-foreground' : 'bg-background border border-border hover:bg-accent'}`}>M</button>
+                          <button type="button" onClick={() => setMeterLocation('right-middle')} className={`w-8 h-8 rounded text-xs font-medium transition-colors ${meterLocation === 'right-middle' ? 'bg-secondary text-secondary-foreground' : 'bg-background border border-border hover:bg-accent'}`}>M</button>
                           <button type="button" onClick={() => setMeterLocation('right-lower')} className={`w-8 h-8 rounded text-xs font-medium transition-colors ${meterLocation === 'right-lower' ? 'bg-secondary text-secondary-foreground' : 'bg-background border border-border hover:bg-accent'}`}>M</button>
                         </div>
                       </div>
                       
-                      {/* Porch area */}
+                      {/* Porch area - attached to front of house */}
                       <div className="flex items-center gap-1">
-                        <div className="w-8" /> {/* Spacer for alignment */}
-                        <div className="w-[120px] h-6 bg-accent border-t-2 border-dashed border-primary/50 flex items-center justify-center text-[10px] font-medium text-muted-foreground">
+                        <div className="w-8" />
+                        <div className="w-[120px] h-8 bg-accent/60 border-2 border-t-0 border-primary/40 flex items-center justify-center text-[10px] font-medium text-muted-foreground">
                           Porch
                         </div>
-                        <div className="w-8" /> {/* Spacer for alignment */}
+                        <div className="w-8" />
                       </div>
                       
                       {/* Front / Street side - bottom buttons */}
@@ -655,10 +651,10 @@ const FreeEstimateForm = () => {
                         <button type="button" onClick={() => setMeterLocation('front-center-right')} className={`w-8 h-8 rounded text-xs font-medium transition-colors ${meterLocation === 'front-center-right' ? 'bg-secondary text-secondary-foreground' : 'bg-background border border-border hover:bg-accent'}`}>M</button>
                         <button type="button" onClick={() => setMeterLocation('front-right')} className={`w-8 h-8 rounded text-xs font-medium transition-colors ${meterLocation === 'front-right' ? 'bg-secondary text-secondary-foreground' : 'bg-background border border-border hover:bg-accent'}`}>M</button>
                       </div>
+                      <p className="text-[10px] text-muted-foreground mt-1">Street</p>
                     </div>
-                    <p className="text-center text-xs text-muted-foreground mt-3">Street (front)</p>
                     {meterLocation && (
-                      <p className="text-center text-sm font-medium text-foreground mt-2">
+                      <p className="text-center text-sm font-medium text-foreground mt-3">
                         Selected: {meterLocation.replace(/-/g, ' ')}
                       </p>
                     )}
