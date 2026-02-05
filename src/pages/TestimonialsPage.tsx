@@ -4,31 +4,12 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Star, Quote, MapPin, Calendar, Filter, Send, MessageSquarePlus, ThumbsUp, Award, Users, Loader2, Globe } from 'lucide-react';
+import { Star, Quote, MapPin, Calendar, Send, MessageSquarePlus, ThumbsUp, Award, Users, Loader2, Globe } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useApprovedReviews, Review } from '@/hooks/useReviews';
 import StarRating from '@/components/StarRating';
 import { supabase } from '@/integrations/supabase/client';
-const categories = [{
-  id: 'all',
-  label: 'All Reviews'
-}, {
-  id: 'navien',
-  label: 'Navien'
-}, {
-  id: 'gas-conversion',
-  label: 'Gas Conversion'
-}, {
-  id: 'water-heater',
-  label: 'Water Heaters'
-}, {
-  id: 'plumbing',
-  label: 'Plumbing'
-}, {
-  id: 'heating',
-  label: 'Heating'
-}];
 const stats = [{
   icon: Star,
   value: '5.0',
@@ -54,7 +35,6 @@ const TestimonialsPage = () => {
     reviews,
     isLoading
   } = useApprovedReviews();
-  const [activeCategory, setActiveCategory] = useState('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -65,7 +45,7 @@ const TestimonialsPage = () => {
     testimonial: '',
     rating: 0
   });
-  const filteredReviews = activeCategory === 'all' ? reviews : reviews.filter(t => t.category === activeCategory);
+  
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -185,18 +165,10 @@ const TestimonialsPage = () => {
           <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2">
-              {/* Category Filters */}
-              <div className="flex flex-wrap items-center gap-3 mb-8">
-                <Filter className="w-5 h-5 text-muted-foreground" />
-                {categories.map(cat => <button key={cat.id} onClick={() => setActiveCategory(cat.id)} className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${activeCategory === cat.id ? 'cta-gradient text-secondary-foreground shadow-glow' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}>
-                    {cat.label}
-                  </button>)}
-              </div>
-
               {/* Testimonials List */}
               {isLoading ? <div className="flex items-center justify-center py-12">
                   <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                </div> : filteredReviews.length === 0 ? <div className="text-center py-12 bg-card rounded-xl">
+                </div> : reviews.length === 0 ? <div className="text-center py-12 bg-card rounded-xl">
                   <Star className="w-12 h-12 mx-auto text-muted-foreground/30 mb-4" />
                   <h3 className="font-heading font-semibold text-lg text-foreground mb-2">
                     No reviews yet
@@ -205,7 +177,7 @@ const TestimonialsPage = () => {
                     Be the first to leave a review!
                   </p>
                 </div> : <div className="space-y-6">
-                  {filteredReviews.map((testimonial, index) => <div key={testimonial.id} className="bg-card p-6 md:p-8 rounded-2xl shadow-card hover:shadow-lg transition-all duration-300 animate-fade-in" style={{
+                  {reviews.map((testimonial, index) => <div key={testimonial.id} className="bg-card p-6 md:p-8 rounded-2xl shadow-card hover:shadow-lg transition-all duration-300 animate-fade-in" style={{
                 animationDelay: `${index * 50}ms`
               }}>
                       {/* Header */}
