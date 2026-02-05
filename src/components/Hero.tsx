@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Shield, Clock, Award, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { useCallback, useEffect, useState, useRef, useMemo } from 'react';
@@ -156,8 +157,8 @@ const Hero = () => {
                 Get Free Estimate
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="heroOutline" size="xl">
-                View Our Services
+              <Button variant="heroOutline" size="xl" asChild>
+                <Link to="/services">View Our Services</Link>
               </Button>
             </div>
             
