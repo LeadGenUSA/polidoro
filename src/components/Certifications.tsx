@@ -4,6 +4,7 @@ import wardflexCertified from '@/assets/certifications/wardflex-certified-small.
 import epaLeadSafe from '@/assets/certifications/epa_leadsafecertfirm-trans.gif';
 import nationalGrid from '@/assets/certifications/National-Grid-Valueplus.gif';
 import liheap from '@/assets/certifications/liheap-logo-trans.gif';
+import navienCertified from '@/assets/certifications/navien-certified.png';
 
 const certifications = [
   { name: 'Best of Porch 2020', logo: bestOfPorch, link: 'https://pro.porch.com/centereach-ny/hvac-contractors/big-city-plumbing-heating-inc/pp' },
@@ -12,6 +13,7 @@ const certifications = [
   { name: 'EPA Lead-Safe Certified Firm', logo: epaLeadSafe },
   { name: 'National Grid Value Plus Installer', logo: nationalGrid },
   { name: 'LIHEAP', logo: liheap },
+  { name: 'Navien Certified Installer', logo: navienCertified },
 ];
 
 const Certifications = () => {
