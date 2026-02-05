@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Shield, Clock, Award, ChevronLeft, ChevronRight } from 'lucide-react';
+import navienNSS from '@/assets/navien-nss-boilers.png';
 import { Link } from 'react-router-dom';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
@@ -185,12 +186,12 @@ const Hero = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-secondary/20 flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-secondary" />
+                <div className="w-12 h-12 rounded-xl bg-white/90 flex items-center justify-center p-1">
+                  <img src={navienNSS} alt="Navien NSS Certified" className="w-full h-full object-contain" />
                 </div>
                 <div>
-                  <span className="font-bold text-lg">Navien</span>
-                  <p className="text-sm opacity-80">Authorized Dealer</p>
+                  <span className="font-bold text-lg">NSS Certified</span>
+                  <p className="text-sm opacity-80">Navien Specialists</p>
                 </div>
               </div>
             </div>
