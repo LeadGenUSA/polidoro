@@ -4,7 +4,7 @@ import { CheckCircle2, Award, Shield, Building2 } from 'lucide-react';
 import michaelPolidoro from '@/assets/michael-polidoro.png';
 
 const credentials = [
-  'Master Plumber License since 1988',
+  'Former New York City Plumbing Inspector',
   'Member of NYC Master Plumber Association',
   'Licensed in Nassau, Suffolk & all 5 NYC Boroughs',
   'Backflow Prevention Device Tester Certified',
