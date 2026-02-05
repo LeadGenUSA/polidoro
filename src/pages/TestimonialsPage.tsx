@@ -7,6 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Star, Quote, MapPin, Calendar, Filter, Send, MessageSquarePlus, ThumbsUp, Award, Users, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useApprovedReviews, Review } from '@/hooks/useReviews';
+import StarRating from '@/components/StarRating';
+import { supabase } from '@/integrations/supabase/client';
 const categories = [{
   id: 'all',
   label: 'All Reviews'
@@ -53,28 +55,84 @@ const TestimonialsPage = () => {
   } = useApprovedReviews();
   const [activeCategory, setActiveCategory] = useState('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     location: '',
     title: '',
-    testimonial: ''
+    testimonial: '',
+    rating: 0
   });
   const filteredReviews = activeCategory === 'all' ? reviews : reviews.filter(t => t.category === activeCategory);
-  const handleSubmit = (e: React.FormEvent) => {
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Thank you for your review!",
-      description: "Your testimonial has been submitted for approval."
-    });
-    setFormData({
-      name: '',
-      email: '',
-      location: '',
-      title: '',
-      testimonial: ''
-    });
+    
+    // Client-side validation
+    if (!formData.name.trim()) {
+      toast({ title: "Error", description: "Please enter your name.", variant: "destructive" });
+      return;
+    }
+    if (!formData.email.trim()) {
+      toast({ title: "Error", description: "Please enter your email.", variant: "destructive" });
+      return;
+    }
+    if (!formData.testimonial.trim()) {
+      toast({ title: "Error", description: "Please enter your review.", variant: "destructive" });
+      return;
+    }
+    if (formData.rating === 0) {
+      toast({ title: "Error", description: "Please select a star rating.", variant: "destructive" });
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('submit-review', {
+        body: {
+          author_name: formData.name.trim(),
+          email: formData.email.trim(),
+          location: formData.location.trim() || undefined,
+          title: formData.title.trim() || undefined,
+          text: formData.testimonial.trim(),
+          rating: formData.rating,
+        }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.error) {
+        toast({ title: "Error", description: data.error, variant: "destructive" });
+        return;
+      }
+      
+      toast({
+        title: "Thank you for your review!",
+        description: "Your testimonial has been submitted and will appear after approval."
+      });
+      
+      setFormData({
+        name: '',
+        email: '',
+        location: '',
+        title: '',
+        testimonial: '',
+        rating: 0
+      });
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      toast({
+        title: "Error",
+        description: "Failed to submit review. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+  
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -212,29 +270,66 @@ const TestimonialsPage = () => {
                   </p>
 
                   <form onSubmit={handleSubmit} className="space-y-4">
-                    <Input placeholder="Your Name *" value={formData.name} onChange={e => setFormData({
-                    ...formData,
-                    name: e.target.value
-                  })} required />
-                    <Input type="email" placeholder="Email *" value={formData.email} onChange={e => setFormData({
-                    ...formData,
-                    email: e.target.value
-                  })} required />
-                    <Input placeholder="Location (City, NY)" value={formData.location} onChange={e => setFormData({
-                    ...formData,
-                    location: e.target.value
-                  })} />
-                    <Input placeholder="Title of Review" value={formData.title} onChange={e => setFormData({
-                    ...formData,
-                    title: e.target.value
-                  })} />
-                    <Textarea placeholder="Your review*" value={formData.testimonial} onChange={e => setFormData({
-                    ...formData,
-                    testimonial: e.target.value
-                  })} required className="min-h-[120px] resize-none" />
-                    <Button variant="hero" className="w-full group">
-                      Submit Review
-                      <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <Input 
+                      placeholder="Your Name *" 
+                      value={formData.name} 
+                      onChange={e => setFormData({ ...formData, name: e.target.value })} 
+                      disabled={isSubmitting}
+                      maxLength={100}
+                      required 
+                    />
+                    <Input 
+                      type="email" 
+                      placeholder="Email *" 
+                      value={formData.email} 
+                      onChange={e => setFormData({ ...formData, email: e.target.value })} 
+                      disabled={isSubmitting}
+                      maxLength={255}
+                      required 
+                    />
+                    <Input 
+                      placeholder="Location (City, NY)" 
+                      value={formData.location} 
+                      onChange={e => setFormData({ ...formData, location: e.target.value })} 
+                      disabled={isSubmitting}
+                      maxLength={100}
+                    />
+                    <Input 
+                      placeholder="Title of Review" 
+                      value={formData.title} 
+                      onChange={e => setFormData({ ...formData, title: e.target.value })} 
+                      disabled={isSubmitting}
+                      maxLength={200}
+                    />
+                    <Textarea 
+                      placeholder="Your review *" 
+                      value={formData.testimonial} 
+                      onChange={e => setFormData({ ...formData, testimonial: e.target.value })} 
+                      disabled={isSubmitting}
+                      maxLength={2000}
+                      required 
+                      className="min-h-[120px] resize-none" 
+                    />
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">Your Rating *</label>
+                      <StarRating 
+                        rating={formData.rating} 
+                        onRatingChange={(rating) => setFormData({ ...formData, rating })}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                    <Button variant="hero" className="w-full group" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          Submit Review
+                          <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
                     </Button>
                   </form>
                 </div>
