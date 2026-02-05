@@ -13,6 +13,7 @@ import TestimonialsPage from "./pages/TestimonialsPage";
 import AboutUs from "./pages/AboutUs";
 import WorkOrderForm from "./pages/WorkOrderForm";
 import CustomerSurveyForm from "./pages/CustomerSurveyForm";
+import FreeEstimateForm from "./pages/FreeEstimateForm";
 import AdminLogin from "./pages/AdminLogin";
 import Admin from "./pages/Admin";
 import ProjectsGallery from "./pages/ProjectsGallery";
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/work-order" element={<WorkOrderForm />} />
             <Route path="/customer-survey" element={<CustomerSurveyForm />} />
+            <Route path="/free-estimate" element={<FreeEstimateForm />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/projects-gallery" element={<ProjectsGallery />} />
