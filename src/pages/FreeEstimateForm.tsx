@@ -5,11 +5,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Phone, FileText, Loader2 } from 'lucide-react';
+import { Phone, FileText, Loader2, Camera } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import EstimatePhotoUpload from '@/components/estimate-form/EstimatePhotoUpload';
 
 const boilerTypes = ['ES2', 'ESC', 'ALPINE', 'PVG', 'NAVIEN', 'Steam Boiler', 'Hot Air System', 'Indirect', 'HWH', 'Tankless'];
 const buriedTankSizes = ['275', '550', '1080', '1550'];
@@ -74,6 +75,9 @@ const FreeEstimateForm = () => {
   const [gasInHouse, setGasInHouse] = useState('');
   const [gasNotes, setGasNotes] = useState('');
   const [meterLocation, setMeterLocation] = useState('');
+  
+  // Photos
+  const [photos, setPhotos] = useState<string[]>([]);
 
   const handleBoilerTypeChange = (type: string, checked: boolean) => {
     if (checked) {
@@ -156,7 +160,10 @@ const FreeEstimateForm = () => {
       gasNeededFor,
       gasInHouse,
       gasNotes: gasNotes.trim(),
-      meterLocation
+      meterLocation,
+      
+      // Photos
+      photos
     };
 
     try {
@@ -200,6 +207,7 @@ const FreeEstimateForm = () => {
       setGasInHouse('');
       setGasNotes('');
       setMeterLocation('');
+      setPhotos([]);
 
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -638,6 +646,18 @@ const FreeEstimateForm = () => {
                   </div>
                 </div>
               </div>
+            </div>
+            {/* Photos Section */}
+            <div className="bg-card rounded-2xl shadow-card p-6">
+              <h2 className="font-heading text-xl font-bold text-secondary mb-6 pb-2 border-b border-border">
+                <Camera className="w-5 h-5 inline-block mr-2" />
+                PHOTOS:
+              </h2>
+              <EstimatePhotoUpload 
+                photos={photos} 
+                onPhotosChange={setPhotos} 
+                maxPhotos={10} 
+              />
             </div>
 
             {/* Submit Button */}
