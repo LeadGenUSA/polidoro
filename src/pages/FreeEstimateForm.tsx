@@ -65,7 +65,9 @@ const FreeEstimateForm = () => {
   const [steamSystem, setSteamSystem] = useState('');
   const [thermostatsIncluded, setThermostatsIncluded] = useState('');
   const [existingChimneyLined, setExistingChimneyLined] = useState('');
+  const [chimneyLinedNotes, setChimneyLinedNotes] = useState('');
   const [ventLocation, setVentLocation] = useState('');
+  const [ventLocationNotes, setVentLocationNotes] = useState('');
   const [numberOfZones, setNumberOfZones] = useState('');
   const [zoneSize, setZoneSize] = useState('');
   const [boilerAccess, setBoilerAccess] = useState('');
@@ -151,7 +153,9 @@ const FreeEstimateForm = () => {
       steamSystem,
       thermostatsIncluded,
       existingChimneyLined,
+      chimneyLinedNotes: chimneyLinedNotes.trim(),
       ventLocation,
+      ventLocationNotes: ventLocationNotes.trim(),
       numberOfZones,
       zoneSize,
       boilerAccess,
@@ -199,7 +203,9 @@ const FreeEstimateForm = () => {
       setSteamSystem('');
       setThermostatsIncluded('');
       setExistingChimneyLined('');
+      setChimneyLinedNotes('');
       setVentLocation('');
+      setVentLocationNotes('');
       setNumberOfZones('');
       setZoneSize('');
       setBoilerAccess('');
@@ -476,8 +482,15 @@ const FreeEstimateForm = () => {
                   <div className="space-y-2">
                     <Label>Existing Chimney Lined</Label>
                     <YesNoFullRadio value={existingChimneyLined} onChange={setExistingChimneyLined} name="chimneyLined" />
+                    <Input
+                      value={chimneyLinedNotes}
+                      onChange={(e) => setChimneyLinedNotes(e.target.value)}
+                      placeholder="Notes..."
+                      className="mt-2"
+                    />
                   </div>
                 </div>
+                
                 
                 <div className="space-y-3">
                   <Label>Thermostats Included</Label>
@@ -501,6 +514,12 @@ const FreeEstimateForm = () => {
                       </div>
                     ))}
                   </RadioGroup>
+                  <Input
+                    value={ventLocationNotes}
+                    onChange={(e) => setVentLocationNotes(e.target.value)}
+                    placeholder="Notes..."
+                    className="mt-2"
+                  />
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-6">
