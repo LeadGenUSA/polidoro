@@ -1,38 +1,46 @@
 
-
-# Add Certifications Section
+# Make the "Add a Review" Form Functional
 
 ## Overview
-Create a new Certifications section to showcase Big City Plumbing & Heating's credentials and badges. This section will be placed between the "What Our Customers Say" (Testimonials) section and the "Get Your Free Estimate" (Contact) section on the homepage.
+Connect the existing review submission form to the database so customer reviews are saved as "pending" for admin approval before appearing on the public testimonials page.
 
-## Changes
+## What Will Happen
+1. When a visitor submits a review, it will be saved to the database with a "pending" status
+2. The review will appear in the Admin Dashboard for moderation
+3. Admins can approve or reject the review
+4. Only approved reviews will show on the public Reviews page
 
-### 1. Copy Certification Logos to Project Assets
-Copy all 6 uploaded certification logos to `src/assets/certifications/`:
-- `best-of-porch-2020.png` - Best of Porch 2020 Award
-- `NYC-Master-Plumbers-Council.gif` - NYC Master Plumbers Council Member
-- `wardflex-certified-small.gif` - WardFlex Trained & Certified
-- `epa_leadsafecertfirm-trans.gif` - EPA Lead-Safe Certified Firm
-- `National-Grid-Valueplus.gif` - National Grid Value Plus Installer
-- `liheap-logo-trans.gif` - LIHEAP Low-Income Home Energy Assistance
+## Implementation Details
 
-### 2. Create Certifications Component
-Create `src/components/Certifications.tsx`:
-- Section with "Certifications" label badge
-- Heading: "Licensed, Certified & Trusted"
-- Optional subtext highlighting credentials
-- Responsive grid displaying all 6 certification logos
-- Each logo in a card-style container with subtle hover effects
-- Consistent styling with existing sections (same padding, colors, typography)
+### 1. Add Star Rating to the Form
+- Add a 5-star rating selector so customers can rate their experience
+- This matches the existing review structure that requires a rating
 
-### 3. Update Index Page
-Modify `src/pages/Index.tsx`:
-- Import the new Certifications component
-- Add `<Certifications />` between `<Testimonials />` and `<Contact />`
+### 2. Create Review Submission Function
+- Add a new function in `useReviews.tsx` hook to insert reviews
+- Reviews will be saved with:
+  - `status: 'pending'` (requires admin approval)
+  - `source: 'manual'` (submitted via website form)
+  - `rating: [user selected]`
+  - All form fields (name, location, title, review text)
 
-## Visual Design
-- Background: Light background (`bg-background`) to contrast with the gradient testimonials section above
-- Logo cards: White cards with subtle shadows, centered logos
-- Layout: Flexible grid (2 columns on mobile, 3 on tablet, 6 on desktop)
-- Animation: Fade-in effect on scroll, matching other sections
+### 3. Update the Form Handler
+- Replace the placeholder `handleSubmit` with actual database insertion
+- Add loading state while submitting
+- Show success/error messages
+- Clear form on successful submission
 
+### 4. Input Validation
+- Validate all inputs before submission
+- Ensure name and review text are not empty
+- Validate email format
+- Limit text lengths for security
+
+## Files to Modify
+- `src/hooks/useReviews.tsx` - Add `submitReview` function
+- `src/pages/TestimonialsPage.tsx` - Update form with rating picker and real submission
+
+## Security Notes
+- Reviews are inserted with RLS policies - the `reviews` table allows inserts only by admins
+- We'll need to create an edge function to handle public review submissions securely
+- The edge function will use the service role to bypass RLS for inserting pending reviews
