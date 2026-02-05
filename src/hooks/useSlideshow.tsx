@@ -15,6 +15,7 @@ export interface SlideshowItem {
   overlay_title: string | null;
   overlay_text: string | null;
   link_url: string | null;
+  is_default_first: boolean;
   created_at: string;
   updated_at: string;
   isDefault?: boolean; // Flag for built-in default slides
@@ -33,6 +34,7 @@ const defaultSlides: SlideshowItem[] = [
     overlay_title: null,
     overlay_text: null,
     link_url: null,
+    is_default_first: true,
     created_at: '',
     updated_at: '',
     isDefault: true,
@@ -48,6 +50,7 @@ const defaultSlides: SlideshowItem[] = [
     overlay_title: null,
     overlay_text: null,
     link_url: null,
+    is_default_first: false,
     created_at: '',
     updated_at: '',
     isDefault: true,
@@ -72,7 +75,13 @@ export const useSlideshow = () => {
       if (error) throw error;
       
       if (data && data.length > 0) {
-        setItems(data as SlideshowItem[]);
+        // Sort so default first slide always appears at index 0
+        const sortedData = [...data].sort((a, b) => {
+          if (a.is_default_first) return -1;
+          if (b.is_default_first) return 1;
+          return a.display_order - b.display_order;
+        });
+        setItems(sortedData as SlideshowItem[]);
         setHasCustomSlides(true);
       } else {
         // Show default slides when no custom ones exist
@@ -158,7 +167,7 @@ export const useSlideshow = () => {
     }
   };
 
-  const updateItem = async (id: string, updates: Partial<Pick<SlideshowItem, 'alt_text' | 'is_active' | 'display_order' | 'duration_seconds' | 'overlay_title' | 'overlay_text' | 'link_url'>>) => {
+  const updateItem = async (id: string, updates: Partial<Pick<SlideshowItem, 'alt_text' | 'is_active' | 'display_order' | 'duration_seconds' | 'overlay_title' | 'overlay_text' | 'link_url' | 'is_default_first'>>) => {
     try {
       const { error } = await supabase
         .from('slideshow_items')
@@ -177,6 +186,37 @@ export const useSlideshow = () => {
       toast({
         title: 'Error',
         description: 'Failed to update slideshow item',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const setDefaultFirst = async (id: string) => {
+    try {
+      // Clear all other defaults first
+      await supabase
+        .from('slideshow_items')
+        .update({ is_default_first: false })
+        .neq('id', id);
+
+      // Set the selected one
+      const { error } = await supabase
+        .from('slideshow_items')
+        .update({ is_default_first: true })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'Default first slide updated',
+      });
+      await fetchItems();
+    } catch (error) {
+      console.error('Error setting default first:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to set default first slide',
         variant: 'destructive',
       });
     }
@@ -254,5 +294,6 @@ export const useSlideshow = () => {
     updateItem,
     deleteItem,
     reorderItems,
+    setDefaultFirst,
   };
 };

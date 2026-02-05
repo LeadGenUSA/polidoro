@@ -6,6 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Image,
   Video,
@@ -23,10 +24,11 @@ import {
   Type,
   Settings2,
   ExternalLink,
+  Star,
 } from 'lucide-react';
 
 export const SlideshowManager = () => {
-  const { items, isLoading, isUploading, hasCustomSlides, addItem, updateItem, deleteItem, reorderItems } = useSlideshow();
+  const { items, isLoading, isUploading, hasCustomSlides, addItem, updateItem, deleteItem, reorderItems, setDefaultFirst } = useSlideshow();
   const [altText, setAltText] = useState('');
   const [duration, setDuration] = useState('15');
   const [overlayTitle, setOverlayTitle] = useState('');
@@ -198,6 +200,7 @@ export const SlideshowManager = () => {
                 onMoveDown={() => moveItem(index, 'down')}
                 onUpdate={(updates) => updateItem(item.id, updates)}
                 onDelete={() => deleteItem(item.id)}
+                onSetDefaultFirst={() => setDefaultFirst(item.id)}
                 isDefault={item.isDefault || false}
                 hasCustomSlides={hasCustomSlides}
               />
@@ -217,6 +220,7 @@ interface SlideItemProps {
   onMoveDown: () => void;
   onUpdate: (updates: Partial<Pick<SlideshowItem, 'is_active' | 'duration_seconds' | 'overlay_title' | 'overlay_text' | 'link_url'>>) => void;
   onDelete: () => void;
+  onSetDefaultFirst: () => void;
   isDefault: boolean;
   hasCustomSlides: boolean;
 }
@@ -229,6 +233,7 @@ const SlideItem = ({
   onMoveDown,
   onUpdate,
   onDelete,
+  onSetDefaultFirst,
   isDefault,
   hasCustomSlides,
 }: SlideItemProps) => {
@@ -310,6 +315,12 @@ const SlideItem = ({
               <Clock className="w-3 h-3" />
               {item.duration_seconds}s
             </span>
+            {item.is_default_first && (
+              <span className="text-xs px-2 py-0.5 bg-secondary text-secondary-foreground rounded-full flex items-center gap-1 font-medium">
+                <Star className="w-3 h-3 fill-current" />
+                First Slide
+              </span>
+            )}
             {isReadOnly && (
               <span className="text-xs px-2 py-0.5 bg-muted rounded-full text-muted-foreground">Default</span>
             )}
@@ -339,7 +350,25 @@ const SlideItem = ({
 
         {/* Actions */}
         {!isReadOnly && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id={`default-first-${item.id}`}
+                checked={item.is_default_first}
+                onCheckedChange={() => {
+                  if (!item.is_default_first) {
+                    onSetDefaultFirst();
+                  }
+                }}
+                disabled={item.is_default_first}
+              />
+              <Label 
+                htmlFor={`default-first-${item.id}`} 
+                className="text-xs cursor-pointer whitespace-nowrap"
+              >
+                Show First
+              </Label>
+            </div>
             <Button
               variant="ghost"
               size="icon"

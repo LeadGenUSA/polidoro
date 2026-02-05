@@ -110,6 +110,7 @@ export type Database = {
           file_url: string
           id: string
           is_active: boolean
+          is_default_first: boolean
           link_url: string | null
           overlay_text: string | null
           overlay_title: string | null
@@ -124,6 +125,7 @@ export type Database = {
           file_url: string
           id?: string
           is_active?: boolean
+          is_default_first?: boolean
           link_url?: string | null
           overlay_text?: string | null
           overlay_title?: string | null
@@ -138,6 +140,7 @@ export type Database = {
           file_url?: string
           id?: string
           is_active?: boolean
+          is_default_first?: boolean
           link_url?: string | null
           overlay_text?: string | null
           overlay_title?: string | null
