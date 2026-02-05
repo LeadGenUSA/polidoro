@@ -128,15 +128,23 @@ const Hero = () => {
             
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
               Expert Plumbing &
-              <span className="text-gradient block py-[7px]">Heating Solutions, Installations and Design</span>
+              <span className="text-gradient block py-[7px]">Heating Solutions</span>
             </h1>
             
-            <p className="text-xl md:text-2xl font-heading font-semibold text-primary-foreground/90 mb-2">
-              Residential & Commercial Gas Boiler Installation
-            </p>
-            <p className="text-lg md:text-xl font-heading font-medium text-secondary mb-4">
-              NSS Certified Navien Specialists
-            </p>
+            <ul className="space-y-2 mb-6">
+              <li className="flex items-center gap-3 text-lg md:text-xl font-heading font-semibold text-primary-foreground/90">
+                <span className="w-2 h-2 rounded-full bg-secondary flex-shrink-0" />
+                Installations and Design
+              </li>
+              <li className="flex items-center gap-3 text-lg md:text-xl font-heading font-semibold text-primary-foreground/90">
+                <span className="w-2 h-2 rounded-full bg-secondary flex-shrink-0" />
+                Residential & Commercial Gas Boiler Installation
+              </li>
+              <li className="flex items-center gap-3 text-lg md:text-xl font-heading font-medium text-secondary">
+                <span className="w-2 h-2 rounded-full bg-secondary flex-shrink-0" />
+                NSS Certified Navien Specialists
+              </li>
+            </ul>
             
             <p className="text-lg md:text-xl opacity-90 mb-8 max-w-xl">
               Serving Nassau, Suffolk & NYC with professional plumbing repair, installation, 
