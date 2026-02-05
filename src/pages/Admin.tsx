@@ -5,6 +5,7 @@ import { useReviews } from '@/hooks/useReviews';
 import { ReviewCard } from '@/components/admin/ReviewCard';
 import { ImportReviewsButton } from '@/components/admin/ImportReviewsButton';
 import { SlideshowManager } from '@/components/admin/SlideshowManager';
+import { GalleryManager } from '@/components/admin/GalleryManager';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
@@ -17,13 +18,14 @@ import {
   Loader2,
   LayoutDashboard,
   Images,
-  MessageSquare
+  MessageSquare,
+  Camera
 } from 'lucide-react';
 
 const Admin = () => {
   const navigate = useNavigate();
   const { user, isAdmin, isLoading: authLoading, signOut } = useAuth();
-  const [adminSection, setAdminSection] = useState<'reviews' | 'slideshow'>('reviews');
+  const [adminSection, setAdminSection] = useState<'reviews' | 'slideshow' | 'gallery'>('reviews');
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'all'>('pending');
   const { reviews, isLoading, fetchReviews, approveReview, rejectReview, deleteReview } = useReviews(activeTab);
 
@@ -86,7 +88,7 @@ const Admin = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 lg:px-8 py-8">
         {/* Section Tabs */}
-        <div className="flex gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 mb-8">
           <Button
             variant={adminSection === 'reviews' ? 'default' : 'outline'}
             onClick={() => setAdminSection('reviews')}
@@ -103,9 +105,25 @@ const Admin = () => {
             <Images className="w-4 h-4" />
             Homepage Slideshow
           </Button>
+          <Button
+            variant={adminSection === 'gallery' ? 'default' : 'outline'}
+            onClick={() => setAdminSection('gallery')}
+            className="gap-2"
+          >
+            <Camera className="w-4 h-4" />
+            Project Gallery
+          </Button>
         </div>
 
-        {adminSection === 'slideshow' ? (
+        {adminSection === 'gallery' ? (
+          <>
+            <div className="mb-8">
+              <h2 className="font-heading text-2xl font-bold text-foreground">Project Gallery</h2>
+              <p className="text-muted-foreground">Upload and manage photos displayed in the Projects Gallery page.</p>
+            </div>
+            <GalleryManager />
+          </>
+        ) : adminSection === 'slideshow' ? (
           <>
             <div className="mb-8">
               <h2 className="font-heading text-2xl font-bold text-foreground">Slideshow Management</h2>

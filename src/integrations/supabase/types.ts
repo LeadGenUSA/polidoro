@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      gallery_items: {
+        Row: {
+          caption: string | null
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          image_url: string
+          is_active: boolean
+          updated_at: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          image_url: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
