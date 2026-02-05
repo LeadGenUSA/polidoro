@@ -8,7 +8,6 @@ import { supabase } from '@/integrations/supabase/client';
 import heroImage from '@/assets/hero-plumbing.jpg';
 import nycSkyline from '@/assets/nyc-skyline.png';
 import heroVideo from '@/assets/big-city-plumbing-and-heating.mp4';
-
 interface SlideItem {
   type: 'video' | 'image';
   src: string;
@@ -18,12 +17,16 @@ interface SlideItem {
   overlay_text?: string | null;
   link_url?: string | null;
 }
-
-const defaultSlides: SlideItem[] = [
-  { type: 'video', src: heroVideo, duration_seconds: 15 },
-  { type: 'image', src: heroImage, alt: 'Professional plumbing and heating services', duration_seconds: 15 },
-];
-
+const defaultSlides: SlideItem[] = [{
+  type: 'video',
+  src: heroVideo,
+  duration_seconds: 15
+}, {
+  type: 'image',
+  src: heroImage,
+  alt: 'Professional plumbing and heating services',
+  duration_seconds: 15
+}];
 const Hero = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
@@ -36,7 +39,7 @@ const Hero = () => {
     const plugin = Autoplay({
       delay: slides[0]?.duration_seconds ? slides[0].duration_seconds * 1000 : 15000,
       stopOnInteraction: false,
-      stopOnMouseEnter: true,
+      stopOnMouseEnter: true
     });
     autoplayRef.current = plugin;
     return plugin;
@@ -45,12 +48,12 @@ const Hero = () => {
   // Fetch slides from database
   useEffect(() => {
     const fetchSlides = async () => {
-      const { data, error } = await supabase
-        .from('slideshow_items')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order', { ascending: true });
-
+      const {
+        data,
+        error
+      } = await supabase.from('slideshow_items').select('*').eq('is_active', true).order('display_order', {
+        ascending: true
+      });
       if (!error && data && data.length > 0) {
         // Sort so default first slide always appears at index 0
         const sortedData = [...data].sort((a, b) => {
@@ -58,27 +61,24 @@ const Hero = () => {
           if (b.is_default_first) return 1;
           return a.display_order - b.display_order;
         });
-        
-        const dbSlides: SlideItem[] = sortedData.map((item) => ({
+        const dbSlides: SlideItem[] = sortedData.map(item => ({
           type: item.type as 'video' | 'image',
           src: item.file_url,
           alt: item.alt_text || undefined,
           duration_seconds: item.duration_seconds || 15,
           overlay_title: item.overlay_title,
           overlay_text: item.overlay_text,
-          link_url: item.link_url,
+          link_url: item.link_url
         }));
         setSlides(dbSlides);
       }
     };
-
     fetchSlides();
   }, []);
 
   // Update autoplay delay when slide changes
   useEffect(() => {
     if (!api || !autoplayRef.current) return;
-
     const updateDelay = () => {
       const currentSlide = slides[api.selectedScrollSnap()];
       if (currentSlide && autoplayRef.current) {
@@ -86,30 +86,23 @@ const Hero = () => {
         autoplayRef.current.reset();
       }
     };
-
     setCount(api.scrollSnapList().length);
     setCurrent(api.selectedScrollSnap());
-
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap());
       updateDelay();
     });
   }, [api, slides]);
-
   const scrollPrev = useCallback(() => {
     api?.scrollPrev();
   }, [api]);
-
   const scrollNext = useCallback(() => {
     api?.scrollNext();
   }, [api]);
-
   const scrollTo = useCallback((index: number) => {
     api?.scrollTo(index);
   }, [api]);
-
-  return (
-    <section className="relative min-h-screen flex items-center hero-gradient overflow-hidden">
+  return <section className="relative min-h-screen flex items-center hero-gradient overflow-hidden">
       {/* NYC Skyline Background */}
       <div className="absolute inset-0">
         <img src={nycSkyline} alt="" className="w-full h-full object-cover object-center" />
@@ -175,7 +168,7 @@ const Hero = () => {
                   <Clock className="w-6 h-6 text-secondary" />
                 </div>
                 <div>
-                  <span className="font-bold text-lg">24/7</span>
+                  <span className="font-bold text-lg">24-Hour ResponseTime </span>
                   <p className="text-sm opacity-80">Emergency Service</p>
                 </div>
               </div>
@@ -203,128 +196,53 @@ const Hero = () => {
           {/* Right Slideshow */}
           <div className="relative animate-slide-up animation-delay-200 lg:scale-105 origin-center">
             <div className="relative rounded-3xl overflow-hidden shadow-large border border-white/80">
-              <Carousel
-                setApi={setApi}
-                opts={{
-                  loop: true,
-                }}
-                plugins={[autoplayPlugin]}
-                className="w-full"
-              >
+              <Carousel setApi={setApi} opts={{
+              loop: true
+            }} plugins={[autoplayPlugin]} className="w-full">
                 <CarouselContent>
-                  {slides.map((slide, index) => (
-                    <CarouselItem key={index}>
-                      {slide.link_url ? (
-                        <a
-                          href={slide.link_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block relative cursor-pointer group"
-                        >
-                          {slide.type === 'video' ? (
-                            <video
-                              src={slide.src}
-                              autoPlay
-                              muted
-                              loop
-                              playsInline
-                              className="w-full h-auto object-cover aspect-video"
-                            />
-                          ) : (
-                            <img
-                              src={slide.src}
-                              alt={slide.alt}
-                              className="w-full h-auto object-cover aspect-video"
-                            />
-                          )}
+                  {slides.map((slide, index) => <CarouselItem key={index}>
+                      {slide.link_url ? <a href={slide.link_url} target="_blank" rel="noopener noreferrer" className="block relative cursor-pointer group">
+                          {slide.type === 'video' ? <video src={slide.src} autoPlay muted loop playsInline className="w-full h-auto object-cover aspect-video" /> : <img src={slide.src} alt={slide.alt} className="w-full h-auto object-cover aspect-video" />}
                           {/* Overlay Text */}
-                          {(slide.overlay_title || slide.overlay_text) && (
-                            <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
-                              {slide.overlay_title && (
-                                <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
+                          {(slide.overlay_title || slide.overlay_text) && <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
+                              {slide.overlay_title && <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
                                   {slide.overlay_title}
-                                </h3>
-                              )}
-                              {slide.overlay_text && (
-                                <p className="text-primary-foreground text-xs md:text-sm lg:text-base font-heading font-medium text-left drop-shadow-lg leading-tight mt-0.5">
+                                </h3>}
+                              {slide.overlay_text && <p className="text-primary-foreground text-xs md:text-sm lg:text-base font-heading font-medium text-left drop-shadow-lg leading-tight mt-0.5">
                                   {slide.overlay_text}
-                                </p>
-                              )}
-                            </div>
-                          )}
+                                </p>}
+                            </div>}
                           {/* Click indicator on hover */}
                           <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors pointer-events-none" />
-                        </a>
-                      ) : (
-                        <div className="relative">
-                          {slide.type === 'video' ? (
-                            <video
-                              src={slide.src}
-                              autoPlay
-                              muted
-                              loop
-                              playsInline
-                              className="w-full h-auto object-cover aspect-video"
-                            />
-                          ) : (
-                            <img
-                              src={slide.src}
-                              alt={slide.alt}
-                              className="w-full h-auto object-cover aspect-video"
-                            />
-                          )}
+                        </a> : <div className="relative">
+                          {slide.type === 'video' ? <video src={slide.src} autoPlay muted loop playsInline className="w-full h-auto object-cover aspect-video" /> : <img src={slide.src} alt={slide.alt} className="w-full h-auto object-cover aspect-video" />}
                           {/* Overlay Text */}
-                          {(slide.overlay_title || slide.overlay_text) && (
-                            <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
-                              {slide.overlay_title && (
-                                <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
+                          {(slide.overlay_title || slide.overlay_text) && <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
+                              {slide.overlay_title && <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
                                   {slide.overlay_title}
-                                </h3>
-                              )}
-                              {slide.overlay_text && (
-                                <p className="text-primary-foreground text-xs md:text-sm lg:text-base font-heading font-medium text-left drop-shadow-lg leading-tight mt-0.5">
+                                </h3>}
+                              {slide.overlay_text && <p className="text-primary-foreground text-xs md:text-sm lg:text-base font-heading font-medium text-left drop-shadow-lg leading-tight mt-0.5">
                                   {slide.overlay_text}
-                                </p>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </CarouselItem>
-                  ))}
+                                </p>}
+                            </div>}
+                        </div>}
+                    </CarouselItem>)}
                 </CarouselContent>
               </Carousel>
               
               {/* Navigation Arrows */}
-              <button
-                onClick={scrollPrev}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background transition-colors"
-                aria-label="Previous slide"
-              >
+              <button onClick={scrollPrev} className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background transition-colors" aria-label="Previous slide">
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              <button
-                onClick={scrollNext}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background transition-colors"
-                aria-label="Next slide"
-              >
+              <button onClick={scrollNext} className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background transition-colors" aria-label="Next slide">
                 <ChevronRight className="w-5 h-5" />
               </button>
               
               {/* Dot Indicators */}
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                {Array.from({ length: count }).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => scrollTo(index)}
-                    className={`w-2.5 h-2.5 rounded-full transition-all ${
-                      index === current
-                        ? 'bg-secondary w-6'
-                        : 'bg-background/60 hover:bg-background/80'
-                    }`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
+                {Array.from({
+                length: count
+              }).map((_, index) => <button key={index} onClick={() => scrollTo(index)} className={`w-2.5 h-2.5 rounded-full transition-all ${index === current ? 'bg-secondary w-6' : 'bg-background/60 hover:bg-background/80'}`} aria-label={`Go to slide ${index + 1}`} />)}
               </div>
               
               {/* Gradient overlay */}
@@ -353,8 +271,6 @@ const Hero = () => {
           <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="hsl(210, 25%, 97%)" />
         </svg>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
