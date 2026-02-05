@@ -36,6 +36,7 @@ interface WorkOrderData {
   ccNumber?: string;
   ccExpiration?: string;
   ccSecurityCode?: string;
+  photos?: string[];
 }
 
 const formatPaymentMethod = (method?: string): string => {
@@ -114,6 +115,17 @@ const handler = async (req: Request): Promise<Response> => {
         ${data.recommendations ? `
         <h3 style="color: #1e3a5f; margin-top: 16px;">Recommendations</h3>
         <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; white-space: pre-wrap;">${data.recommendations}</div>
+        ` : ''}
+
+        ${data.photos && data.photos.length > 0 ? `
+        <h3 style="color: #1e3a5f; margin-top: 16px;">Photos</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          ${data.photos.map((url, index) => `
+            <a href="${url}" target="_blank" style="display: inline-block;">
+              <img src="${url}" alt="Work order photo ${index + 1}" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid #ddd;" />
+            </a>
+          `).join('')}
+        </div>
         ` : ''}
 
         <h2 style="color: #1e3a5f; margin-top: 24px;">Technician Information</h2>
