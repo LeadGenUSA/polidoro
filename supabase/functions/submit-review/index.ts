@@ -198,7 +198,8 @@ Deno.serve(async (req) => {
     }
 
     // Check if this is an admin submission (auto-approve)
-    const isAdminSubmission = body.email?.toLowerCase().trim() === 'admin@bigcityph.com'
+    const adminEmails = ['admin@bigcityph.com', 'admin@bigcityplumbing.com']
+    const isAdminSubmission = adminEmails.includes(body.email?.toLowerCase().trim() || '')
     
     console.log('Inserting review submission:', { 
       author_name: body.author_name, 
