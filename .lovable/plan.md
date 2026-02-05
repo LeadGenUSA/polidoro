@@ -1,46 +1,36 @@
 
-# Make the "Add a Review" Form Functional
+# Display Review Source Badges
 
 ## Overview
-Connect the existing review submission form to the database so customer reviews are saved as "pending" for admin approval before appearing on the public testimonials page.
+Add visual indicators on each review card to show whether it came from Google Reviews or was submitted directly on the website.
 
-## What Will Happen
-1. When a visitor submits a review, it will be saved to the database with a "pending" status
-2. The review will appear in the Admin Dashboard for moderation
-3. Admins can approve or reject the review
-4. Only approved reviews will show on the public Reviews page
+## What Will Change
+Reviews will display a small badge showing their source:
+- **Google Reviews** - Shows a Google "G" icon with "Google Review" text
+- **Website Submissions** - Shows a globe/website icon with "Website Review" text
 
-## Implementation Details
+## Visual Design
+- Badge will appear in the review card header area, near the author info or date
+- Google reviews: Google logo/icon in Google colors with subtle styling
+- Website reviews: A clean badge indicating site submission
+- Badges will be subtle but visible, matching the existing design aesthetic
 
-### 1. Add Star Rating to the Form
-- Add a 5-star rating selector so customers can rate their experience
-- This matches the existing review structure that requires a rating
+## Technical Details
+The `source` field already exists in the database with these values:
+- `google` - Reviews imported from Google Places API
+- `manual` - Reviews submitted via the website form
+- `imported` - Bulk imported reviews
 
-### 2. Create Review Submission Function
-- Add a new function in `useReviews.tsx` hook to insert reviews
-- Reviews will be saved with:
-  - `status: 'pending'` (requires admin approval)
-  - `source: 'manual'` (submitted via website form)
-  - `rating: [user selected]`
-  - All form fields (name, location, title, review text)
+## Implementation
+1. **`src/pages/TestimonialsPage.tsx`**
+   - Add source badge component within each review card
+   - Display appropriate icon and label based on `testimonial.source`
+   - Use existing Badge component for consistent styling
+   - Position badge in the header area alongside location/date info
 
-### 3. Update the Form Handler
-- Replace the placeholder `handleSubmit` with actual database insertion
-- Add loading state while submitting
-- Show success/error messages
-- Clear form on successful submission
+2. **Icons**
+   - Google: Use a styled "G" or Google icon
+   - Website: Use the `Globe` icon from lucide-react
 
-### 4. Input Validation
-- Validate all inputs before submission
-- Ensure name and review text are not empty
-- Validate email format
-- Limit text lengths for security
-
-## Files to Modify
-- `src/hooks/useReviews.tsx` - Add `submitReview` function
-- `src/pages/TestimonialsPage.tsx` - Update form with rating picker and real submission
-
-## Security Notes
-- Reviews are inserted with RLS policies - the `reviews` table allows inserts only by admins
-- We'll need to create an edge function to handle public review submissions securely
-- The edge function will use the service role to bypass RLS for inserting pending reviews
+## File to Modify
+- `src/pages/TestimonialsPage.tsx` - Add source indicator to review cards
