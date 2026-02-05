@@ -45,6 +45,16 @@ const formatValue = (value: string | string[] | undefined): string => {
   return value;
 };
 
+// Compact HTML to prevent mail transport artifacts like "=20"
+const compactEmailHtml = (html: string) =>
+  html
+    .replace(/\r\n/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .replace(/\n{2,}/g, "\n")
+    .replace(/\n/g, "")
+    .trim();
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -205,7 +215,7 @@ serve(async (req) => {
         replyTo: formData.email,
         subject: `Estimate Request from ${formData.customer}`,
         content: "Please view this email in an HTML-capable email client.",
-        html: emailHtml,
+        html: compactEmailHtml(emailHtml),
       });
 
       await client.close();
