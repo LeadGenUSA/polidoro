@@ -4,7 +4,8 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Star, Quote, MapPin, Calendar, Filter, Send, MessageSquarePlus, ThumbsUp, Award, Users, Loader2 } from 'lucide-react';
+import { Star, Quote, MapPin, Calendar, Filter, Send, MessageSquarePlus, ThumbsUp, Award, Users, Loader2, Globe } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useApprovedReviews, Review } from '@/hooks/useReviews';
 import StarRating from '@/components/StarRating';
@@ -222,10 +223,22 @@ const TestimonialsPage = () => {
                                   <MapPin className="w-3 h-3" />
                                   {testimonial.location}
                                 </span>}
-                              {testimonial.review_date && <span className="flex items-center gap-1">
+                            {testimonial.review_date && <span className="flex items-center gap-1">
                                   <Calendar className="w-3 h-3" />
                                   {formatDate(testimonial.review_date)}
                                 </span>}
+                              {testimonial.source === 'google' && (
+                                <Badge variant="outline" className="flex items-center gap-1 text-xs bg-card border-border">
+                                  <span className="font-bold text-primary">G</span>
+                                  <span className="text-muted-foreground">Google Review</span>
+                                </Badge>
+                              )}
+                              {testimonial.source === 'manual' && (
+                                <Badge variant="outline" className="flex items-center gap-1 text-xs bg-card border-border">
+                                  <Globe className="w-3 h-3 text-primary" />
+                                  <span className="text-muted-foreground">Website Review</span>
+                                </Badge>
+                              )}
                             </div>
                           </div>
                         </div>
