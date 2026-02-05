@@ -52,7 +52,14 @@ const Hero = () => {
         .order('display_order', { ascending: true });
 
       if (!error && data && data.length > 0) {
-        const dbSlides: SlideItem[] = data.map((item) => ({
+        // Sort so default first slide always appears at index 0
+        const sortedData = [...data].sort((a, b) => {
+          if (a.is_default_first) return -1;
+          if (b.is_default_first) return 1;
+          return a.display_order - b.display_order;
+        });
+        
+        const dbSlides: SlideItem[] = sortedData.map((item) => ({
           type: item.type as 'video' | 'image',
           src: item.file_url,
           alt: item.alt_text || undefined,
