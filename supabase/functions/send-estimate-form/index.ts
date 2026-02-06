@@ -1,8 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 interface EstimateFormData {
@@ -62,6 +63,7 @@ serve(async (req) => {
 
   try {
     const formData: EstimateFormData = await req.json();
+    console.log("Processing estimate form for:", formData.customer);
 
     const SMTP_HOST = Deno.env.get("SMTP_HOST");
     const SMTP_PORT = Deno.env.get("SMTP_PORT");
@@ -174,53 +176,84 @@ serve(async (req) => {
 </html>
     `;
 
-    // Use nodemailer-style SMTP sending
-    const emailPayload = {
+    // Send email using SMTP
+    const { SMTPClient } = await import("https://deno.land/x/denomailer@1.6.0/mod.ts");
+    
+    const client = new SMTPClient({
+      connection: {
+        hostname: SMTP_HOST,
+        port: parseInt(SMTP_PORT),
+        tls: true,
+        auth: {
+          username: SMTP_USER,
+          password: SMTP_PASS,
+        },
+      },
+    });
+
+    await client.send({
       from: SMTP_USER,
       to: "mike@bigcityph.com",
       replyTo: formData.email,
       subject: `Estimate Request from ${formData.customer}`,
-      html: emailHtml,
-    };
-
-    // Send email using fetch to SMTP2GO or similar API
-    // For Hostgator SMTP, we'll use the raw SMTP approach
-    const response = await fetch(`https://${SMTP_HOST}:${SMTP_PORT}/send`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Basic ${btoa(`${SMTP_USER}:${SMTP_PASS}`)}`,
-      },
-      body: JSON.stringify(emailPayload),
-    }).catch(async () => {
-      // Fallback: Use Deno's built-in SMTP client approach via Resend or similar
-      // For now, we'll use the same pattern as send-contact-form
-      const { SMTPClient } = await import("https://deno.land/x/denomailer@1.6.0/mod.ts");
-      
-      const client = new SMTPClient({
-        connection: {
-          hostname: SMTP_HOST,
-          port: parseInt(SMTP_PORT),
-          tls: true,
-          auth: {
-            username: SMTP_USER,
-            password: SMTP_PASS,
-          },
-        },
-      });
-
-      await client.send({
-        from: SMTP_USER,
-        to: "mike@bigcityph.com",
-        replyTo: formData.email,
-        subject: `Estimate Request from ${formData.customer}`,
-        content: "Please view this email in an HTML-capable email client.",
-        html: compactEmailHtml(emailHtml),
-      });
-
-      await client.close();
-      return { ok: true };
+      content: "Please view this email in an HTML-capable email client.",
+      html: compactEmailHtml(emailHtml),
     });
+
+    await client.close();
+    console.log("Estimate email sent successfully via SMTP");
+
+    // Save submission to database
+    try {
+      const supabaseAdmin = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      );
+
+      const { error: dbError } = await supabaseAdmin.from('estimate_submissions').insert({
+        customer: formData.customer,
+        email: formData.email,
+        cost_of_job: formData.costOfJob || null,
+        boiler_types: formData.boilerTypes || [],
+        boiler_size: formData.boilerSize || null,
+        baseboard: formData.baseboard || null,
+        buried_tank_size: formData.buriedTankSize || [],
+        pump_and_foam: formData.pumpAndFoam || null,
+        tank_sand: formData.tankSand || null,
+        buried_price_additional: formData.buriedPriceAdditional || null,
+        interior_tank_removed: formData.interiorTankRemoved || null,
+        interior_tank_behind_wall: formData.interiorTankBehindWall || null,
+        interior_price_additional: formData.interiorPriceAdditional || null,
+        exterior_275_removal: formData.exterior275Removal || null,
+        exterior_price_additional: formData.exteriorPriceAdditional || null,
+        customer_responsible_for_tank: formData.customerResponsibleForTank || null,
+        tank_notes: formData.tankNotes || null,
+        steam_system: formData.steamSystem || null,
+        thermostats_included: formData.thermostatsIncluded || null,
+        existing_chimney_lined: formData.existingChimneyLined || null,
+        chimney_lined_notes: formData.chimneyLinedNotes || null,
+        vent_location: formData.ventLocation || null,
+        vent_location_notes: formData.ventLocationNotes || null,
+        number_of_zones: formData.numberOfZones || null,
+        zone_size: formData.zoneSize || null,
+        boiler_access: formData.boilerAccess || null,
+        gas_needed_for: formData.gasNeededFor || [],
+        gas_in_house: formData.gasInHouse || null,
+        gas_notes: formData.gasNotes || null,
+        meter_location: formData.meterLocation || null,
+        photos: formData.photos || [],
+        status: 'new'
+      });
+
+      if (dbError) {
+        console.error("Error saving estimate to database:", dbError);
+      } else {
+        console.log("Estimate submission saved to database");
+      }
+    } catch (dbErr) {
+      console.error("Database save failed:", dbErr);
+      // Don't fail the request if DB save fails - email was already sent
+    }
 
     return new Response(
       JSON.stringify({ success: true, message: "Estimate request sent successfully" }),

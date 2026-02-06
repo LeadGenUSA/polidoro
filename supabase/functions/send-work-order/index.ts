@@ -1,10 +1,11 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 interface WorkOrderData {
@@ -196,6 +197,52 @@ const handler = async (req: Request): Promise<Response> => {
     await client.close();
 
     console.log("Work order email sent successfully via SMTP");
+
+    // Save submission to database (excluding credit card data for security)
+    try {
+      const supabaseAdmin = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      );
+
+      const { error: dbError } = await supabaseAdmin.from('work_order_submissions').insert({
+        customer_name: data.customerName,
+        street_address: data.streetAddress,
+        apt_number: data.aptNumber || null,
+        phone: data.phone,
+        zip_code: data.zipCode,
+        email: data.email,
+        email_to: data.emailTo || null,
+        error_code: data.errorCode || null,
+        make_model: data.makeModel || null,
+        serial_number: data.serialNumber || null,
+        job_description: data.jobDescription,
+        recommendations: data.recommendations || null,
+        rga_navien_tech: data.rgaNavienTech || null,
+        water_sampling_ph: data.waterSamplingPH || null,
+        parts_under_warranty: data.partsUnderWarranty || null,
+        tech_on_job: data.techOnJob || null,
+        hours_on_job: data.hoursOnJob || null,
+        job_date: data.jobDate || null,
+        job_completed: data.jobCompleted || null,
+        payment_method: data.paymentMethod || null,
+        billing_status: data.billingStatus || null,
+        total_charges: data.totalCharges || null,
+        photos: data.photos || [],
+        status: 'new'
+        // NOTE: Credit card data (ccName, ccAddress, ccZip, ccNumber, ccExpiration, ccSecurityCode) 
+        // is intentionally NOT stored in the database for security compliance
+      });
+
+      if (dbError) {
+        console.error("Error saving work order to database:", dbError);
+      } else {
+        console.log("Work order submission saved to database");
+      }
+    } catch (dbErr) {
+      console.error("Database save failed:", dbErr);
+      // Don't fail the request if DB save fails - email was already sent
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

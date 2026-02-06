@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useReviews } from '@/hooks/useReviews';
+import { useAllSubmissionCounts } from '@/hooks/useSubmissions';
 import { ReviewCard } from '@/components/admin/ReviewCard';
 import { ImportReviewsButton } from '@/components/admin/ImportReviewsButton';
 import { SlideshowManager } from '@/components/admin/SlideshowManager';
 import { GalleryManager } from '@/components/admin/GalleryManager';
+import { SubmissionsManager } from '@/components/admin/SubmissionsManager';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
@@ -19,15 +21,17 @@ import {
   LayoutDashboard,
   Images,
   MessageSquare,
-  Camera
+  Camera,
+  FileText
 } from 'lucide-react';
 
 const Admin = () => {
   const navigate = useNavigate();
   const { user, isAdmin, isLoading: authLoading, signOut } = useAuth();
-  const [adminSection, setAdminSection] = useState<'reviews' | 'slideshow' | 'gallery'>('reviews');
+  const [adminSection, setAdminSection] = useState<'reviews' | 'slideshow' | 'gallery' | 'submissions'>('reviews');
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'all'>('pending');
   const { reviews, isLoading, fetchReviews, approveReview, rejectReview, deleteReview } = useReviews(activeTab);
+  const submissionCounts = useAllSubmissionCounts();
 
   useEffect(() => {
     if (!authLoading && (!user || !isAdmin)) {
@@ -98,6 +102,19 @@ const Admin = () => {
             Reviews
           </Button>
           <Button
+            variant={adminSection === 'submissions' ? 'default' : 'outline'}
+            onClick={() => setAdminSection('submissions')}
+            className="gap-2 relative"
+          >
+            <FileText className="w-4 h-4" />
+            Submissions
+            {submissionCounts.total > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center">
+                {submissionCounts.total}
+              </span>
+            )}
+          </Button>
+          <Button
             variant={adminSection === 'slideshow' ? 'default' : 'outline'}
             onClick={() => setAdminSection('slideshow')}
             className="gap-2"
@@ -115,7 +132,15 @@ const Admin = () => {
           </Button>
         </div>
 
-        {adminSection === 'gallery' ? (
+        {adminSection === 'submissions' ? (
+          <>
+            <div className="mb-8">
+              <h2 className="font-heading text-2xl font-bold text-foreground">Form Submissions</h2>
+              <p className="text-muted-foreground">View and manage estimate, work order, and survey form submissions.</p>
+            </div>
+            <SubmissionsManager />
+          </>
+        ) : adminSection === 'gallery' ? (
           <>
             <div className="mb-8">
               <h2 className="font-heading text-2xl font-bold text-foreground">Project Gallery</h2>
