@@ -1,38 +1,37 @@
 
 
-# Add Navilend Logo to Hero Section
+# Add Outer Glow to Navilend Logo
 
 ## Summary
-Add the Navilend logo graphic to the bottom right corner of the hero section, positioned above the wave element.
+Add a glowing effect to the Navilend logo in the Hero section to improve visibility against the dark background.
 
-## Implementation Steps
+## Implementation
 
-### 1. Copy the image asset
-- Save the uploaded Navilend logo as `src/assets/navilend-logo.png`
+### Update Hero.tsx
 
-### 2. Update Hero.tsx
-
-**Add import** (around line 3):
-```typescript
-import navilendLogo from '@/assets/navilend-logo.png';
+**Current code** (lines 273-278):
+```tsx
+<img 
+  src={navilendLogo} 
+  alt="Navilend" 
+  className="h-8 md:h-10 w-auto opacity-90"
+/>
 ```
 
-**Add logo element** (before the Bottom Wave section, around line 272):
+**Updated code**:
 ```tsx
-{/* Navilend Logo - Bottom Right */}
-<div className="absolute bottom-24 right-8 z-20">
-  <img 
-    src={navilendLogo} 
-    alt="Navilend" 
-    className="h-8 md:h-10 w-auto opacity-90"
-  />
-</div>
+<img 
+  src={navilendLogo} 
+  alt="Navilend" 
+  className="h-8 md:h-10 w-auto opacity-90 drop-shadow-[0_0_8px_rgba(255,255,255,0.6)] hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] transition-all"
+/>
 ```
 
 ## Technical Notes
-- Using `absolute` positioning with `bottom-24` to place it above the wave
-- `right-8` positions it at the right edge with some padding
-- `z-20` ensures it appears above the gradient overlays but doesn't interfere with interactive elements
-- Responsive sizing: `h-8` on mobile, `h-10` on desktop
-- Slight opacity (`opacity-90`) to blend with the hero aesthetic
+- Using Tailwind's arbitrary `drop-shadow` utility which applies a CSS filter that follows the image's actual shape (not the bounding box)
+- White glow (`rgba(255,255,255,0.6)`) provides good contrast against the dark navy hero background
+- `8px` blur radius creates a subtle but visible glow
+- Added a slightly stronger glow on hover for interactivity
+- `transition-all` smoothly animates the hover effect
+- This approach works better than `box-shadow` for images with transparency
 
