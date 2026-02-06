@@ -14,6 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
+      estimate_submissions: {
+        Row: {
+          baseboard: string | null
+          boiler_access: string | null
+          boiler_size: string | null
+          boiler_types: string[] | null
+          buried_price_additional: string | null
+          buried_tank_size: string[] | null
+          chimney_lined_notes: string | null
+          cost_of_job: string | null
+          created_at: string
+          customer: string
+          customer_responsible_for_tank: string | null
+          email: string
+          existing_chimney_lined: string | null
+          exterior_275_removal: string | null
+          exterior_price_additional: string | null
+          gas_in_house: string | null
+          gas_needed_for: string[] | null
+          gas_notes: string | null
+          id: string
+          interior_price_additional: string | null
+          interior_tank_behind_wall: string | null
+          interior_tank_removed: string | null
+          meter_location: string | null
+          number_of_zones: string | null
+          photos: string[] | null
+          pump_and_foam: string | null
+          status: Database["public"]["Enums"]["submission_status"]
+          steam_system: string | null
+          tank_notes: string | null
+          tank_sand: string | null
+          thermostats_included: string | null
+          vent_location: string | null
+          vent_location_notes: string | null
+          zone_size: string | null
+        }
+        Insert: {
+          baseboard?: string | null
+          boiler_access?: string | null
+          boiler_size?: string | null
+          boiler_types?: string[] | null
+          buried_price_additional?: string | null
+          buried_tank_size?: string[] | null
+          chimney_lined_notes?: string | null
+          cost_of_job?: string | null
+          created_at?: string
+          customer: string
+          customer_responsible_for_tank?: string | null
+          email: string
+          existing_chimney_lined?: string | null
+          exterior_275_removal?: string | null
+          exterior_price_additional?: string | null
+          gas_in_house?: string | null
+          gas_needed_for?: string[] | null
+          gas_notes?: string | null
+          id?: string
+          interior_price_additional?: string | null
+          interior_tank_behind_wall?: string | null
+          interior_tank_removed?: string | null
+          meter_location?: string | null
+          number_of_zones?: string | null
+          photos?: string[] | null
+          pump_and_foam?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          steam_system?: string | null
+          tank_notes?: string | null
+          tank_sand?: string | null
+          thermostats_included?: string | null
+          vent_location?: string | null
+          vent_location_notes?: string | null
+          zone_size?: string | null
+        }
+        Update: {
+          baseboard?: string | null
+          boiler_access?: string | null
+          boiler_size?: string | null
+          boiler_types?: string[] | null
+          buried_price_additional?: string | null
+          buried_tank_size?: string[] | null
+          chimney_lined_notes?: string | null
+          cost_of_job?: string | null
+          created_at?: string
+          customer?: string
+          customer_responsible_for_tank?: string | null
+          email?: string
+          existing_chimney_lined?: string | null
+          exterior_275_removal?: string | null
+          exterior_price_additional?: string | null
+          gas_in_house?: string | null
+          gas_needed_for?: string[] | null
+          gas_notes?: string | null
+          id?: string
+          interior_price_additional?: string | null
+          interior_tank_behind_wall?: string | null
+          interior_tank_removed?: string | null
+          meter_location?: string | null
+          number_of_zones?: string | null
+          photos?: string[] | null
+          pump_and_foam?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          steam_system?: string | null
+          tank_notes?: string | null
+          tank_sand?: string | null
+          thermostats_included?: string | null
+          vent_location?: string | null
+          vent_location_notes?: string | null
+          zone_size?: string | null
+        }
+        Relationships: []
+      }
       gallery_items: {
         Row: {
           caption: string | null
@@ -182,6 +293,87 @@ export type Database = {
         }
         Relationships: []
       }
+      survey_submissions: {
+        Row: {
+          additional_comments: string | null
+          areas_to_improve: string | null
+          comfortable_with_tech: string | null
+          communication: string | null
+          consider_installation: string | null
+          created_at: string
+          customer_name: string
+          email: string
+          estimate_overpriced: string | null
+          id: string
+          overall_satisfaction: string | null
+          phone: string | null
+          professionalism: string | null
+          quality_of_work: string | null
+          satisfied_with_recommendation: string | null
+          service_date: string | null
+          status: Database["public"]["Enums"]["submission_status"]
+          technician_name: string | null
+          timeliness: string | null
+          use_again: string | null
+          value_for_money: string | null
+          were_we_professional: string | null
+          what_did_well: string | null
+          would_recommend: string | null
+        }
+        Insert: {
+          additional_comments?: string | null
+          areas_to_improve?: string | null
+          comfortable_with_tech?: string | null
+          communication?: string | null
+          consider_installation?: string | null
+          created_at?: string
+          customer_name: string
+          email: string
+          estimate_overpriced?: string | null
+          id?: string
+          overall_satisfaction?: string | null
+          phone?: string | null
+          professionalism?: string | null
+          quality_of_work?: string | null
+          satisfied_with_recommendation?: string | null
+          service_date?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          technician_name?: string | null
+          timeliness?: string | null
+          use_again?: string | null
+          value_for_money?: string | null
+          were_we_professional?: string | null
+          what_did_well?: string | null
+          would_recommend?: string | null
+        }
+        Update: {
+          additional_comments?: string | null
+          areas_to_improve?: string | null
+          comfortable_with_tech?: string | null
+          communication?: string | null
+          consider_installation?: string | null
+          created_at?: string
+          customer_name?: string
+          email?: string
+          estimate_overpriced?: string | null
+          id?: string
+          overall_satisfaction?: string | null
+          phone?: string | null
+          professionalism?: string | null
+          quality_of_work?: string | null
+          satisfied_with_recommendation?: string | null
+          service_date?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          technician_name?: string | null
+          timeliness?: string | null
+          use_again?: string | null
+          value_for_money?: string | null
+          were_we_professional?: string | null
+          what_did_well?: string | null
+          would_recommend?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -203,6 +395,93 @@ export type Database = {
         }
         Relationships: []
       }
+      work_order_submissions: {
+        Row: {
+          apt_number: string | null
+          billing_status: string | null
+          created_at: string
+          customer_name: string
+          email: string
+          email_to: string | null
+          error_code: string | null
+          hours_on_job: string | null
+          id: string
+          job_completed: string | null
+          job_date: string | null
+          job_description: string
+          make_model: string | null
+          parts_under_warranty: string | null
+          payment_method: string | null
+          phone: string
+          photos: string[] | null
+          recommendations: string | null
+          rga_navien_tech: string | null
+          serial_number: string | null
+          status: Database["public"]["Enums"]["submission_status"]
+          street_address: string
+          tech_on_job: string | null
+          total_charges: string | null
+          water_sampling_ph: string | null
+          zip_code: string
+        }
+        Insert: {
+          apt_number?: string | null
+          billing_status?: string | null
+          created_at?: string
+          customer_name: string
+          email: string
+          email_to?: string | null
+          error_code?: string | null
+          hours_on_job?: string | null
+          id?: string
+          job_completed?: string | null
+          job_date?: string | null
+          job_description: string
+          make_model?: string | null
+          parts_under_warranty?: string | null
+          payment_method?: string | null
+          phone: string
+          photos?: string[] | null
+          recommendations?: string | null
+          rga_navien_tech?: string | null
+          serial_number?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          street_address: string
+          tech_on_job?: string | null
+          total_charges?: string | null
+          water_sampling_ph?: string | null
+          zip_code: string
+        }
+        Update: {
+          apt_number?: string | null
+          billing_status?: string | null
+          created_at?: string
+          customer_name?: string
+          email?: string
+          email_to?: string | null
+          error_code?: string | null
+          hours_on_job?: string | null
+          id?: string
+          job_completed?: string | null
+          job_date?: string | null
+          job_description?: string
+          make_model?: string | null
+          parts_under_warranty?: string | null
+          payment_method?: string | null
+          phone?: string
+          photos?: string[] | null
+          recommendations?: string | null
+          rga_navien_tech?: string | null
+          serial_number?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          street_address?: string
+          tech_on_job?: string | null
+          total_charges?: string | null
+          water_sampling_ph?: string | null
+          zip_code?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -220,6 +499,7 @@ export type Database = {
       app_role: "admin" | "user"
       review_source: "google" | "manual" | "imported"
       review_status: "pending" | "approved" | "rejected"
+      submission_status: "new" | "reviewed" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -350,6 +630,7 @@ export const Constants = {
       app_role: ["admin", "user"],
       review_source: ["google", "manual", "imported"],
       review_status: ["pending", "approved", "rejected"],
+      submission_status: ["new", "reviewed", "archived"],
     },
   },
 } as const

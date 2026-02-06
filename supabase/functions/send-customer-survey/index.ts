@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -224,6 +225,48 @@ const handler = async (req: Request): Promise<Response> => {
     await client.close();
 
     console.log("Survey email sent successfully via SMTP");
+
+    // Save submission to database
+    try {
+      const supabaseAdmin = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      );
+
+      const { error: dbError } = await supabaseAdmin.from('survey_submissions').insert({
+        customer_name: data.customerName,
+        email: data.email,
+        phone: data.phone || null,
+        service_date: data.serviceDate || null,
+        technician_name: data.technicianName || null,
+        overall_satisfaction: data.overallSatisfaction || null,
+        quality_of_work: data.qualityOfWork || null,
+        timeliness: data.timeliness || null,
+        professionalism: data.professionalism || null,
+        communication: data.communication || null,
+        value_for_money: data.valueForMoney || null,
+        would_recommend: data.wouldRecommend || null,
+        use_again: data.useAgain || null,
+        estimate_overpriced: data.estimateOverpriced || null,
+        satisfied_with_recommendation: data.satisfiedWithRecommendation || null,
+        were_we_professional: data.wereWeProfessional || null,
+        comfortable_with_tech: data.comfortableWithTech || null,
+        consider_installation: data.considerInstallation || null,
+        what_did_well: data.whatDidWell || null,
+        areas_to_improve: data.areasToImprove || null,
+        additional_comments: data.additionalComments || null,
+        status: 'new'
+      });
+
+      if (dbError) {
+        console.error("Error saving survey to database:", dbError);
+      } else {
+        console.log("Survey submission saved to database");
+      }
+    } catch (dbErr) {
+      console.error("Database save failed:", dbErr);
+      // Don't fail the request if DB save fails - email was already sent
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
