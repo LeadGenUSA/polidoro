@@ -275,7 +275,7 @@ const Hero = () => {
         <img 
           src={navilendLogo} 
           alt="Navilend" 
-          className="h-8 md:h-10 w-auto opacity-90"
+          className="h-8 md:h-10 w-auto opacity-90 drop-shadow-[0_0_8px_rgba(255,255,255,0.6)] hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] transition-all"
         />
       </div>
       
