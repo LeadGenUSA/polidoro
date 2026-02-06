@@ -25,7 +25,7 @@ const contactInfo = [
   {
     icon: Clock,
     title: 'Hours',
-    details: ['24/7 Emergency Service'],
+    details: ['24-Hour Response Time'],
   },
 ];
 
