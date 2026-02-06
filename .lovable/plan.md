@@ -1,31 +1,38 @@
 
-# Link "View Our Services" to Services Page
+
+# Add Navilend Logo to Hero Section
 
 ## Summary
-The "View Our Services" button in the Hero component is currently non-functional. I'll wrap it with a React Router Link to navigate to the `/services` page.
+Add the Navilend logo graphic to the bottom right corner of the hero section, positioned above the wave element.
 
-## Change Required
+## Implementation Steps
 
-**File: `src/components/Hero.tsx`** (lines 159-161)
+### 1. Copy the image asset
+- Save the uploaded Navilend logo as `src/assets/navilend-logo.png`
 
-Update the button to use React Router navigation:
+### 2. Update Hero.tsx
 
-```text
-Current:
-  <Button variant="heroOutline" size="xl">
-    View Our Services
-  </Button>
-
-Updated:
-  <Button variant="heroOutline" size="xl" asChild>
-    <Link to="/services">
-      View Our Services
-    </Link>
-  </Button>
+**Add import** (around line 3):
+```typescript
+import navilendLogo from '@/assets/navilend-logo.png';
 ```
 
-This follows the same pattern used elsewhere in the codebase (like the "Request Estimate" button on the Services page).
+**Add logo element** (before the Bottom Wave section, around line 272):
+```tsx
+{/* Navilend Logo - Bottom Right */}
+<div className="absolute bottom-24 right-8 z-20">
+  <img 
+    src={navilendLogo} 
+    alt="Navilend" 
+    className="h-8 md:h-10 w-auto opacity-90"
+  />
+</div>
+```
 
 ## Technical Notes
-- The `Link` component from `react-router-dom` should already be imported in the file
-- The `asChild` prop allows the Button to render as a Link while keeping button styling
+- Using `absolute` positioning with `bottom-24` to place it above the wave
+- `right-8` positions it at the right edge with some padding
+- `z-20` ensures it appears above the gradient overlays but doesn't interfere with interactive elements
+- Responsive sizing: `h-8` on mobile, `h-10` on desktop
+- Slight opacity (`opacity-90`) to blend with the hero aesthetic
+
