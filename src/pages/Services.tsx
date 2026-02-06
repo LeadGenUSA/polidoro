@@ -198,7 +198,7 @@ const Services = () => {
                 </a>
               </Button>
               <Button variant="heroOutline" size="xl" asChild>
-                <Link to="/#contact">
+                <Link to="/free-estimate">
                   Request Estimate
                 </Link>
               </Button>
