@@ -1,37 +1,32 @@
 
 
-# Add Outer Glow to Navilend Logo
+# Fix Hero Section Bottom Border Gap
 
 ## Summary
-Add a glowing effect to the Navilend logo in the Hero section to improve visibility against the dark background.
+Remove the visible gap/border at the bottom of the hero section by ensuring the SVG wave element renders flush with the section edge.
+
+## Problem
+The SVG element uses inline display by default, which can cause a small gap at the bottom due to how browsers handle baseline alignment for inline elements. This creates a visible border or line between the hero section and the next section.
+
+## Solution
+Add `block` display class to the SVG element to eliminate the baseline gap.
 
 ## Implementation
 
-### Update Hero.tsx
+### Update Hero.tsx (line 284)
 
-**Current code** (lines 273-278):
+**Current code:**
 ```tsx
-<img 
-  src={navilendLogo} 
-  alt="Navilend" 
-  className="h-8 md:h-10 w-auto opacity-90"
-/>
+<svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
 ```
 
-**Updated code**:
+**Updated code:**
 ```tsx
-<img 
-  src={navilendLogo} 
-  alt="Navilend" 
-  className="h-8 md:h-10 w-auto opacity-90 drop-shadow-[0_0_8px_rgba(255,255,255,0.6)] hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] transition-all"
-/>
+<svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block">
 ```
 
 ## Technical Notes
-- Using Tailwind's arbitrary `drop-shadow` utility which applies a CSS filter that follows the image's actual shape (not the bounding box)
-- White glow (`rgba(255,255,255,0.6)`) provides good contrast against the dark navy hero background
-- `8px` blur radius creates a subtle but visible glow
-- Added a slightly stronger glow on hover for interactivity
-- `transition-all` smoothly animates the hover effect
-- This approach works better than `box-shadow` for images with transparency
+- SVG elements default to `display: inline` which causes browsers to reserve space for text descenders (baseline alignment)
+- Adding `block` display removes this space, ensuring the SVG sits flush at the bottom
+- This is a common fix for gaps appearing below images and SVGs in HTML layouts
 
