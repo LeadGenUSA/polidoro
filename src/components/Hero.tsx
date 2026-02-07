@@ -262,7 +262,7 @@ const Hero = () => {
                 </div>
                 <div>
                   <p className="font-heading font-bold text-foreground">Excellent Service</p>
-                  <p className="text-sm text-muted-foreground">500+ Happy Customers</p>
+                  <p className="text-sm text-muted-foreground">5000+ Happy Customers</p>
                 </div>
               </div>
             </div>
