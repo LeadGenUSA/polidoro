@@ -78,7 +78,7 @@ const services = [
   {
     icon: AlertTriangle,
     title: 'Emergency Services',
-    description: 'Available 24/7 for plumbing and heating emergencies. When disaster strikes, our rapid response team is ready to help protect your property.',
+    description: '24-hour response time for plumbing and heating emergencies. When disaster strikes, our rapid response team is ready to help protect your property.',
     features: [
       '24/7 emergency response',
       'Burst pipe repair',
