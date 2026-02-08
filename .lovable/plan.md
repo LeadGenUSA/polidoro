@@ -1,51 +1,55 @@
 
-# Show Entire Images in Hero Slideshow
+# Privacy Policy and Terms of Service Pages
 
 ## Summary
-Update the slideshow to display complete images without cropping by changing the CSS object-fit property from `cover` to `contain`.
+Create two new legal pages for the website: Privacy Policy and Terms of Service. These pages will follow the existing site design patterns and be linked from the Footer.
 
-## Current Behavior
-Images and videos use `object-cover` which:
-- Fills the entire container
-- Crops parts of the image to maintain aspect ratio
-- May cut off important content on the edges
+## Files to Create
 
-## Proposed Change
-Change to `object-contain` which:
-- Shows the entire image/video
-- Maintains original aspect ratio
-- May add letterboxing (bars on sides or top/bottom) with background color
+### 1. `src/pages/PrivacyPolicy.tsx`
+A new page containing the Privacy Policy with sections covering:
+- Information Collection (personal info, contact forms, cookies)
+- How Information is Used
+- Information Sharing
+- Data Security
+- Your Rights
+- Contact Information
+- Policy Updates
 
-## Technical Changes
+### 2. `src/pages/TermsOfService.tsx`
+A new page containing Terms of Service with sections covering:
+- Acceptance of Terms
+- Services Description
+- User Responsibilities
+- Estimates and Pricing
+- Limitation of Liability
+- Warranty Information
+- Governing Law (New York State)
+- Contact Information
 
-**File:** `src/components/Hero.tsx`
+## Files to Modify
 
-| Location | Current | New |
-|----------|---------|-----|
-| Line 210 (linked slides) | `object-cover` | `object-contain` |
-| Line 223 (regular slides) | `object-cover` | `object-contain` |
+### 3. `src/App.tsx`
+Add two new routes:
+- `/privacy-policy` for the Privacy Policy page
+- `/terms-of-service` for the Terms of Service page
 
-Additionally, I'll add a background color to the container so any letterboxing looks intentional (dark background to match the site theme).
+### 4. `src/components/Footer.tsx`
+Update the placeholder links to use React Router's `Link` component:
+- Change Privacy Policy link from `href="#"` to `to="/privacy-policy"`
+- Change Terms of Service link from `href="#"` to `to="/terms-of-service"`
 
-### Code Changes
+## Design Approach
+Both pages will follow the established site design:
+- Navy blue hero section with gradient (`hero-gradient pt-32 pb-20`)
+- Page title badge and heading matching other pages (About Us, Testimonials)
+- Card-based content sections for each policy topic
+- Consistent typography using `font-heading` for headings
+- Footer at the bottom
 
-**Line 210** - Images/videos with clickable links:
-```tsx
-// From:
-className="w-full h-auto object-cover aspect-video"
-// To:
-className="w-full h-auto object-contain aspect-video bg-primary/20"
-```
-
-**Line 223** - Images/videos without links:
-```tsx
-// From:
-className="w-full h-auto object-cover aspect-video"
-// To:
-className="w-full h-auto object-contain aspect-video bg-primary/20"
-```
-
-## Visual Impact
-- Images will now display in their entirety
-- If an image doesn't match 16:9 aspect ratio, subtle dark bars will appear on sides/top/bottom
-- The slideshow container size remains consistent
+## Content Customization
+The legal content will be tailored specifically for Big City Plumbing & Heating Inc.:
+- Company name and contact info included
+- References to plumbing/heating services
+- New York State jurisdiction
+- Service area mentions (Nassau, Suffolk, NYC)
