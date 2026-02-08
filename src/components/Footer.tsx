@@ -141,12 +141,12 @@ const Footer = () => {
             © {currentYear} Big City Plumbing & Heating. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <a href="#" className="text-primary-foreground/60 hover:text-primary-foreground text-sm transition-colors">
+            <Link to="/privacy-policy" className="text-primary-foreground/60 hover:text-primary-foreground text-sm transition-colors">
               Privacy Policy
-            </a>
-            <a href="#" className="text-primary-foreground/60 hover:text-primary-foreground text-sm transition-colors">
+            </Link>
+            <Link to="/terms-of-service" className="text-primary-foreground/60 hover:text-primary-foreground text-sm transition-colors">
               Terms of Service
-            </a>
+            </Link>
             <Link 
               to="/admin/login" 
               className="text-primary-foreground/40 hover:text-primary-foreground/60 text-sm transition-colors flex items-center gap-1"
