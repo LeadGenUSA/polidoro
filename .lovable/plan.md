@@ -1,99 +1,43 @@
 
-# Survey Thank You - $50 Off Coupon Page
+# Add Coupon Graphic Next to "Excellent Service" Badge
 
-## Summary
-Create a new "Thank You" coupon page that rewards customers with $50 off their next plumbing job for completing the customer survey. This page will be hidden from search engines to keep it exclusive to survey respondents.
+## Overview
+Add the uploaded "Click Here for Coupons" graphic as a floating, clickable element positioned to the right of the existing "Excellent Service" floating card beneath the hero slideshow. It will link to the `/tenpercent-coupon` page.
 
-## Files to Create
+## Changes
 
-### 1. `src/pages/SurveyThankYouCoupon.tsx`
-A new page based on the existing CouponPage design with these customizations:
+### 1. Copy the uploaded image to project assets
+- Copy `user-uploads://coupons_SRC.png` to `src/assets/coupons-badge.png`
 
-**Content Changes:**
-- Hero badge: "Thank You" instead of "Special Offer"
-- Hero title: "Thanks for Your Feedback!"
-- Hero subtitle: Thank you message acknowledging survey completion
-- Discount amount: **$50** instead of 10%
-- Description: "Your Next Plumbing or Heating Service"
-- Additional thank you messaging in the coupon body
+### 2. Update `src/components/Hero.tsx`
+- Import the new coupon badge image
+- Modify the floating card area (currently a single `div` below the slideshow) to become a flex row containing:
+  - The existing "Excellent Service" card (left)
+  - The new coupon graphic wrapped in a `Link` to `/tenpercent-coupon` (right), styled with the same `animate-float` animation and shadow treatment for visual consistency
+- The coupon image will be sized to approximately match the height of the "Excellent Service" card for a balanced layout
 
-**SEO Prevention:**
-- Add a `<Helmet>` component (or inline meta tag via `useEffect`) with:
-  ```html
-  <meta name="robots" content="noindex, nofollow">
-  ```
+## Technical Details
 
-**Same Features Retained:**
-- Scissors decoration on coupon borders
-- Company logo and branding
-- Print button with printer-friendly CSS
-- Contact information
-- Terms and conditions
-
-## Files to Modify
-
-### 2. `src/App.tsx`
-Add a new route for the thank you coupon page:
-```tsx
-<Route path="/survey-thank-you" element={<SurveyThankYouCoupon />} />
-```
-
-## Design Preview
-
+The current floating card markup:
 ```text
-+--------------------------------------------------+
-|           THANK YOU (badge)                       |
-|         Thanks for Your Feedback!                 |
-|  As a token of our appreciation for completing... |
-+--------------------------------------------------+
-
-+------------------COUPON------------------+
-|   ✂️                              ✂️      |
-|           [Company Logo]                 |
-|    Big City Plumbing & Heating Inc.      |
-|                                          |
-|              [ $50 ]                     |
-|               OFF                        |
-|                                          |
-|    Your Next Plumbing or Heating Service |
-|                                          |
-|    Thank you for taking the time to      |
-|    share your feedback with us!          |
-|                                          |
-|    --------------------------------      |
-|    * Terms and conditions apply          |
-|    📞 631-361-9500 | 📍 Nassau, Suffolk  |
-+------------------------------------------+
-
-      [ 🖨️ Print This Coupon ]
+<div className="mt-6 bg-card p-4 rounded-2xl shadow-large animate-float inline-block">
+  ...Excellent Service content...
+</div>
 ```
 
-## Technical Implementation
-
-### Preventing Search Engine Indexing
-The page will include a meta robots tag to prevent indexing:
-```tsx
-import { useEffect } from 'react';
-
-// Inside component:
-useEffect(() => {
-  // Add noindex meta tag
-  const metaRobots = document.createElement('meta');
-  metaRobots.name = 'robots';
-  metaRobots.content = 'noindex, nofollow';
-  document.head.appendChild(metaRobots);
-  
-  return () => {
-    document.head.removeChild(metaRobots);
-  };
-}, []);
+Will become a flex container:
+```text
+<div className="mt-6 flex items-center gap-4 flex-wrap">
+  <div className="bg-card p-4 rounded-2xl shadow-large animate-float inline-block">
+    ...Excellent Service content (unchanged)...
+  </div>
+  <Link to="/tenpercent-coupon">
+    <img src={couponBadge} alt="Click here for coupons"
+         className="h-20 w-auto animate-float animation-delay-200
+                    hover:scale-105 transition-transform
+                    drop-shadow-lg" />
+  </Link>
+</div>
 ```
 
-### Route Path
-The page will be accessible at `/survey-thank-you` - a path that:
-- Is not linked from the navigation or footer
-- Can be shared directly with customers after survey submission
-- Could later be linked from the survey confirmation page
-
-## Optional Enhancement
-After this page is created, the Customer Survey form's success state could be updated to include a link to this thank you coupon page, making the $50 offer more discoverable to customers who complete the survey.
+This keeps the existing card intact while adding the coupon graphic beside it with a matching float animation (slightly delayed for visual interest).
