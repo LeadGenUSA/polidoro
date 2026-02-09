@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { BlogPost } from '@/hooks/useBlogPosts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, CheckCircle, XCircle, Trash2, Save, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { ArrowLeft, CheckCircle, XCircle, Trash2, Save, Loader2, ImagePlus, X } from 'lucide-react';
 
 interface BlogPostEditorProps {
   post: BlogPost;
@@ -17,17 +19,50 @@ export const BlogPostEditor = ({ post, onUpdate, onDelete, onBack }: BlogPostEdi
   const [metaDescription, setMetaDescription] = useState(post.meta_description || '');
   const [content, setContent] = useState(post.content);
   const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>(post.faqs || []);
+  const [featuredImageUrl, setFeaturedImageUrl] = useState(post.featured_image_url);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast({ title: 'Invalid file type', description: 'Please select an image file.', variant: 'destructive' });
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: 'File too large', description: 'Image must be under 5MB.', variant: 'destructive' });
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}-${file.name}`;
+      const { data, error } = await supabase.storage.from('blog-images').upload(fileName, file);
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from('blog-images').getPublicUrl(data.path);
+      setFeaturedImageUrl(urlData.publicUrl);
+      toast({ title: 'Image uploaded successfully' });
+    } catch {
+      toast({ title: 'Upload failed', variant: 'destructive' });
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
-    await onUpdate(post.id, { title, meta_description: metaDescription, content, faqs });
+    await onUpdate(post.id, { title, meta_description: metaDescription, content, faqs, featured_image_url: featuredImageUrl });
     setIsSaving(false);
   };
 
   const handleApprove = async () => {
     setIsSaving(true);
-    await onUpdate(post.id, { title, meta_description: metaDescription, content, faqs, status: 'published' });
+    await onUpdate(post.id, { title, meta_description: metaDescription, content, faqs, featured_image_url: featuredImageUrl, status: 'published' });
     setIsSaving(false);
     onBack();
   };
@@ -59,9 +94,46 @@ export const BlogPostEditor = ({ post, onUpdate, onDelete, onBack }: BlogPostEdi
       </Button>
 
       {/* Featured Image */}
-      {post.featured_image_url && (
-        <div className="mb-6 rounded-xl overflow-hidden">
-          <img src={post.featured_image_url} alt={title} className="w-full h-64 object-cover" />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleImageUpload}
+        className="hidden"
+      />
+      {featuredImageUrl ? (
+        <div className="mb-6 rounded-xl overflow-hidden relative group">
+          <img src={featuredImageUrl} alt={title} className="w-full h-64 object-cover" />
+          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+            >
+              {isUploading ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <ImagePlus className="w-4 h-4 mr-1" />}
+              Change
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              onClick={() => setFeaturedImageUrl(null)}
+            >
+              <X className="w-4 h-4 mr-1" /> Remove
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="mb-6">
+          <Button
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+            className="w-full h-32 border-dashed gap-2"
+          >
+            {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ImagePlus className="w-5 h-5" />}
+            {isUploading ? 'Uploading...' : 'Add Featured Image'}
+          </Button>
         </div>
       )}
 
