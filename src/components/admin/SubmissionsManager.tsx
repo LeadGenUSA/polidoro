@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { 
   useSubmissions, 
   type SubmissionType, 
@@ -21,12 +22,14 @@ import {
   CheckCircle, 
   Archive as ArchiveIcon,
   Star,
-  Loader2
+  Loader2,
+  Search
 } from 'lucide-react';
 
 export const SubmissionsManager = () => {
   const [submissionType, setSubmissionType] = useState<SubmissionType>('estimates');
   const [statusFilter, setStatusFilter] = useState<SubmissionStatus | 'all'>('new');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const { 
     submissions, 
@@ -36,6 +39,24 @@ export const SubmissionsManager = () => {
     deleteSubmission, 
     exportToCSV 
   } = useSubmissions(submissionType, statusFilter);
+
+  const filteredSubmissions = useMemo(() => {
+    if (!searchQuery.trim()) return submissions;
+    const q = searchQuery.toLowerCase();
+    return submissions.filter((s) => {
+      if (submissionType === 'work_orders') {
+        const wo = s as WorkOrderSubmission;
+        return [wo.customer_name, wo.email, wo.street_address, wo.phone, wo.job_description, wo.tech_on_job, wo.make_model]
+          .some(v => v?.toLowerCase().includes(q));
+      }
+      if (submissionType === 'estimates') {
+        const est = s as EstimateSubmission;
+        return [est.customer, est.email].some(v => v?.toLowerCase().includes(q));
+      }
+      const sur = s as SurveySubmission;
+      return [sur.customer_name, sur.email, sur.technician_name].some(v => v?.toLowerCase().includes(q));
+    });
+  }, [submissions, searchQuery, submissionType]);
 
   const typeLabels: Record<SubmissionType, { label: string; icon: React.ReactNode }> = {
     estimates: { label: 'Estimates', icon: <FileText className="w-4 h-4" /> },
@@ -74,6 +95,17 @@ export const SubmissionsManager = () => {
           <Download className="w-4 h-4" />
           Export CSV
         </Button>
+      </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          placeholder={`Search ${typeLabels[submissionType].label.toLowerCase()}...`}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9"
+        />
       </div>
 
       {/* Stats Cards */}
@@ -154,21 +186,23 @@ export const SubmissionsManager = () => {
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
-        ) : submissions.length === 0 ? (
+        ) : filteredSubmissions.length === 0 ? (
           <div className="text-center py-12 bg-card rounded-xl">
             {typeLabels[submissionType].icon}
             <h3 className="font-heading font-semibold text-lg text-foreground mb-2 mt-4">
               No {typeLabels[submissionType].label.toLowerCase()} found
             </h3>
             <p className="text-muted-foreground">
-              {statusFilter === 'new' 
-                ? `No new ${typeLabels[submissionType].label.toLowerCase()} submissions at this time.`
-                : `No ${statusFilter} ${typeLabels[submissionType].label.toLowerCase()} at this time.`}
+              {searchQuery.trim()
+                ? `No results matching "${searchQuery}".`
+                : statusFilter === 'new' 
+                  ? `No new ${typeLabels[submissionType].label.toLowerCase()} submissions at this time.`
+                  : `No ${statusFilter} ${typeLabels[submissionType].label.toLowerCase()} at this time.`}
             </p>
           </div>
         ) : (
           <div className="space-y-4">
-            {submissionType === 'estimates' && submissions.map((submission) => (
+            {submissionType === 'estimates' && filteredSubmissions.map((submission) => (
               <EstimateSubmissionCard
                 key={submission.id}
                 submission={submission as EstimateSubmission}
@@ -176,7 +210,7 @@ export const SubmissionsManager = () => {
                 onDelete={deleteSubmission}
               />
             ))}
-            {submissionType === 'work_orders' && submissions.map((submission) => (
+            {submissionType === 'work_orders' && filteredSubmissions.map((submission) => (
               <WorkOrderSubmissionCard
                 key={submission.id}
                 submission={submission as WorkOrderSubmission}
@@ -184,7 +218,7 @@ export const SubmissionsManager = () => {
                 onDelete={deleteSubmission}
               />
             ))}
-            {submissionType === 'surveys' && submissions.map((submission) => (
+            {submissionType === 'surveys' && filteredSubmissions.map((submission) => (
               <SurveySubmissionCard
                 key={submission.id}
                 submission={submission as SurveySubmission}
