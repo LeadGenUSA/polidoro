@@ -24,6 +24,7 @@ import SurveyThankYouCoupon from "./pages/SurveyThankYouCoupon";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import NotFound from "./pages/NotFound";
+import GoogleAnalytics from "./components/GoogleAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <GoogleAnalytics />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/services" element={<Services />} />
