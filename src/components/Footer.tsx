@@ -15,7 +15,7 @@ const Footer = () => {
               <img src={logo} alt="Big City Plumbing & Heating" className="w-24 h-24 rounded-full object-cover" />
               <div className="text-primary-foreground">
                 <span className="font-heading font-bold text-lg">Big City</span>
-                <span className="font-heading text-sm block -mt-1 opacity-80">Plumbing & Heating</span>
+                <span className="font-heading text-sm block -mt-1 opacity-80">Plumbing and Heating</span>
               </div>
             </div>
             <p className="text-primary-foreground/80 text-sm leading-relaxed">
@@ -143,7 +143,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-primary-foreground/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-primary-foreground/60 text-sm">
-            © {currentYear} Big City Plumbing & Heating. All rights reserved.
+            © {currentYear} Big City Plumbing and Heating. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <Link to="/privacy-policy" className="text-primary-foreground/60 hover:text-primary-foreground text-sm transition-colors">
