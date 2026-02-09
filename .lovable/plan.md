@@ -1,35 +1,30 @@
 
 
-# Allow Admin to Change Blog Featured Image
+# Add Google Analytics to All Public Pages
 
 ## Overview
-Add an image upload/replace capability to the Blog Post Editor so admins can swap out the AI-generated featured image with their own.
+Add the Google Analytics tracking snippet (G-KXRSCVDJY5) to the site, but exclude it from admin pages (`/admin` and `/admin/login`).
 
-## What Changes
+## Approach
 
-### `src/components/admin/BlogPostEditor.tsx`
-- Add state for `featuredImageUrl` initialized from `post.featured_image_url`
-- Add a hidden file input and a "Change Image" button overlaying the current image
-- On file select, upload to the existing `blog-images` storage bucket, then update the local state
-- Include `featured_image_url` in the save/approve payloads so the new image persists
-- If no image exists yet, show an "Add Image" button instead
-- Add a "Remove Image" option
+Since this is a single-page app with one `index.html`, inserting the script there would track admin pages too. Instead, we'll use a React component approach:
 
-### Upload Logic
-- Reuse the same pattern from existing photo upload components (validate type, validate 5MB max, upload to `blog-images` bucket via Supabase Storage)
-- Generate a unique filename with timestamp + random string
-- Get the public URL after upload
+### 1. Create `src/components/GoogleAnalytics.tsx`
+- A component that injects the gtag.js scripts on mount
+- Uses `useLocation()` from React Router to check the current path
+- If the path starts with `/admin`, it does nothing (no scripts injected, no tracking)
+- On route changes to non-admin pages, sends a `page_view` event
 
-### No database or backend changes needed
-The `blog_posts` table already has a `featured_image_url` column, and the `blog-images` storage bucket already exists and is public. The `updatePost` function in `useBlogPosts` already supports partial updates including this field.
+### 2. Update `src/App.tsx`
+- Place the `<GoogleAnalytics />` component inside the `<BrowserRouter>` so it has access to the router context
 
 ## Technical Details
 
-The editor currently displays the image as read-only. The changes will:
+The component will:
+- Load the gtag.js script dynamically via a `<script>` tag appended to `<head>` (only once, on first non-admin page visit)
+- Call `gtag('config', 'G-KXRSCVDJY5', { page_path })` on each non-admin route change
+- Skip all tracking logic when the path starts with `/admin`
+- Clean up the script tag if unmounted
 
-1. Track `featuredImageUrl` in state (like `title`, `content`, etc.)
-2. Add a file input that uploads to `blog-images` bucket
-3. Show the current image with overlay buttons: "Change" and "Remove"
-4. If no image, show an upload area
-5. Pass `featured_image_url: featuredImageUrl` in `handleSave` and `handleApprove` calls
+This keeps admin activity completely out of Google Analytics while tracking all public pages.
 
