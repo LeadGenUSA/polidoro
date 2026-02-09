@@ -131,7 +131,7 @@ const Hero = () => {
             </div>
             
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Expert Plumbing &
+              Expert Plumbing and
               <span className="text-gradient block py-[7px]">Heating Solutions</span>
             </h1>
             
