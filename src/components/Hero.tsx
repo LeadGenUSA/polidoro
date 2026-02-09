@@ -11,6 +11,7 @@ import heroImage from '@/assets/hero-plumbing.jpg';
 import nycSkyline from '@/assets/nyc-skyline.png';
 import heroVideo from '@/assets/big-city-plumbing-and-heating.mp4';
 import navilendLogo from '@/assets/navilend-logo.png';
+import couponBadge from '@/assets/coupons-badge.png';
 interface SlideItem {
   type: 'video' | 'image';
   src: string;
@@ -255,16 +256,21 @@ const Hero = () => {
             </div>
             
             {/* Floating Card - Below Slideshow */}
-            <div className="mt-6 bg-card p-4 rounded-2xl shadow-large animate-float inline-block">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl cta-gradient flex items-center justify-center">
-                  <span className="text-secondary-foreground font-heading font-bold text-xl">5★</span>
-                </div>
-                <div>
-                  <p className="font-heading font-bold text-foreground">Excellent Service</p>
-                  <p className="text-sm text-muted-foreground">5000+ Happy Customers</p>
+            <div className="mt-6 flex items-center gap-4 flex-wrap">
+              <div className="bg-card p-4 rounded-2xl shadow-large animate-float inline-block">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl cta-gradient flex items-center justify-center">
+                    <span className="text-secondary-foreground font-heading font-bold text-xl">5★</span>
+                  </div>
+                  <div>
+                    <p className="font-heading font-bold text-foreground">Excellent Service</p>
+                    <p className="text-sm text-muted-foreground">5000+ Happy Customers</p>
+                  </div>
                 </div>
               </div>
+              <Link to="/tenpercent-coupon">
+                <img src={couponBadge} alt="Click here for coupons" className="h-20 w-auto animate-float animation-delay-200 hover:scale-105 transition-transform drop-shadow-lg" />
+              </Link>
             </div>
           </div>
         </div>
