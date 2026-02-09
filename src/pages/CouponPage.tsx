@@ -129,6 +129,10 @@ const CouponPage = () => {
       {/* Print Styles */}
       <style>{`
         @media print {
+          @page {
+            size: auto;
+            margin: 0.5in;
+          }
           body * {
             visibility: hidden;
           }
@@ -138,11 +142,46 @@ const CouponPage = () => {
           #coupon {
             position: absolute;
             left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
+            top: 10%;
+            transform: translateX(-50%);
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
             box-shadow: none !important;
+            padding: 1.5rem !important;
+          }
+          #coupon img {
+            width: 60px !important;
+            height: 60px !important;
+          }
+          #coupon h2 {
+            font-size: 1.25rem !important;
+            margin-bottom: 0.25rem !important;
+          }
+          #coupon .text-6xl, #coupon .md\\:text-7xl {
+            font-size: 3rem !important;
+          }
+          #coupon .text-2xl, #coupon .md\\:text-3xl {
+            font-size: 1.25rem !important;
+          }
+          #coupon .text-xl, #coupon .md\\:text-2xl {
+            font-size: 1rem !important;
+          }
+          #coupon .my-8 {
+            margin-top: 1rem !important;
+            margin-bottom: 1rem !important;
+          }
+          #coupon .mb-6 {
+            margin-bottom: 0.75rem !important;
+          }
+          #coupon .py-6 {
+            padding-top: 0.75rem !important;
+            padding-bottom: 0.75rem !important;
+          }
+          #coupon .pt-6 {
+            padding-top: 0.75rem !important;
+          }
+          #coupon .mt-6 {
+            margin-top: 0.75rem !important;
           }
         }
       `}</style>
