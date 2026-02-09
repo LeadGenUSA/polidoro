@@ -165,6 +165,17 @@ const Navbar = () => {
               How-To Videos
             </Link>
 
+            {/* Blog */}
+            <Link
+              to="/blog"
+              onClick={() => handleNavClick('/blog')}
+              className={`font-medium transition-colors hover:text-secondary ${
+                isScrolled ? 'text-foreground' : 'text-primary-foreground'
+              } ${isActive('/blog') ? 'text-secondary' : ''}`}
+            >
+              Blog
+            </Link>
+
             {/* Links Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger className={`flex items-center gap-1 font-medium transition-colors hover:text-secondary ${
@@ -308,6 +319,17 @@ const Navbar = () => {
                 } ${isActive('/how-to-videos') ? 'text-secondary' : ''}`}
               >
                 How-To Videos
+              </Link>
+
+              {/* Blog */}
+              <Link
+                to="/blog"
+                onClick={() => handleNavClick('/blog')}
+                className={`font-medium transition-colors ${
+                  isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                } ${isActive('/blog') ? 'text-secondary' : ''}`}
+              >
+                Blog
               </Link>
 
               {/* Mobile Links Section */}

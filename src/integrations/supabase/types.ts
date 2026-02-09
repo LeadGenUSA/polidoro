@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          content: string
+          created_at: string
+          faqs: Json | null
+          featured_image_url: string | null
+          id: string
+          meta_description: string | null
+          published_at: string | null
+          slug: string
+          status: Database["public"]["Enums"]["blog_post_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          faqs?: Json | null
+          featured_image_url?: string | null
+          id?: string
+          meta_description?: string | null
+          published_at?: string | null
+          slug: string
+          status?: Database["public"]["Enums"]["blog_post_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          faqs?: Json | null
+          featured_image_url?: string | null
+          id?: string
+          meta_description?: string | null
+          published_at?: string | null
+          slug?: string
+          status?: Database["public"]["Enums"]["blog_post_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      blog_settings: {
+        Row: {
+          generation_frequency: Database["public"]["Enums"]["blog_generation_frequency"]
+          id: string
+          last_generated_at: string | null
+          next_topic: string | null
+          updated_at: string
+        }
+        Insert: {
+          generation_frequency?: Database["public"]["Enums"]["blog_generation_frequency"]
+          id?: string
+          last_generated_at?: string | null
+          next_topic?: string | null
+          updated_at?: string
+        }
+        Update: {
+          generation_frequency?: Database["public"]["Enums"]["blog_generation_frequency"]
+          id?: string
+          last_generated_at?: string | null
+          next_topic?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       estimate_submissions: {
         Row: {
           baseboard: string | null
@@ -497,6 +563,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      blog_generation_frequency: "weekly" | "biweekly" | "monthly" | "quarterly"
+      blog_post_status: "draft" | "published" | "rejected"
       review_source: "google" | "manual" | "imported"
       review_status: "pending" | "approved" | "rejected"
       submission_status: "new" | "reviewed" | "archived"
@@ -628,6 +696,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      blog_generation_frequency: ["weekly", "biweekly", "monthly", "quarterly"],
+      blog_post_status: ["draft", "published", "rejected"],
       review_source: ["google", "manual", "imported"],
       review_status: ["pending", "approved", "rejected"],
       submission_status: ["new", "reviewed", "archived"],

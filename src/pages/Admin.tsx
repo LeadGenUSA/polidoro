@@ -22,13 +22,17 @@ import {
   Images,
   MessageSquare,
   Camera,
-  FileText
+  FileText,
+  BookOpen
 } from 'lucide-react';
+import { BlogManager } from '@/components/admin/BlogManager';
+import { useBlogPosts } from '@/hooks/useBlogPosts';
 
 const Admin = () => {
   const navigate = useNavigate();
   const { user, isAdmin, isLoading: authLoading, signOut } = useAuth();
-  const [adminSection, setAdminSection] = useState<'reviews' | 'slideshow' | 'gallery' | 'submissions'>('reviews');
+  const [adminSection, setAdminSection] = useState<'reviews' | 'slideshow' | 'gallery' | 'submissions' | 'blog'>('reviews');
+  const { posts: blogDrafts } = useBlogPosts('draft');
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'all'>('pending');
   const { reviews, isLoading, fetchReviews, approveReview, rejectReview, deleteReview } = useReviews(activeTab);
   const submissionCounts = useAllSubmissionCounts();
@@ -130,9 +134,30 @@ const Admin = () => {
             <Camera className="w-4 h-4" />
             Project Gallery
           </Button>
+          <Button
+            variant={adminSection === 'blog' ? 'default' : 'outline'}
+            onClick={() => setAdminSection('blog')}
+            className="gap-2 relative"
+          >
+            <BookOpen className="w-4 h-4" />
+            Blog
+            {blogDrafts.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center">
+                {blogDrafts.length}
+              </span>
+            )}
+          </Button>
         </div>
 
-        {adminSection === 'submissions' ? (
+        {adminSection === 'blog' ? (
+          <>
+            <div className="mb-8">
+              <h2 className="font-heading text-2xl font-bold text-foreground">Blog Management</h2>
+              <p className="text-muted-foreground">Generate, review, edit, and publish AI-generated blog posts.</p>
+            </div>
+            <BlogManager />
+          </>
+        ) : adminSection === 'submissions' ? (
           <>
             <div className="mb-8">
               <h2 className="font-heading text-2xl font-bold text-foreground">Form Submissions</h2>
