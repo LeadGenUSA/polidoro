@@ -82,7 +82,7 @@ const Navbar = () => {
             <img src={logo} alt="Big City Plumbing & Heating" className="w-24 h-24 rounded-full object-cover" />
             <div className={`transition-colors ${isScrolled ? 'text-foreground' : 'text-primary-foreground'}`}>
               <span className="font-heading font-bold text-lg">Big City</span>
-              <span className="font-heading text-sm block -mt-1 opacity-80">Plumbing & Heating</span>
+              <span className="font-heading text-sm block -mt-1 opacity-80">Plumbing and Heating</span>
             </div>
           </Link>
 
