@@ -1,42 +1,31 @@
 
-## Create a Dedicated Contact Us Page
+
+## Add Cookie Consent Banner
 
 ### What Changes
-A new `/contact-us` page will be created, reusing the existing `Contact` component (which already has the form, contact info cards, and thank-you modal). The page will follow the site's "blue header" pattern and the "Contact" links in both the header navbar and footer will point to this new page instead of the `/#contact` hash link.
+A cookie consent banner will appear at the bottom of the page on first visit. Google Analytics will **only** load after the user accepts cookies. The user's choice is saved to `localStorage` so the banner doesn't reappear.
 
-### Page Content
-- Blue hero header section with title "Contact Us" and a subtitle
-- The existing Contact component (form + contact info cards + thank-you modal) embedded below
-- An embedded Google Maps iframe showing the service area
-- Navbar and Footer wrapping the page
-
-### Navigation Updates
-
-**Header (Navbar.tsx)**
-- Desktop "Contact" link: change `to="/#contact"` to `to="/contact-us"`
-- Mobile "Contact" link: same change
-- Remove the hash-scroll logic for `/#contact`
-
-**Footer (Footer.tsx)**
-- "Contact" quick link: change `href="/#contact"` to a `<Link to="/contact-us">`
+### Behavior
+- On first visit, a banner appears at the bottom with "Accept" and "Decline" buttons
+- If accepted: Google Analytics loads and tracks normally; choice saved
+- If declined: Google Analytics never loads; choice saved
+- On return visits: no banner shown, saved preference is respected
+- Admin pages: no banner or tracking (existing behavior preserved)
 
 ### Technical Details
 
-**New file: `src/pages/ContactUs.tsx`**
-- Imports `Navbar`, `Footer`, and the existing `Contact` component
-- Renders a `bg-primary` hero header (consistent with other pages like Services, Work Order, etc.)
-- Renders the `Contact` component below
-- Optionally includes a Google Maps embed for the service area
+**New file: `src/components/CookieConsent.tsx`**
+- Renders a fixed bottom banner with brief text about cookies, a link to the Privacy Policy, and Accept/Decline buttons
+- Reads/writes `cookie-consent` key in `localStorage` (`"accepted"`, `"declined"`, or absent)
+- Styled with Tailwind to match the site's design (dark background, white text, secondary-colored Accept button)
+
+**Modified file: `src/components/GoogleAnalytics.tsx`**
+- Check `localStorage` for `cookie-consent` value
+- Listen for a custom `window` event (`cookie-consent-updated`) so it reacts immediately when user clicks Accept
+- Only load the gtag script and send page views if consent is `"accepted"`
 
 **Modified file: `src/App.tsx`**
-- Import `ContactUs` page
-- Add route: `<Route path="/contact-us" element={<ContactUs />} />`
-
-**Modified file: `src/components/Navbar.tsx`**
-- Change desktop Contact link from `to="/#contact"` to `to="/contact-us"`
-- Change mobile Contact link from `to="/#contact"` to `to="/contact-us"`
-
-**Modified file: `src/components/Footer.tsx`**
-- Change the Contact quick link from `<a href="/#contact">` to `<Link to="/contact-us">`
+- Import and render `<CookieConsent />` alongside `<GoogleAnalytics />`
 
 No new dependencies or database changes needed.
+
