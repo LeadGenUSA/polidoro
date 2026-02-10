@@ -43,7 +43,7 @@ async function sendAdminNotification(review: ReviewSubmission) {
 
     await client.send({
       from: smtpUser,
-      to: 'mike@bigcityph.com',
+      to: 'mike@bigcityplumbing.com',
       subject: `New Review Submitted - ${review.author_name} (${stars})`,
       content: `
 A new customer review has been submitted and is awaiting your approval.

@@ -215,7 +215,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     await client.send({
       from: Deno.env.get("SMTP_USER")!,
-      to: "mike@bigcityph.com",
+      to: "mike@bigcityplumbing.com",
       subject: `Customer Survey from ${data.customerName}`,
       content: "Please view this email in an HTML-compatible email client.",
       html: compactEmailHtml(emailHtml),
