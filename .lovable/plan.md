@@ -1,23 +1,25 @@
 
 
-## Connect Footer Service Links to Services Page Sections
+## Fix Navilend Logo Overlapping Coupon Badge on iPad Portrait
 
-### What Changes
-The five service names listed in the footer (Plumbing Repair, Heating Systems, Tankless Water Heaters, Gas Conversion, Emergency Services) will become clickable links that navigate to the corresponding section on the `/services` page using anchor IDs.
+### The Problem
+The Navilend logo uses `absolute bottom-24 right-8` positioning, placing it in a fixed spot relative to the hero section. On iPad portrait (768-834px wide), the grid stacks into a single column, and the coupon badge (in the normal document flow below the slideshow) ends up in the same visual space as the absolutely-positioned Navilend logo.
 
-### How It Works
-1. **Add anchor IDs** to each service section on the Services page (e.g., `id="plumbing-repair"`, `id="heating-systems"`, etc.)
-2. **Convert footer service text** from plain `<span>` elements to `<Link>` components pointing to `/services#plumbing-repair`, `/services#heating-systems`, etc.
-3. **Add scroll behavior** so the page smoothly scrolls to the target section on navigation.
+### The Fix
+Hide the Navilend logo on screens narrower than the `xl` breakpoint (1280px) since these devices use the stacked mobile layout where the absolute positioning causes overlap. The logo will only display on wide desktop viewports where the two-column grid layout provides enough separation.
 
 ### Technical Details
 
-**`src/pages/Services.tsx`**
-- Add a `slug` field to each service object (e.g., `'plumbing-repair'`, `'heating-systems'`, `'tankless-water-heaters'`, `'gas-conversion'`, `'emergency-services'`)
-- Apply `id={service.slug}` to each service section's wrapper `<div>`
-- Add a `useEffect` to handle hash-based scrolling on page load (so direct links like `/services#gas-conversion` work)
+**Modified file: `src/components/Hero.tsx`**
 
-**`src/components/Footer.tsx`**
-- Replace the static services array with one that includes slugs
-- Change each `<span>` to a React Router `<Link to={/services#slug}>` with the same hover styling as the Quick Links above it
+Change the Navilend logo container's class from:
+```
+className="absolute bottom-24 right-8 z-20"
+```
+to:
+```
+className="absolute bottom-24 right-8 z-20 hidden xl:block"
+```
+
+This is a single class addition -- no structural changes needed.
 
