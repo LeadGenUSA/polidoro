@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Phone, Flame, Thermometer, Fuel, Gauge, Droplets, Zap, Settings, RefreshCw, ThermometerSun, Home, Waves } from 'lucide-react';
 import industryLeadingProducts from '@/assets/industry-leading-products.webp';
+import navienBoiler from '@/assets/NFB-C-2021-small.png';
 
 const heatingServices = [
   {
@@ -105,6 +106,14 @@ const HeatingServices = () => {
             <p className="text-lg text-muted-foreground">
               Comprehensive heating solutions backed by decades of experience and trusted brand partnerships.
             </p>
+          </div>
+
+          <div className="flex justify-center mb-12">
+            <img 
+              src={navienBoiler} 
+              alt="Navien NFB-C High Efficiency Boiler"
+              className="max-w-md w-full h-auto"
+            />
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
