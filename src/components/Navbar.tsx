@@ -224,7 +224,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className={`lg:hidden p-2 ${isScrolled ? 'text-foreground' : 'text-primary-foreground'}`}
+            className={`lg:hidden p-2 ${(isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -240,7 +240,7 @@ const Navbar = () => {
                 to="/"
                 onClick={() => handleNavClick('/')}
                 className={`font-medium transition-colors ${
-                  isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                  (isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'
                 } ${isActive('/') ? 'text-secondary' : ''}`}
               >
                 Home
@@ -251,7 +251,7 @@ const Navbar = () => {
                 to="/about-us"
                 onClick={() => handleNavClick('/about-us')}
                 className={`font-medium transition-colors ${
-                  isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                  (isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'
                 } ${isActive('/about-us') ? 'text-secondary' : ''}`}
               >
                 About
@@ -259,7 +259,7 @@ const Navbar = () => {
               
               {/* Mobile Services Section */}
               <div className="flex flex-col gap-2">
-                <span className={`font-semibold ${isScrolled ? 'text-foreground' : 'text-primary-foreground'}`}>
+                <span className={`font-semibold ${(isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'}`}>
                   Services
                 </span>
                 <div className="flex flex-col gap-2 pl-4">
@@ -269,7 +269,7 @@ const Navbar = () => {
                       to={link.href}
                       onClick={() => handleNavClick(link.href)}
                       className={`font-medium transition-colors ${
-                        isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                        (isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'
                       } ${isActive(link.href) ? 'text-secondary' : ''}`}
                     >
                       {link.name}
@@ -283,7 +283,7 @@ const Navbar = () => {
                 to="/projects-gallery"
                 onClick={() => handleNavClick('/projects-gallery')}
                 className={`font-medium transition-colors ${
-                  isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                  (isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'
                 } ${isActive('/projects-gallery') ? 'text-secondary' : ''}`}
               >
                 Projects
@@ -294,7 +294,7 @@ const Navbar = () => {
                 to="/testimonials"
                 onClick={() => handleNavClick('/testimonials')}
                 className={`font-medium transition-colors ${
-                  isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                  (isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'
                 } ${isActive('/testimonials') ? 'text-secondary' : ''}`}
               >
                 Reviews
@@ -305,7 +305,7 @@ const Navbar = () => {
                 to="/how-to-videos"
                 onClick={() => handleNavClick('/how-to-videos')}
                 className={`font-medium transition-colors ${
-                  isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                  (isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'
                 } ${isActive('/how-to-videos') ? 'text-secondary' : ''}`}
               >
                 How-To Videos
@@ -313,7 +313,7 @@ const Navbar = () => {
 
               {/* Mobile Links Section */}
               <div className="flex flex-col gap-2">
-                <span className={`font-semibold ${isScrolled ? 'text-foreground' : 'text-primary-foreground'}`}>
+                <span className={`font-semibold ${(isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'}`}>
                   Links
                 </span>
                 <div className="flex flex-col gap-2 pl-4">
@@ -326,7 +326,7 @@ const Navbar = () => {
                         rel="noopener noreferrer"
                         onClick={() => setIsMobileMenuOpen(false)}
                         className={`font-medium transition-colors ${
-                          isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                          (isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'
                         }`}
                       >
                         {link.name}
@@ -337,7 +337,7 @@ const Navbar = () => {
                         to={link.href}
                         onClick={() => handleNavClick(link.href)}
                         className={`font-medium transition-colors ${
-                          isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                          (isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'
                         }`}
                       >
                         {link.name}
@@ -352,7 +352,7 @@ const Navbar = () => {
                 to="/#contact"
                 onClick={() => handleNavClick('/#contact')}
                 className={`font-medium transition-colors ${
-                  isScrolled ? 'text-foreground' : 'text-primary-foreground'
+                  (isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'
                 } ${isActive('/#contact') ? 'text-secondary' : ''}`}
               >
                 Contact
