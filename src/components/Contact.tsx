@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Phone, Mail, MapPin, Clock, Send, Loader2 } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, Loader2, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 const contactInfo = [
   {
@@ -32,6 +33,7 @@ const contactInfo = [
 const Contact = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -50,10 +52,7 @@ const Contact = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Message Sent!",
-        description: "We'll get back to you within 24 hours.",
-      });
+      setShowThankYou(true);
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (error: any) {
       console.error('Error sending contact form:', error);
@@ -164,6 +163,32 @@ const Contact = () => {
           </div>
         </div>
       </div>
+
+      <Dialog open={showThankYou} onOpenChange={setShowThankYou}>
+        <DialogContent className="sm:max-w-md text-center">
+          <DialogHeader className="items-center">
+            <div className="w-16 h-16 rounded-full bg-secondary/20 flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-10 h-10 text-secondary" />
+            </div>
+            <DialogTitle className="text-2xl font-heading">Thank You!</DialogTitle>
+            <DialogDescription className="text-base mt-2">
+              We will get back to you as soon as possible with your free estimation quote.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 mt-4">
+            <p className="text-sm text-muted-foreground">
+              Our team typically responds within 24 hours. For urgent matters, please call us directly:
+            </p>
+            <div className="flex flex-col items-center gap-1 text-sm font-semibold">
+              <a href="tel:6313619500" className="text-primary hover:underline">631-361-9500 (Long Island)</a>
+              <a href="tel:7183265833" className="text-primary hover:underline">718-326-5833 (NYC)</a>
+            </div>
+          </div>
+          <Button variant="hero" className="mt-4 w-full" onClick={() => setShowThankYou(false)}>
+            Close
+          </Button>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
