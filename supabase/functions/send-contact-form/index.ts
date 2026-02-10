@@ -105,7 +105,7 @@ This message was submitted via the Big City Plumbing & Heating website contact f
 
     await client.send({
       from: Deno.env.get("SMTP_USER")!,
-      to: "mike@bigcityph.com",
+      to: "mike@bigcityplumbing.com",
       subject,
       content: "Please view this email in an HTML-compatible email client.",
       html: compactEmailHtml(emailHtml),

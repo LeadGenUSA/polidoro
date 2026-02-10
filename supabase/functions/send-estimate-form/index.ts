@@ -193,7 +193,7 @@ serve(async (req) => {
 
     await client.send({
       from: SMTP_USER,
-      to: "mike@bigcityph.com",
+      to: "mike@bigcityplumbing.com",
       replyTo: formData.email,
       subject: `Estimate Request from ${formData.customer}`,
       content: "Please view this email in an HTML-capable email client.",

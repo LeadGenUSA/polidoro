@@ -168,7 +168,11 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     // Build recipient list
-    const recipients = ['mike@bigcityph.com'];
+    const recipients = [
+      'mike@bigcityplumbing.com',
+      'diane@bigcityplumbing.com',
+      'info@bigcityplumbing.com',
+    ];
     if (data.emailTo) {
       recipients.push(data.emailTo);
     }
