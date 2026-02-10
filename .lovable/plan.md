@@ -1,24 +1,33 @@
 
-## Add Thank You Modal After Contact Form Submission
+## Show "Call Us" Button Outside Hamburger Menu on Mobile/Tablet (Portrait Only)
 
 ### What Changes
-After a successful form submission on the homepage Contact section, a modal dialog will appear thanking the customer instead of just showing a small toast notification.
+The "Call Us! 631-361-9500" button will be visible in the navbar on mobile and tablet devices without needing to open the hamburger menu -- but only when the device is held vertically (portrait orientation).
 
-### Modal Content
-- A checkmark icon for visual confirmation
-- **"Thank You!"** heading
-- Message: "We will get back to you as soon as possible with your free estimation quote."
-- A note about expected response time: "Our team typically responds within 24 hours. For urgent matters, please call us directly."
-- Phone numbers for immediate contact: 631-361-9500 (LI) / 718-326-5833 (NYC)
-- A "Close" button to dismiss the modal
+### How It Works
+- A new "Call Us" button will appear next to the hamburger menu icon on screens smaller than `lg` (the desktop breakpoint).
+- A CSS `portrait:` media query (supported by Tailwind via a custom utility or inline style) ensures it only shows in portrait orientation.
+- On landscape orientation, the button hides automatically.
+- On desktop (`lg` and up), the existing CTA button in the main nav remains unchanged.
 
 ### Technical Details
 
-**File: `src/components/Contact.tsx`**
-- Import `Dialog`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription` from the existing UI dialog component
-- Add a `showThankYou` state (boolean, default `false`)
-- On successful submission, set `showThankYou` to `true` (replacing the current toast notification)
-- Render a `Dialog` with the thank you content, controlled by `showThankYou`
-- When the dialog closes, reset the state
+**File: `src/components/Navbar.tsx`**
 
-No new files, dependencies, or database changes needed -- this uses the existing Radix dialog component already in the project.
+1. Add a new mobile CTA button right before the hamburger menu button (around line 225), visible only on small screens in portrait orientation:
+
+```tsx
+{/* Mobile CTA - portrait only */}
+<div className="lg:hidden portrait:flex hidden items-center">
+  <Button variant="navCta" size="sm" asChild>
+    <a href="tel:631-361-9500" className="flex items-center gap-1">
+      <Phone className="w-4 h-4" />
+      CALL US!
+    </a>
+  </Button>
+</div>
+```
+
+2. Add the `portrait` variant to `tailwind.config.ts` if not already present, using Tailwind's `addVariant` or the built-in `@media (orientation: portrait)` screen definition.
+
+No new dependencies, components, or database changes needed.
