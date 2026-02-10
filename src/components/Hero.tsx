@@ -157,10 +157,10 @@ const Hero = () => {
             
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
               <Button variant="hero" size="xl" className="group" asChild>
-                <Link to="/free-estimate">
+                <a href="#contact">
                   Get Free Estimate
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
+                </a>
               </Button>
               <Button variant="heroOutline" size="xl" asChild>
                 <Link to="/services">View Our Services</Link>
