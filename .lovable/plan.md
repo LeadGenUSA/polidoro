@@ -1,31 +1,22 @@
 
 
-## Add Cookie Consent Banner
+## Fix Navbar Link Overlapping on iPad Landscape
 
-### What Changes
-A cookie consent banner will appear at the bottom of the page on first visit. Google Analytics will **only** load after the user accepts cookies. The user's choice is saved to `localStorage` so the banner doesn't reappear.
+### The Problem
+An iPad in landscape mode has a viewport width of 1024px, which is exactly where Tailwind's `lg:` breakpoint kicks in. This forces the desktop navigation layout to display, but there isn't enough horizontal space for all 8 nav items, the logo, and the CTA button -- so links overlap.
 
-### Behavior
-- On first visit, a banner appears at the bottom with "Accept" and "Decline" buttons
-- If accepted: Google Analytics loads and tracks normally; choice saved
-- If declined: Google Analytics never loads; choice saved
-- On return visits: no banner shown, saved preference is respected
-- Admin pages: no banner or tracking (existing behavior preserved)
+### The Fix
+Change the desktop/mobile breakpoint from `lg` (1024px) to `xl` (1280px). This means devices under 1280px wide (including iPad landscape) will use the hamburger mobile menu, which already works well.
 
 ### Technical Details
 
-**New file: `src/components/CookieConsent.tsx`**
-- Renders a fixed bottom banner with brief text about cookies, a link to the Privacy Policy, and Accept/Decline buttons
-- Reads/writes `cookie-consent` key in `localStorage` (`"accepted"`, `"declined"`, or absent)
-- Styled with Tailwind to match the site's design (dark background, white text, secondary-colored Accept button)
+**Modified file: `src/components/Navbar.tsx`**
 
-**Modified file: `src/components/GoogleAnalytics.tsx`**
-- Check `localStorage` for `cookie-consent` value
-- Listen for a custom `window` event (`cookie-consent-updated`) so it reacts immediately when user clicks Accept
-- Only load the gtag script and send page views if consent is `"accepted"`
+Replace all `lg:` responsive prefixes with `xl:` throughout the component:
 
-**Modified file: `src/App.tsx`**
-- Import and render `<CookieConsent />` alongside `<GoogleAnalytics />`
+- `hidden lg:flex` becomes `hidden xl:flex` (desktop nav and CTA)
+- `lg:hidden` becomes `xl:hidden` (mobile CTA, hamburger button, mobile menu)
+- `lg:px-8` becomes `xl:px-8` (container padding)
 
-No new dependencies or database changes needed.
+This is a straightforward find-and-replace of the breakpoint prefix -- no structural or logic changes needed.
 
