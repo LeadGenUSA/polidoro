@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const GA_ID = 'G-KXRSCVDJY5';
+const CONSENT_KEY = 'cookie-consent';
 
 declare global {
   interface Window {
@@ -16,29 +17,42 @@ const GoogleAnalytics = () => {
 
   const isAdmin = location.pathname.startsWith('/admin');
 
+  const loadGA = useCallback(() => {
+    if (scriptLoaded.current) return;
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () {
+      window.dataLayer.push(arguments);
+    };
+    window.gtag('js', new Date());
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+    document.head.appendChild(script);
+
+    scriptLoaded.current = true;
+  }, []);
+
   useEffect(() => {
     if (isAdmin) return;
 
-    if (!scriptLoaded.current) {
-      // Initialize dataLayer and gtag function
-      window.dataLayer = window.dataLayer || [];
-      window.gtag = function () {
-        window.dataLayer.push(arguments);
-      };
-      window.gtag('js', new Date());
-
-      // Load the gtag.js script
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
-      document.head.appendChild(script);
-
-      scriptLoaded.current = true;
+    const consent = localStorage.getItem(CONSENT_KEY);
+    if (consent === 'accepted') {
+      loadGA();
+      window.gtag('config', GA_ID, { page_path: location.pathname + location.search });
     }
 
-    // Send page view for every non-admin route change
-    window.gtag('config', GA_ID, { page_path: location.pathname + location.search });
-  }, [location, isAdmin]);
+    const onConsentUpdate = () => {
+      if (localStorage.getItem(CONSENT_KEY) === 'accepted') {
+        loadGA();
+        window.gtag('config', GA_ID, { page_path: location.pathname + location.search });
+      }
+    };
+
+    window.addEventListener('cookie-consent-updated', onConsentUpdate);
+    return () => window.removeEventListener('cookie-consent-updated', onConsentUpdate);
+  }, [location, isAdmin, loadGA]);
 
   return null;
 };
