@@ -1,33 +1,42 @@
 
-## Show "Call Us" Button Outside Hamburger Menu on Mobile/Tablet (Portrait Only)
+## Create a Dedicated Contact Us Page
 
 ### What Changes
-The "Call Us! 631-361-9500" button will be visible in the navbar on mobile and tablet devices without needing to open the hamburger menu -- but only when the device is held vertically (portrait orientation).
+A new `/contact-us` page will be created, reusing the existing `Contact` component (which already has the form, contact info cards, and thank-you modal). The page will follow the site's "blue header" pattern and the "Contact" links in both the header navbar and footer will point to this new page instead of the `/#contact` hash link.
 
-### How It Works
-- A new "Call Us" button will appear next to the hamburger menu icon on screens smaller than `lg` (the desktop breakpoint).
-- A CSS `portrait:` media query (supported by Tailwind via a custom utility or inline style) ensures it only shows in portrait orientation.
-- On landscape orientation, the button hides automatically.
-- On desktop (`lg` and up), the existing CTA button in the main nav remains unchanged.
+### Page Content
+- Blue hero header section with title "Contact Us" and a subtitle
+- The existing Contact component (form + contact info cards + thank-you modal) embedded below
+- An embedded Google Maps iframe showing the service area
+- Navbar and Footer wrapping the page
+
+### Navigation Updates
+
+**Header (Navbar.tsx)**
+- Desktop "Contact" link: change `to="/#contact"` to `to="/contact-us"`
+- Mobile "Contact" link: same change
+- Remove the hash-scroll logic for `/#contact`
+
+**Footer (Footer.tsx)**
+- "Contact" quick link: change `href="/#contact"` to a `<Link to="/contact-us">`
 
 ### Technical Details
 
-**File: `src/components/Navbar.tsx`**
+**New file: `src/pages/ContactUs.tsx`**
+- Imports `Navbar`, `Footer`, and the existing `Contact` component
+- Renders a `bg-primary` hero header (consistent with other pages like Services, Work Order, etc.)
+- Renders the `Contact` component below
+- Optionally includes a Google Maps embed for the service area
 
-1. Add a new mobile CTA button right before the hamburger menu button (around line 225), visible only on small screens in portrait orientation:
+**Modified file: `src/App.tsx`**
+- Import `ContactUs` page
+- Add route: `<Route path="/contact-us" element={<ContactUs />} />`
 
-```tsx
-{/* Mobile CTA - portrait only */}
-<div className="lg:hidden portrait:flex hidden items-center">
-  <Button variant="navCta" size="sm" asChild>
-    <a href="tel:631-361-9500" className="flex items-center gap-1">
-      <Phone className="w-4 h-4" />
-      CALL US!
-    </a>
-  </Button>
-</div>
-```
+**Modified file: `src/components/Navbar.tsx`**
+- Change desktop Contact link from `to="/#contact"` to `to="/contact-us"`
+- Change mobile Contact link from `to="/#contact"` to `to="/contact-us"`
 
-2. Add the `portrait` variant to `tailwind.config.ts` if not already present, using Tailwind's `addVariant` or the built-in `@media (orientation: portrait)` screen definition.
+**Modified file: `src/components/Footer.tsx`**
+- Change the Contact quick link from `<a href="/#contact">` to `<Link to="/contact-us">`
 
-No new dependencies, components, or database changes needed.
+No new dependencies or database changes needed.
