@@ -1,22 +1,23 @@
 
 
-## Fix Navbar Link Overlapping on iPad Landscape
+## Connect Footer Service Links to Services Page Sections
 
-### The Problem
-An iPad in landscape mode has a viewport width of 1024px, which is exactly where Tailwind's `lg:` breakpoint kicks in. This forces the desktop navigation layout to display, but there isn't enough horizontal space for all 8 nav items, the logo, and the CTA button -- so links overlap.
+### What Changes
+The five service names listed in the footer (Plumbing Repair, Heating Systems, Tankless Water Heaters, Gas Conversion, Emergency Services) will become clickable links that navigate to the corresponding section on the `/services` page using anchor IDs.
 
-### The Fix
-Change the desktop/mobile breakpoint from `lg` (1024px) to `xl` (1280px). This means devices under 1280px wide (including iPad landscape) will use the hamburger mobile menu, which already works well.
+### How It Works
+1. **Add anchor IDs** to each service section on the Services page (e.g., `id="plumbing-repair"`, `id="heating-systems"`, etc.)
+2. **Convert footer service text** from plain `<span>` elements to `<Link>` components pointing to `/services#plumbing-repair`, `/services#heating-systems`, etc.
+3. **Add scroll behavior** so the page smoothly scrolls to the target section on navigation.
 
 ### Technical Details
 
-**Modified file: `src/components/Navbar.tsx`**
+**`src/pages/Services.tsx`**
+- Add a `slug` field to each service object (e.g., `'plumbing-repair'`, `'heating-systems'`, `'tankless-water-heaters'`, `'gas-conversion'`, `'emergency-services'`)
+- Apply `id={service.slug}` to each service section's wrapper `<div>`
+- Add a `useEffect` to handle hash-based scrolling on page load (so direct links like `/services#gas-conversion` work)
 
-Replace all `lg:` responsive prefixes with `xl:` throughout the component:
-
-- `hidden lg:flex` becomes `hidden xl:flex` (desktop nav and CTA)
-- `lg:hidden` becomes `xl:hidden` (mobile CTA, hamburger button, mobile menu)
-- `lg:px-8` becomes `xl:px-8` (container padding)
-
-This is a straightforward find-and-replace of the breakpoint prefix -- no structural or logic changes needed.
+**`src/components/Footer.tsx`**
+- Replace the static services array with one that includes slugs
+- Change each `<span>` to a React Router `<Link to={/services#slug}>` with the same hover styling as the Quick Links above it
 
