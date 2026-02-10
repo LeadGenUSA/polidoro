@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import SmartTextarea from '@/components/SmartTextarea';
+import SmartInput from '@/components/SmartInput';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Phone, FileText, Loader2, Camera } from 'lucide-react';
@@ -456,10 +458,10 @@ const FreeEstimateForm = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="tankNotes">Notes</Label>
-                    <Textarea 
+                    <SmartTextarea 
                       id="tankNotes" 
                       value={tankNotes} 
-                      onChange={(e) => setTankNotes(e.target.value)}
+                      onChange={setTankNotes}
                       placeholder="Additional notes about oil tank..."
                       rows={3}
                     />
@@ -482,9 +484,9 @@ const FreeEstimateForm = () => {
                   <div className="space-y-2">
                     <Label>Existing Chimney Lined</Label>
                     <YesNoFullRadio value={existingChimneyLined} onChange={setExistingChimneyLined} name="chimneyLined" />
-                    <Input
+                    <SmartInput
                       value={chimneyLinedNotes}
-                      onChange={(e) => setChimneyLinedNotes(e.target.value)}
+                      onChange={setChimneyLinedNotes}
                       placeholder="Notes..."
                       className="mt-2"
                     />
@@ -514,9 +516,9 @@ const FreeEstimateForm = () => {
                       </div>
                     ))}
                   </RadioGroup>
-                  <Input
+                  <SmartInput
                     value={ventLocationNotes}
-                    onChange={(e) => setVentLocationNotes(e.target.value)}
+                    onChange={setVentLocationNotes}
                     placeholder="Notes..."
                     className="mt-2"
                   />
@@ -589,10 +591,10 @@ const FreeEstimateForm = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="gasNotes">Notes</Label>
-                  <Textarea 
+                  <SmartTextarea 
                     id="gasNotes" 
                     value={gasNotes} 
-                    onChange={(e) => setGasNotes(e.target.value)}
+                    onChange={setGasNotes}
                     placeholder="Additional notes about gas service..."
                     rows={3}
                   />

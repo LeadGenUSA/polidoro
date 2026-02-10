@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import SmartTextarea from '@/components/SmartTextarea';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -68,7 +69,7 @@ const CustomerSurveyForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
   
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<SurveyFormData>({
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<SurveyFormData>({
     resolver: zodResolver(surveySchema),
   });
 
@@ -460,18 +461,20 @@ const CustomerSurveyForm = () => {
 
                 <div>
                   <Label htmlFor="whatDidWell">What did we do well?</Label>
-                  <Textarea 
+                  <SmartTextarea 
                     id="whatDidWell" 
-                    {...register('whatDidWell')} 
+                    value={watch('whatDidWell') || ''} 
+                    onChange={(val) => setValue('whatDidWell', val)} 
                     placeholder="Tell us what you liked about our service..."
                     rows={3}
                   />
                 </div>
                 <div>
                   <Label htmlFor="areasToImprove">How can we improve?</Label>
-                  <Textarea 
+                  <SmartTextarea 
                     id="areasToImprove" 
-                    {...register('areasToImprove')} 
+                    value={watch('areasToImprove') || ''} 
+                    onChange={(val) => setValue('areasToImprove', val)} 
                     placeholder="Let us know how we can serve you better..."
                     rows={3}
                   />
@@ -479,9 +482,10 @@ const CustomerSurveyForm = () => {
 
                 <div>
                   <Label htmlFor="additionalComments">Any additional comments?</Label>
-                  <Textarea 
+                  <SmartTextarea 
                     id="additionalComments" 
-                    {...register('additionalComments')}
+                    value={watch('additionalComments') || ''} 
+                    onChange={(val) => setValue('additionalComments', val)} 
                     placeholder="Share any other thoughts or experiences..."
                     rows={4}
                   />
