@@ -222,6 +222,16 @@ const Navbar = () => {
             </Button>
           </div>
 
+          {/* Mobile CTA - portrait only */}
+          <div className="lg:hidden portrait:flex hidden items-center">
+            <Button variant="navCta" size="sm" asChild>
+              <a href="tel:631-361-9500" className="flex items-center gap-1">
+                <Phone className="w-4 h-4" />
+                CALL US!
+              </a>
+            </Button>
+          </div>
+
           {/* Mobile Menu Button */}
           <button
             className={`lg:hidden p-2 ${(isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'}`}
