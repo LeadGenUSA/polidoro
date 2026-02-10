@@ -109,5 +109,10 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    function ({ addVariant }: { addVariant: (name: string, definition: string) => void }) {
+      addVariant('portrait', '@media (orientation: portrait)');
+    },
+  ],
 } satisfies Config;
