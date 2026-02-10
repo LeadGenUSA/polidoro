@@ -55,6 +55,30 @@ function slugify(title: string): string {
     .replace(/^-|-$/g, "");
 }
 
+function extractJsonFromResponse(response: string): Record<string, unknown> {
+  let cleaned = response
+    .replace(/```json\s*/gi, "")
+    .replace(/```\s*/g, "")
+    .trim();
+
+  const jsonStart = cleaned.indexOf("{");
+  const jsonEnd = cleaned.lastIndexOf("}");
+  if (jsonStart === -1 || jsonEnd === -1) {
+    throw new Error("No JSON object found in response");
+  }
+  cleaned = cleaned.substring(jsonStart, jsonEnd + 1);
+
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    cleaned = cleaned
+      .replace(/,\s*}/g, "}")
+      .replace(/,\s*]/g, "]")
+      .replace(/[\x00-\x1F\x7F]/g, (ch) => ch === "\n" || ch === "\t" ? ch : "");
+    return JSON.parse(cleaned);
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -159,12 +183,9 @@ IMPORTANT: Return ONLY valid JSON. No markdown code fences.`,
       throw new Error("No content returned from AI");
     }
 
-    // Strip markdown code fences if present
-    rawContent = rawContent.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
-
     let blogData;
     try {
-      blogData = JSON.parse(rawContent);
+      blogData = extractJsonFromResponse(rawContent);
     } catch (e) {
       console.error("Failed to parse AI response:", rawContent.substring(0, 500));
       throw new Error("Failed to parse AI-generated content as JSON");
