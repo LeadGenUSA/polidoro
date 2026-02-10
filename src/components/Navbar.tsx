@@ -75,7 +75,7 @@ const Navbar = () => {
           : 'bg-transparent py-5'
       }`}
     >
-      <div className="container mx-auto px-4 lg:px-8">
+      <div className="container mx-auto px-4 xl:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
@@ -87,7 +87,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden xl:flex items-center gap-8">
             {/* Home */}
             <Link
               to="/"
@@ -213,7 +213,7 @@ const Navbar = () => {
           </div>
 
           {/* CTA Button */}
-          <div className="hidden lg:flex items-center">
+          <div className="hidden xl:flex items-center">
             <Button variant="navCta" size="lg" asChild>
               <a href="tel:631-361-9500" className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
@@ -223,7 +223,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile CTA - portrait only */}
-          <div className="lg:hidden portrait:flex hidden items-center">
+          <div className="xl:hidden portrait:flex hidden items-center">
             <Button variant="navCta" size="sm" asChild>
               <a href="tel:631-361-9500" className="flex items-center gap-1">
                 <Phone className="w-4 h-4" />
@@ -234,7 +234,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className={`lg:hidden p-2 ${(isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'}`}
+            className={`xl:hidden p-2 ${(isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -243,7 +243,7 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-border/20">
+          <div className="xl:hidden mt-4 pb-4 border-t border-border/20">
             <div className="flex flex-col gap-4 pt-4">
               {/* Home */}
               <Link
