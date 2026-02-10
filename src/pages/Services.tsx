@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ const services = [
   {
     icon: Wrench,
     title: 'Plumbing Repair',
+    slug: 'plumbing-repair',
     description: 'Comprehensive plumbing repair services for residential and commercial properties. From leaky faucets to complete pipe replacements, our licensed plumbers handle it all.',
     features: [
       'Leak detection and repair',
@@ -33,6 +35,7 @@ const services = [
   {
     icon: Flame,
     title: 'Heating Systems',
+    slug: 'heating-systems',
     description: 'Expert heating system installation, maintenance, and repair. We specialize in high-efficiency boilers and heating solutions for maximum comfort and energy savings.',
     features: [
       'Boiler installation and repair',
@@ -48,6 +51,7 @@ const services = [
   {
     icon: Droplets,
     title: 'Tankless Water Heaters',
+    slug: 'tankless-water-heaters',
     description: 'As NSS Certified Navien Specialists, we provide expert installation and service of tankless water heaters for endless hot water and improved energy efficiency.',
     features: [
       'Navien tankless installation',
@@ -63,6 +67,7 @@ const services = [
   {
     icon: Fuel,
     title: 'Gas Conversion',
+    slug: 'gas-conversion',
     description: 'Professional oil-to-gas conversion services. Upgrade to cleaner, more efficient natural gas heating and reduce your energy costs while helping the environment.',
     features: [
       'Oil to gas boiler conversion',
@@ -78,6 +83,7 @@ const services = [
   {
     icon: AlertTriangle,
     title: 'Emergency Services',
+    slug: 'emergency-services',
     description: '24-hour response time for plumbing and heating emergencies. When disaster strikes, our rapid response team is ready to help protect your property.',
     features: [
       '24-hour emergency response',
@@ -93,6 +99,17 @@ const services = [
 ];
 
 const Services = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const el = document.getElementById(location.hash.slice(1));
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      }
+    }
+  }, [location.hash]);
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
@@ -124,7 +141,8 @@ const Services = () => {
               {services.map((service, index) => (
                 <div 
                   key={service.title}
-                  className={`flex flex-col lg:flex-row gap-8 items-start ${
+                  id={service.slug}
+                  className={`scroll-mt-24 flex flex-col lg:flex-row gap-8 items-start ${
                     index % 2 === 1 ? 'lg:flex-row-reverse' : ''
                   }`}
                 >

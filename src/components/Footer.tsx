@@ -64,9 +64,17 @@ const Footer = () => {
           <div>
             <h4 className="font-heading font-bold text-primary-foreground mb-4">Services</h4>
             <ul className="space-y-2">
-              {['Plumbing Repair', 'Heating Systems', 'Tankless Water Heaters', 'Gas Conversion', 'Emergency Services'].map((service) => (
-                <li key={service}>
-                  <span className="text-primary-foreground/80 text-sm">{service}</span>
+              {[
+                { name: 'Plumbing Repair', slug: 'plumbing-repair' },
+                { name: 'Heating Systems', slug: 'heating-systems' },
+                { name: 'Tankless Water Heaters', slug: 'tankless-water-heaters' },
+                { name: 'Gas Conversion', slug: 'gas-conversion' },
+                { name: 'Emergency Services', slug: 'emergency-services' },
+              ].map((service) => (
+                <li key={service.slug}>
+                  <Link to={`/services#${service.slug}`} className="text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
+                    {service.name}
+                  </Link>
                 </li>
               ))}
             </ul>
