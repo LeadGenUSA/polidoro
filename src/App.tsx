@@ -26,6 +26,7 @@ import BlogPost from "./pages/BlogPost";
 import ContactUs from "./pages/ContactUs";
 import NotFound from "./pages/NotFound";
 import GoogleAnalytics from "./components/GoogleAnalytics";
+import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <GoogleAnalytics />
+          <CookieConsent />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/services" element={<Services />} />
