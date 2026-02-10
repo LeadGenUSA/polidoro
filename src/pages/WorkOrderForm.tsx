@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import SmartTextarea from '@/components/SmartTextarea';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -227,12 +228,24 @@ const WorkOrderForm = () => {
                 </div>
                 <div className="md:col-span-2">
                   <Label htmlFor="jobDescription">Job Description *</Label>
-                  <Textarea id="jobDescription" {...register('jobDescription')} placeholder="Describe the work performed or needed" rows={4} />
+                  <SmartTextarea 
+                    id="jobDescription" 
+                    value={watch('jobDescription') || ''} 
+                    onChange={(val) => setValue('jobDescription', val)} 
+                    placeholder="Describe the work performed or needed" 
+                    rows={4} 
+                  />
                   {errors.jobDescription && <p className="text-destructive text-sm mt-1">{errors.jobDescription.message}</p>}
                 </div>
                 <div className="md:col-span-2">
                   <Label htmlFor="recommendations">Recommendations</Label>
-                  <Textarea id="recommendations" {...register('recommendations')} placeholder="Any recommendations for the customer" rows={3} />
+                  <SmartTextarea 
+                    id="recommendations" 
+                    value={watch('recommendations') || ''} 
+                    onChange={(val) => setValue('recommendations', val)} 
+                    placeholder="Any recommendations for the customer" 
+                    rows={3} 
+                  />
                 </div>
                 <div>
                   <Label htmlFor="waterSamplingPH">Water Sampling PH</Label>

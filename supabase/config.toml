@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.check-blog-schedule]
 verify_jwt = false
+
+[functions.check-spelling]
+verify_jwt = false
