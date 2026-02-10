@@ -277,7 +277,7 @@ const Hero = () => {
       </div>
       
       {/* Navilend Logo - Bottom Right */}
-      <div className="absolute bottom-24 right-8 z-20 hidden xl:block">
+      <div className="absolute bottom-24 right-8 z-20">
         <img 
           src={navilendLogo} 
           alt="Navilend" 
