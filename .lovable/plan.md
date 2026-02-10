@@ -1,14 +1,13 @@
 
 
-## Add Navien Boiler Image to Heating Services Page
+## Change "Get Free Estimate" Button to Scroll to Contact Section
 
-### What will change
-A Navien boiler product image will be added to the Heating Services page, positioned between the subtitle text ("Comprehensive heating solutions backed by decades of experience and trusted brand partnerships.") and the services grid (which starts with "Radiant Heat Design & Installation").
+The "Get Free Estimate" button in the hero section currently navigates to the `/free-estimate` page. It will be updated to scroll down to the Contact Us section at the bottom of the home page instead.
 
-### Steps
+### Technical Change
 
-1. Copy the uploaded image (`NFB-C-2021-small.png`) into `src/assets/` for proper bundling.
-2. In `src/pages/HeatingServices.tsx`:
-   - Import the new image asset.
-   - Insert an `<img>` element between the header/subtitle block (line ~108) and the services grid (line ~110), centered on the page with appropriate sizing and spacing.
+In `src/components/Hero.tsx` (around line 148):
+- Change the `Link to="/free-estimate"` to an anchor link `a href="#contact"` so it scrolls to the existing Contact section (which already has `id="contact"`).
+
+This is a one-line change -- the button text and styling remain the same.
 
