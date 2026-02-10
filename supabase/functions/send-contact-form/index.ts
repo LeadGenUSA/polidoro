@@ -7,20 +7,19 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Some mail clients will display quoted-printable escapes (like "=20") if the
-// MIME/encoding headers don't line up perfectly end-to-end. Keeping HTML to a
-// single compact line avoids transport re-wrapping artifacts.
 const compactEmailHtml = (html: string) =>
   html
     .replace(/\r\n/g, "\n")
-    .replace(/[ \t]+\n/g, "\n") // strip trailing whitespace
-    .replace(/\n[ \t]+/g, "\n") // strip indentation
-    .replace(/\n{2,}/g, "\n") // collapse blank lines
-    .replace(/\n/g, "") // one line
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .replace(/\n{2,}/g, "\n")
+    .replace(/\n/g, "")
     .trim();
 
 interface ContactFormData {
+  service?: string;
   name: string;
+  city?: string;
   email: string;
   phone: string;
   message: string;
@@ -36,6 +35,14 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const data: ContactFormData = await req.json();
     console.log("Processing contact form from:", data.name);
+
+    const serviceRow = data.service
+      ? `<div class="field"><span class="label">Service Needed:</span> <span class="value">${data.service}</span></div>`
+      : "";
+
+    const cityRow = data.city
+      ? `<div class="field"><span class="label">City:</span> <span class="value">${data.city}</span></div>`
+      : "";
 
     const emailHtml = `
 <!DOCTYPE html>
@@ -62,7 +69,9 @@ body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0;
 </div>
 <div class="section">
 <div class="section-title">Customer Information</div>
+${serviceRow}
 <div class="field"><span class="label">Name:</span> <span class="value">${data.name}</span></div>
+${cityRow}
 <div class="field"><span class="label">Email:</span> <span class="value">${data.email}</span></div>
 <div class="field"><span class="label">Phone:</span> <span class="value">${data.phone}</span></div>
 </div>
@@ -90,10 +99,14 @@ This message was submitted via the Big City Plumbing & Heating website contact f
       },
     });
 
+    const subject = data.service
+      ? `Website Contact (${data.service}): ${data.name}`
+      : `Website Contact: ${data.name}`;
+
     await client.send({
       from: Deno.env.get("SMTP_USER")!,
       to: "mike@bigcityph.com",
-      subject: `Website Contact: ${data.name}`,
+      subject,
       content: "Please view this email in an HTML-compatible email client.",
       html: compactEmailHtml(emailHtml),
       replyTo: data.email,
