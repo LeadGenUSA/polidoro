@@ -154,15 +154,6 @@ const HeatingServices = () => {
               Make the switch to natural gas and enjoy lower fuel costs, cleaner burning, and reduced maintenance. 
               We handle the complete conversion process including all necessary permits and inspections.
             </p>
-            <div className="bg-secondary/10 border border-secondary/20 rounded-2xl p-8 mb-8">
-              <h3 className="font-heading text-2xl font-bold text-foreground mb-4">
-                National Grid & Con Ed Rebates Available
-              </h3>
-              <p className="text-muted-foreground">
-                Take advantage of utility rebates when you convert to natural gas. 
-                Our team will help you navigate the rebate process to maximize your savings.
-              </p>
-            </div>
             <a href="tel:631-361-9500">
               <Button variant="hero" size="xl">
                 <Phone className="w-5 h-5 mr-2" />
