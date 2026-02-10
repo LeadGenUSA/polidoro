@@ -23,6 +23,7 @@ import CouponPage from "./pages/CouponPage";
 import SurveyThankYouCoupon from "./pages/SurveyThankYouCoupon";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import ContactUs from "./pages/ContactUs";
 import NotFound from "./pages/NotFound";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 
@@ -56,6 +57,7 @@ const App = () => (
             <Route path="/survey-thank-you" element={<SurveyThankYouCoupon />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/contact-us" element={<ContactUs />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

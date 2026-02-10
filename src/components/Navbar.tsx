@@ -29,7 +29,7 @@ const navLinks = [
   { name: 'Projects', href: '/projects-gallery' },
   { name: 'Reviews', href: '/testimonials' },
   { name: 'How-To Videos', href: '/how-to-videos' },
-  { name: 'Contact', href: '/#contact' },
+  { name: 'Contact', href: '/contact-us' },
 ];
 
 const Navbar = () => {
@@ -202,11 +202,11 @@ const Navbar = () => {
 
             {/* Contact */}
             <Link
-              to="/#contact"
-              onClick={() => handleNavClick('/#contact')}
+              to="/contact-us"
+              onClick={() => handleNavClick('/contact-us')}
               className={`font-medium transition-colors hover:text-secondary ${
                 isScrolled ? 'text-foreground' : 'text-primary-foreground'
-              } ${isActive('/#contact') ? 'text-secondary' : ''}`}
+              } ${isActive('/contact-us') ? 'text-secondary' : ''}`}
             >
               Contact
             </Link>
@@ -359,11 +359,11 @@ const Navbar = () => {
 
               {/* Contact */}
               <Link
-                to="/#contact"
-                onClick={() => handleNavClick('/#contact')}
+                to="/contact-us"
+                onClick={() => handleNavClick('/contact-us')}
                 className={`font-medium transition-colors ${
                   (isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'
-                } ${isActive('/#contact') ? 'text-secondary' : ''}`}
+                } ${isActive('/contact-us') ? 'text-secondary' : ''}`}
               >
                 Contact
               </Link>
