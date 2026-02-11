@@ -72,26 +72,32 @@ Deno.serve(async (req) => {
     
     console.log('Fetching reviews for place ID:', placeId);
 
-    // Fetch place details including reviews from Google Places API
-    const placesUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,reviews&key=${googleApiKey}`;
+    // Fetch place details including reviews from Google Places API (New)
+    const placesUrl = `https://places.googleapis.com/v1/places/${placeId}`;
     
-    const placesResponse = await fetch(placesUrl);
+    const placesResponse = await fetch(placesUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': googleApiKey,
+        'X-Goog-FieldMask': 'displayName,reviews',
+      },
+    });
     const placesData = await placesResponse.json();
 
-    console.log('Google Places API response status:', placesData.status);
+    console.log('Google Places API (New) response status:', placesResponse.status);
 
-    if (placesData.status !== 'OK') {
-      console.error('Google Places API error:', placesData.status, placesData.error_message);
+    if (!placesResponse.ok) {
+      console.error('Google Places API error:', JSON.stringify(placesData));
       return new Response(
         JSON.stringify({ 
-          error: `Google Places API error: ${placesData.status}`,
-          message: placesData.error_message || 'Unknown error'
+          error: `Google Places API error: ${placesResponse.status}`,
+          message: placesData.error?.message || 'Unknown error'
         }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    const reviews = placesData.result?.reviews || [];
+    const reviews = placesData.reviews || [];
     console.log(`Found ${reviews.length} reviews from Google`);
 
     if (reviews.length === 0) {
@@ -115,20 +121,26 @@ Deno.serve(async (req) => {
     // Prepare new reviews for insertion
     const newReviews = reviews
       .filter((review: any) => {
-        // Create a unique ID from author name and time
-        const reviewId = `${review.author_name}_${review.time}`;
+        // Create a unique ID from author name and publish time
+        const authorName = review.authorAttribution?.displayName || 'Anonymous';
+        const publishTime = review.publishTime || '';
+        const reviewId = `${authorName}_${publishTime}`;
         return !existingIds.has(reviewId);
       })
-      .map((review: any) => ({
-        google_review_id: `${review.author_name}_${review.time}`,
-        author_name: review.author_name,
-        author_photo_url: review.profile_photo_url || null,
-        rating: review.rating,
-        text: review.text,
-        review_date: new Date(review.time * 1000).toISOString(),
-        source: 'google',
-        status: 'pending',
-      }));
+      .map((review: any) => {
+        const authorName = review.authorAttribution?.displayName || 'Anonymous';
+        const publishTime = review.publishTime || new Date().toISOString();
+        return {
+          google_review_id: `${authorName}_${publishTime}`,
+          author_name: authorName,
+          author_photo_url: review.authorAttribution?.photoUri || null,
+          rating: review.rating,
+          text: review.text?.text || review.originalText?.text || '',
+          review_date: publishTime,
+          source: 'google' as const,
+          status: 'pending' as const,
+        };
+      });
 
     console.log(`Inserting ${newReviews.length} new reviews`);
 
