@@ -89,6 +89,15 @@ const BlogPost = () => {
         title={`${post.title} - Big City Plumbing and Heating`}
         description={post.meta_description || `Read about ${post.title} from Big City Plumbing and Heating.`}
         path={`/blog/${post.slug}`}
+        jsonLd={post.faqs && post.faqs.length > 0 ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": post.faqs.map((faq: { question: string; answer: string }) => ({
+            "@type": "Question",
+            "name": faq.question,
+            "acceptedAnswer": { "@type": "Answer", "text": faq.answer }
+          }))
+        } : undefined}
       />
       <Navbar />
 
