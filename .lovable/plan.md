@@ -1,34 +1,34 @@
 
-## Update Email Recipients Across All Forms
 
-### Changes
+## Move Coupons Badge Next to Happy Customers Card
 
-Update the recipient email in **all 5 edge functions** from `mike@bigcityph.com` to `mike@bigcityplumbing.com`. Additionally, the **Work Order form** will send to three recipients: `mike@bigcityplumbing.com`, `diane@bigcityplumbing.com`, and `info@bigcityplumbing.com`.
+### Change
 
-### Files to Modify
+Move the coupon badge image from its current position (right side, separated from the Happy Customers card) to sit directly beside the Happy Customers card in the same row. This eliminates the overlap issue with the Navilend logo on iPad by keeping both elements grouped together on the left/center.
 
-| File | Current Recipient | New Recipient(s) |
-|------|------------------|-------------------|
-| `supabase/functions/send-contact-form/index.ts` | `mike@bigcityph.com` | `mike@bigcityplumbing.com` |
-| `supabase/functions/send-estimate-form/index.ts` | `mike@bigcityph.com` | `mike@bigcityplumbing.com` |
-| `supabase/functions/send-customer-survey/index.ts` | `mike@bigcityph.com` | `mike@bigcityplumbing.com` |
-| `supabase/functions/submit-review/index.ts` | `mike@bigcityph.com` | `mike@bigcityplumbing.com` |
-| `supabase/functions/send-work-order/index.ts` | `mike@bigcityph.com` | `mike@bigcityplumbing.com`, `diane@bigcityplumbing.com`, `info@bigcityplumbing.com` |
+### File: `src/components/Hero.tsx` (lines 258-274)
 
-### Technical Detail
+The floating card container currently uses `justify-between` which pushes the coupon badge to the far right. The change:
 
-For the Work Order function, the recipients array on line 171 will change from:
-```typescript
-const recipients = ['mike@bigcityph.com'];
+1. Replace `justify-between` with `justify-start` so both items sit together
+2. Wrap the coupon image inside the same card-style container for visual consistency, or simply keep it adjacent with a small gap
+3. Also hide the Navilend logo on screens below `xl` (line 280) to prevent any remaining overlap
+
+**Before:**
 ```
-to:
-```typescript
-const recipients = [
-  'mike@bigcityplumbing.com',
-  'diane@bigcityplumbing.com',
-  'info@bigcityplumbing.com',
-];
+<div className="mt-6 flex items-center justify-between gap-4 flex-wrap">
+  <!-- Happy Customers card -->
+  <!-- Coupon badge (pushed to far right) -->
+</div>
 ```
-The existing logic that appends an optional user-provided "Email To" address will remain unchanged.
 
-All other functions are a simple find-and-replace of the email string.
+**After:**
+```
+<div className="mt-6 flex items-center gap-4 flex-wrap">
+  <!-- Happy Customers card -->
+  <!-- Coupon badge (now sits right next to it) -->
+</div>
+```
+
+Additionally, the Navilend logo container on line 280 gets `hidden xl:block` added to prevent overlap on tablets.
+
