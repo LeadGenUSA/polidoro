@@ -6,9 +6,10 @@ interface SEOProps {
   title: string;
   description: string;
   path: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const SEO = ({ title, description, path }: SEOProps) => {
+const SEO = ({ title, description, path, jsonLd }: SEOProps) => {
   const url = `${BASE_URL}${path}`;
 
   return (
@@ -23,6 +24,11 @@ const SEO = ({ title, description, path }: SEOProps) => {
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
+      {jsonLd && (
+        <script type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </script>
+      )}
     </Helmet>
   );
 };

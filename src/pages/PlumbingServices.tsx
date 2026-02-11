@@ -67,6 +67,27 @@ const plumbingServices = [
   },
 ];
 
+const plumbingServiceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Plumbing",
+  "provider": {
+    "@type": "Plumber",
+    "name": "Big City Plumbing and Heating",
+    "telephone": ["631-361-9500", "718-326-5833"],
+    "url": "https://www.bigcityplumbing.com"
+  },
+  "areaServed": ["Long Island", "Nassau County", "Suffolk County", "Queens", "Brooklyn", "Manhattan", "Bronx"],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Plumbing Services",
+    "itemListElement": plumbingServices.map(s => ({
+      "@type": "Offer",
+      "itemOffered": { "@type": "Service", "name": s.title, "description": s.description }
+    }))
+  }
+};
+
 const PlumbingServices = () => {
   return (
     <div className="min-h-screen">
@@ -74,6 +95,7 @@ const PlumbingServices = () => {
         title="Plumbing Services - Big City Plumbing and Heating"
         description="Expert residential and commercial plumbing services in Long Island and NYC. Repairs, installations, permits, backflow testing, and 24-hour emergency plumbing."
         path="/plumbing-services"
+        jsonLd={plumbingServiceSchema}
       />
       <Navbar />
       

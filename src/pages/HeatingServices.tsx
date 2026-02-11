@@ -64,6 +64,27 @@ const heatingServices = [
   },
 ];
 
+const heatingServiceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Heating",
+  "provider": {
+    "@type": "Plumber",
+    "name": "Big City Plumbing and Heating",
+    "telephone": ["631-361-9500", "718-326-5833"],
+    "url": "https://www.bigcityplumbing.com"
+  },
+  "areaServed": ["Long Island", "Nassau County", "Suffolk County", "Queens", "Brooklyn", "Manhattan", "Bronx"],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Heating Services",
+    "itemListElement": heatingServices.map(s => ({
+      "@type": "Offer",
+      "itemOffered": { "@type": "Service", "name": s.title, "description": s.description }
+    }))
+  }
+};
+
 const HeatingServices = () => {
   return (
     <div className="min-h-screen">
@@ -71,6 +92,7 @@ const HeatingServices = () => {
         title="Heating Services - Big City Plumbing and Heating"
         description="Boiler repair, radiant heat installation, oil to gas conversions, and complete heating solutions for Long Island and NYC. Licensed and insured professionals."
         path="/heating-services"
+        jsonLd={heatingServiceSchema}
       />
       <Navbar />
       
