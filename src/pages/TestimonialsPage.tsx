@@ -16,7 +16,7 @@ const stats = [{
   label: 'Average Rating'
 }, {
   icon: Users,
-  value: '500+',
+  value: '5000+',
   label: 'Happy Customers'
 }, {
   icon: ThumbsUp,
