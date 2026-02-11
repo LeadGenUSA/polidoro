@@ -256,7 +256,7 @@ const Hero = () => {
             </div>
             
             {/* Floating Card - Below Slideshow */}
-            <div className="mt-6 flex items-center justify-between gap-4 flex-wrap">
+            <div className="mt-6 flex items-center gap-4 flex-wrap">
               <div className="bg-card p-4 rounded-2xl shadow-large animate-float inline-block">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl cta-gradient flex items-center justify-center">
@@ -277,7 +277,7 @@ const Hero = () => {
       </div>
       
       {/* Navilend Logo - Bottom Right */}
-      <div className="absolute bottom-24 right-8 z-20">
+      <div className="absolute bottom-24 right-8 z-20 hidden xl:block">
         <img 
           src={navilendLogo} 
           alt="Navilend" 
