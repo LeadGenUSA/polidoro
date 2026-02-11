@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { usePublishedBlogPosts } from '@/hooks/useBlogPosts';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Loader2, Calendar, ArrowRight } from 'lucide-react';
 
 const Blog = () => {
@@ -9,6 +10,11 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Blog - Big City Plumbing and Heating"
+        description="Expert plumbing and heating tips, advice, and industry news from Big City Plumbing and Heating. Stay informed about home comfort and maintenance."
+        path="/blog"
+      />
       <Navbar />
 
       {/* Hero */}

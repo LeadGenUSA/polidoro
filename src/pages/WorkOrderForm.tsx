@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -143,6 +144,11 @@ const WorkOrderForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO
+        title="Work Order - Big City Plumbing and Heating"
+        description="Submit a work order for plumbing or heating service from Big City Plumbing and Heating. Fast, professional service across Long Island and NYC."
+        path="/work-order"
+      />
       <Navbar />
       
       {/* Hero Section with blue background for navbar consistency */}

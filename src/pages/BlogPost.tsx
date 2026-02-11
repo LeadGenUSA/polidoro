@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useBlogPost } from '@/hooks/useBlogPosts';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Loader2, Calendar, ArrowLeft } from 'lucide-react';
 
@@ -84,6 +85,11 @@ const BlogPost = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={`${post.title} - Big City Plumbing and Heating`}
+        description={post.meta_description || `Read about ${post.title} from Big City Plumbing and Heating.`}
+        path={`/blog/${post.slug}`}
+      />
       <Navbar />
 
       {/* Hero */}

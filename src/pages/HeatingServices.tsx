@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Phone, Flame, Thermometer, Fuel, Gauge, Droplets, Zap, Settings, RefreshCw, ThermometerSun, Home, Waves } from 'lucide-react';
 import industryLeadingProducts from '@/assets/industry-leading-products.webp';
@@ -66,6 +67,11 @@ const heatingServices = [
 const HeatingServices = () => {
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Heating Services - Big City Plumbing and Heating"
+        description="Boiler repair, radiant heat installation, oil to gas conversions, and complete heating solutions for Long Island and NYC. Licensed and insured professionals."
+        path="/heating-services"
+      />
       <Navbar />
       
       {/* Hero Section */}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { useGallery, GalleryItem } from '@/hooks/useGallery';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Loader2, X, Camera } from 'lucide-react';
@@ -49,6 +50,11 @@ const ProjectsGallery = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        title="Projects Gallery - Big City Plumbing and Heating"
+        description="View our completed plumbing and heating projects including boiler installations, tankless water heaters, radiant heat systems, and commercial plumbing work."
+        path="/projects-gallery"
+      />
       <Navbar />
       
       <main className="flex-1">

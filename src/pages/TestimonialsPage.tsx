@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Navbar from '@/components/Navbar';
+import SEO from '@/components/SEO';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -123,6 +124,11 @@ const TestimonialsPage = () => {
     });
   };
   return <div className="min-h-screen bg-background">
+      <SEO
+        title="Customer Reviews - Big City Plumbing and Heating"
+        description="Read reviews from satisfied customers of Big City Plumbing and Heating. See why homeowners across Long Island and NYC trust us for plumbing and heating services."
+        path="/reviews"
+      />
       <Navbar />
       
       {/* Hero Section */}

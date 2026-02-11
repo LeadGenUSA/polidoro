@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, Eye, Share2, Lock, UserCheck, Mail, RefreshCw } from 'lucide-react';
 
@@ -81,6 +82,11 @@ const PrivacyPolicy = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Privacy Policy - Big City Plumbing and Heating"
+        description="How Big City Plumbing and Heating collects, uses, and protects your personal information. Read our privacy policy for details on data security."
+        path="/privacy-policy"
+      />
       <Navbar />
       
       {/* Hero Section */}

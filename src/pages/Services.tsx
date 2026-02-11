@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { 
   Wrench, 
@@ -112,6 +113,11 @@ const Services = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        title="Our Services - Big City Plumbing and Heating"
+        description="Full range of plumbing and heating services for Long Island and NYC. Repairs, installations, oil to gas conversions, radiant heat, and emergency service."
+        path="/services"
+      />
       <Navbar />
       
       <main className="flex-1">

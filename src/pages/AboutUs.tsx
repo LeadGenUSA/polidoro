@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { CheckCircle2, Award, Shield, Building2 } from 'lucide-react';
 import michaelPolidoro from '@/assets/michael-polidoro.png';
 
@@ -47,6 +48,11 @@ const stats = [
 const AboutUs = () => {
   return (
     <div className="min-h-screen">
+      <SEO
+        title="About Us - Big City Plumbing and Heating"
+        description="Family-owned plumbing and heating company with 35+ years of experience serving Long Island and NYC. Meet owner Michael Polidoro, former NYC Plumbing Inspector."
+        path="/about-us"
+      />
       <Navbar />
       
       {/* Hero Section */}
