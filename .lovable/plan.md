@@ -1,18 +1,20 @@
 
-## Update "Happy Customers" Count on Testimonials Page
 
-### Problem
-The Testimonials page shows "500+ Happy Customers" while the Hero section already shows the correct "5000+ Happy Customers".
+## Rename `/testimonials` Route to `/reviews`
 
-### Change
+### Changes
 
-**File: `src/pages/TestimonialsPage.tsx` (line 19)**
+**1. `src/App.tsx` (line 48)**
+- Change `path="/testimonials"` to `path="/reviews"`
 
-Change the stats value from `'500+'` to `'5000+'`.
+**2. `src/components/Navbar.tsx` (lines 30, 149-153, 304-308)**
+- Change all `/testimonials` references to `/reviews` (nav link href, `to=`, `handleNavClick()`, and `isActive()` calls)
 
-```
-Before: value: '500+',
-After:  value: '5000+',
-```
+**3. `src/components/Footer.tsx` (line 46)**
+- Change `to="/testimonials"` to `to="/reviews"`
 
-This is the only remaining instance -- the Hero section already displays the correct "5000+" figure.
+**4. `src/components/Testimonials.tsx` (line 73)**
+- Change `href="/testimonials"` to `href="/reviews"`
+
+No file renames needed -- the component file `TestimonialsPage.tsx` keeps its current name; only the URL route and all links pointing to it are updated.
+
