@@ -27,7 +27,7 @@ const navLinks = [
   { name: 'Home', href: '/' },
   { name: 'About', href: '/about-us' },
   { name: 'Projects', href: '/projects-gallery' },
-  { name: 'Reviews', href: '/testimonials' },
+  { name: 'Reviews', href: '/reviews' },
   { name: 'How-To Videos', href: '/how-to-videos' },
   { name: 'Contact', href: '/contact-us' },
 ];
@@ -146,11 +146,11 @@ const Navbar = () => {
 
             {/* Reviews */}
             <Link
-              to="/testimonials"
-              onClick={() => handleNavClick('/testimonials')}
+              to="/reviews"
+              onClick={() => handleNavClick('/reviews')}
               className={`font-medium transition-colors hover:text-secondary ${
                 isScrolled ? 'text-foreground' : 'text-primary-foreground'
-              } ${isActive('/testimonials') ? 'text-secondary' : ''}`}
+              } ${isActive('/reviews') ? 'text-secondary' : ''}`}
             >
               Reviews
             </Link>
@@ -301,11 +301,11 @@ const Navbar = () => {
 
               {/* Reviews */}
               <Link
-                to="/testimonials"
-                onClick={() => handleNavClick('/testimonials')}
+              to="/reviews"
+                onClick={() => handleNavClick('/reviews')}
                 className={`font-medium transition-colors ${
-                  (isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'
-                } ${isActive('/testimonials') ? 'text-secondary' : ''}`}
+                   (isScrolled || isMobileMenuOpen) ? 'text-foreground' : 'text-primary-foreground'
+                } ${isActive('/reviews') ? 'text-secondary' : ''}`}
               >
                 Reviews
               </Link>

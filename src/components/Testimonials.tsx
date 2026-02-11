@@ -70,7 +70,7 @@ const Testimonials = () => {
         {/* Link to Reviews Page */}
         <div className="text-center mt-12">
           <a 
-            href="/testimonials" 
+            href="/reviews" 
             className="inline-flex items-center gap-2 text-primary hover:text-secondary font-semibold text-lg transition-colors"
           >
             See Other Customer Reviews of Our Excellent Service
