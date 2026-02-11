@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, Wrench, UserCheck, DollarSign, AlertTriangle, Award, Scale, Phone } from 'lucide-react';
 
@@ -89,6 +90,11 @@ const TermsOfService = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Terms of Service - Big City Plumbing and Heating"
+        description="Terms and conditions for Big City Plumbing and Heating services. Read our service agreements, warranties, and policies."
+        path="/terms-of-service"
+      />
       <Navbar />
       
       {/* Hero Section */}

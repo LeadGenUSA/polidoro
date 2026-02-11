@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Phone, Wrench, Droplets, Flame, ShieldCheck, Clock, FileCheck, Gauge, Bath, Filter, Settings, HelpCircle, Fuel } from 'lucide-react';
 
@@ -69,6 +70,11 @@ const plumbingServices = [
 const PlumbingServices = () => {
   return (
     <div className="min-h-screen">
+      <SEO
+        title="Plumbing Services - Big City Plumbing and Heating"
+        description="Expert residential and commercial plumbing services in Long Island and NYC. Repairs, installations, permits, backflow testing, and 24-hour emergency plumbing."
+        path="/plumbing-services"
+      />
       <Navbar />
       
       {/* Hero Section */}

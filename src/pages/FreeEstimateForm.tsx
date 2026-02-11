@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import EstimatePhotoUpload from '@/components/estimate-form/EstimatePhotoUpload';
 
 const boilerTypes = ['ES2', 'ESC', 'ALPINE', 'PVG', 'NAVIEN', 'Steam Boiler', 'Hot Air System', 'Indirect', 'HWH', 'Tankless'];
@@ -257,6 +258,11 @@ const FreeEstimateForm = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Free Estimate - Big City Plumbing and Heating"
+        description="Request a free plumbing or heating estimate from Big City Plumbing and Heating. Serving Long Island and NYC with licensed, insured professionals."
+        path="/free-estimate"
+      />
       <Navbar />
       
       {/* Hero Section */}

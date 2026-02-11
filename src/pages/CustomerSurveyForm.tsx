@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -138,6 +139,11 @@ const CustomerSurveyForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO
+        title="Customer Survey - Big City Plumbing and Heating"
+        description="Share your feedback about our plumbing and heating services. Your opinion helps Big City Plumbing and Heating continue to improve."
+        path="/customer-survey"
+      />
       <Navbar />
       
       <section className="relative bg-primary pt-32 pb-16">

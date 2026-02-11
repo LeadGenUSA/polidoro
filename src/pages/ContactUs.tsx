@@ -1,11 +1,17 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ContactForm from '@/components/ContactForm';
+import SEO from '@/components/SEO';
 import { Phone, MapPin } from 'lucide-react';
 
 const ContactUs = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Contact Us - Big City Plumbing and Heating"
+        description="Get in touch for plumbing and heating services in Long Island and NYC. Call 631-361-9500 or 718-326-5833 for estimates, repairs, and emergency service."
+        path="/contact-us"
+      />
       <Navbar />
       
       {/* Hero Header */}

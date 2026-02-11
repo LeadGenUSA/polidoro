@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import { Play, Clock, Eye, Youtube, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -98,6 +99,11 @@ const HowToVideos = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="How-To Videos - Big City Plumbing and Heating"
+        description="Helpful plumbing and heating video guides from Big City Plumbing and Heating. Learn about Navien systems, boiler maintenance, and home plumbing tips."
+        path="/how-to-videos"
+      />
       <Navbar />
       
       {/* Hero Section */}
