@@ -23,15 +23,17 @@ import {
   MessageSquare,
   Camera,
   FileText,
-  BookOpen
+  BookOpen,
+  Users
 } from 'lucide-react';
 import { BlogManager } from '@/components/admin/BlogManager';
+import { UserRolesManager } from '@/components/admin/UserRolesManager';
 import { useBlogPosts } from '@/hooks/useBlogPosts';
 
 const Admin = () => {
   const navigate = useNavigate();
   const { user, isAdmin, isLoading: authLoading, signOut } = useAuth();
-  const [adminSection, setAdminSection] = useState<'reviews' | 'slideshow' | 'gallery' | 'submissions' | 'blog'>('reviews');
+  const [adminSection, setAdminSection] = useState<'reviews' | 'slideshow' | 'gallery' | 'submissions' | 'blog' | 'users'>('reviews');
   const { posts: blogDrafts } = useBlogPosts('draft');
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'all'>('pending');
   const { reviews, isLoading, fetchReviews, approveReview, rejectReview, deleteReview } = useReviews(activeTab);
@@ -147,9 +149,25 @@ const Admin = () => {
               </span>
             )}
           </Button>
+          <Button
+            variant={adminSection === 'users' ? 'default' : 'outline'}
+            onClick={() => setAdminSection('users')}
+            className="gap-2"
+          >
+            <Users className="w-4 h-4" />
+            Users
+          </Button>
         </div>
 
-        {adminSection === 'blog' ? (
+        {adminSection === 'users' ? (
+          <>
+            <div className="mb-8">
+              <h2 className="font-heading text-2xl font-bold text-foreground">User Management</h2>
+              <p className="text-muted-foreground">Grant or revoke admin access for users.</p>
+            </div>
+            <UserRolesManager />
+          </>
+        ) : adminSection === 'blog' ? (
           <>
             <div className="mb-8">
               <h2 className="font-heading text-2xl font-bold text-foreground">Blog Management</h2>
