@@ -18,22 +18,6 @@ import {
 
 const services = [
   {
-    icon: Wrench,
-    title: 'Plumbing Repair',
-    slug: 'plumbing-repair',
-    description: 'Comprehensive plumbing repair services for residential and commercial properties. From leaky faucets to complete pipe replacements, our licensed plumbers handle it all.',
-    features: [
-      'Leak detection and repair',
-      'Drain cleaning and unclogging',
-      'Pipe repair and replacement',
-      'Fixture installation and repair',
-      'Water pressure issues',
-      'Sewer line services'
-    ],
-    link: '/plumbing-services',
-    linkText: 'View Plumbing Services'
-  },
-  {
     icon: Flame,
     title: 'Heating Systems',
     slug: 'heating-systems',
@@ -48,6 +32,22 @@ const services = [
     ],
     link: '/heating-services',
     linkText: 'View Heating Services'
+  },
+  {
+    icon: Wrench,
+    title: 'Plumbing Repair',
+    slug: 'plumbing-repair',
+    description: 'Comprehensive plumbing repair services for residential and commercial properties. From leaky faucets to complete pipe replacements, our licensed plumbers handle it all.',
+    features: [
+      'Leak detection and repair',
+      'Drain cleaning and unclogging',
+      'Pipe repair and replacement',
+      'Fixture installation and repair',
+      'Water pressure issues',
+      'Sewer line services'
+    ],
+    link: '/plumbing-services',
+    linkText: 'View Plumbing Services'
   },
   {
     icon: Droplets,
