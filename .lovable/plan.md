@@ -1,12 +1,20 @@
 
 
-## Update Google Places API Key
+## Reorder Services on the Services Page
 
-### What This Does
-Replace the existing `GOOGLE_PLACES_API_KEY` secret with your new key. This secret is used by the backend function that imports Google reviews into your site.
+Swap the order of the first two services so **Heating Systems** appears first and **Plumbing Repair** appears second.
 
-### Steps
-1. You will be prompted to enter your new Google Places API key
-2. The secret will be securely stored and immediately available to the review import function
-3. No code changes are needed -- the existing integration will use the updated key automatically
+### Change
+In `src/pages/Services.tsx`, move the "Heating Systems" object to index 0 and "Plumbing Repair" to index 1 in the `services` array. All other services remain in their current order.
+
+**Final order:**
+1. Heating Systems
+2. Plumbing Repair
+3. Tankless Water Heaters
+4. Gas Conversion
+5. Emergency Services
+
+### Technical Detail
+- File: `src/pages/Services.tsx` (lines ~18-95)
+- Only the array element order changes; no other code is modified.
 
