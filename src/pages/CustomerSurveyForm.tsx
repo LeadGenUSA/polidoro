@@ -15,6 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle, Loader2 } from 'lucide-react';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 const surveySchema = z.object({
   // Customer Info
@@ -68,6 +69,7 @@ const satisfactionLabels = {
 const CustomerSurveyForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const { toast } = useToast();
   
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<SurveyFormData>({
@@ -79,7 +81,7 @@ const CustomerSurveyForm = () => {
     
     try {
       const { data: response, error } = await supabase.functions.invoke('send-customer-survey', {
-        body: data,
+        body: { ...data, turnstileToken },
       });
 
       if (error) throw error;
@@ -500,12 +502,13 @@ const CustomerSurveyForm = () => {
             </Card>
 
             {/* Submit */}
-            <div className="flex justify-center">
+            <div className="flex flex-col items-center gap-4">
+              <TurnstileWidget onVerify={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
               <Button 
                 type="submit" 
                 size="lg" 
                 className="min-w-[200px]"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !turnstileToken}
               >
                 {isSubmitting ? (
                   <>

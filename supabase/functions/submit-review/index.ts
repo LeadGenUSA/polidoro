@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { SMTPClient } from 'https://deno.land/x/denomailer@1.6.0/mod.ts'
+import { verifyTurnstile } from '../_shared/verify-turnstile.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -133,7 +134,17 @@ Deno.serve(async (req) => {
     // Use service role to bypass RLS for inserting pending reviews
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    const body: ReviewSubmission = await req.json()
+    const { turnstileToken, ...body }: ReviewSubmission & { turnstileToken?: string } = await req.json()
+
+    // Verify Turnstile token
+    const isValid = await verifyTurnstile(turnstileToken)
+    if (!isValid) {
+      return new Response(
+        JSON.stringify({ error: 'Bot verification failed' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+    
     
     // Validate required fields
     if (!body.author_name || body.author_name.trim().length === 0) {

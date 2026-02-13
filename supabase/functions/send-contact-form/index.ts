@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { verifyTurnstile } from "../_shared/verify-turnstile.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -33,8 +34,16 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const data: ContactFormData = await req.json();
+    const { turnstileToken, ...data }: ContactFormData & { turnstileToken?: string } = await req.json();
     console.log("Processing contact form from:", data.name);
+
+    const isValid = await verifyTurnstile(turnstileToken);
+    if (!isValid) {
+      return new Response(JSON.stringify({ error: "Bot verification failed" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
 
     const serviceRow = data.service
       ? `<div class="field"><span class="label">Service Needed:</span> <span class="value">${data.service}</span></div>`

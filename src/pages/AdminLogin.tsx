@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Lock, Mail, ArrowLeft, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 const authSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -22,6 +23,7 @@ const AdminLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && user && isAdmin) {
@@ -50,6 +52,10 @@ const AdminLogin = () => {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
+    if (!turnstileToken) {
+      toast({ title: 'Verification Required', description: 'Please complete the verification.', variant: 'destructive' });
+      return;
+    }
 
     setIsLoading(true);
     const { error } = await signIn(formData.email, formData.password);
@@ -69,6 +75,10 @@ const AdminLogin = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
+    if (!turnstileToken) {
+      toast({ title: 'Verification Required', description: 'Please complete the verification.', variant: 'destructive' });
+      return;
+    }
 
     setIsLoading(true);
     const { error } = await signUp(formData.email, formData.password);
@@ -165,7 +175,8 @@ const AdminLogin = () => {
                     </div>
                     {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
                   </div>
-                  <Button type="submit" className="w-full" variant="hero" disabled={isLoading}>
+                  <TurnstileWidget onVerify={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
+                  <Button type="submit" className="w-full" variant="hero" disabled={isLoading || !turnstileToken}>
                     {isLoading ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -210,7 +221,8 @@ const AdminLogin = () => {
                     </div>
                     {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
                   </div>
-                  <Button type="submit" className="w-full" variant="hero" disabled={isLoading}>
+                  <TurnstileWidget onVerify={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
+                  <Button type="submit" className="w-full" variant="hero" disabled={isLoading || !turnstileToken}>
                     {isLoading ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
