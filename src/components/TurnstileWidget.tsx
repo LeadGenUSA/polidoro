@@ -1,7 +1,7 @@
 import { Turnstile } from '@marsidev/react-turnstile';
 
 // Cloudflare Turnstile Site Key (public - safe to store in code)
-const TURNSTILE_SITE_KEY = '0x4AAAAAABfTVRBiTnmVKfr_';
+const TURNSTILE_SITE_KEY = '0x4AAAAAACbaweBfl9FA-5wp';
 
 interface TurnstileWidgetProps {
   onVerify: (token: string) => void;
