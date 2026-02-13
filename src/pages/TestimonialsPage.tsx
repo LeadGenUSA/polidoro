@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useApprovedReviews, Review } from '@/hooks/useReviews';
 import StarRating from '@/components/StarRating';
 import { supabase } from '@/integrations/supabase/client';
+import TurnstileWidget from '@/components/TurnstileWidget';
 const stats = [{
   icon: Star,
   value: '5.0',
@@ -38,6 +39,7 @@ const TestimonialsPage = () => {
   } = useApprovedReviews();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -80,6 +82,7 @@ const TestimonialsPage = () => {
           title: formData.title.trim() || undefined,
           text: formData.testimonial.trim(),
           rating: formData.rating,
+          turnstileToken,
         }
       });
       
@@ -103,6 +106,7 @@ const TestimonialsPage = () => {
         testimonial: '',
         rating: 0
       });
+      setTurnstileToken(null);
     } catch (error) {
       console.error('Error submitting review:', error);
       toast({
@@ -309,7 +313,8 @@ const TestimonialsPage = () => {
                         disabled={isSubmitting}
                       />
                     </div>
-                    <Button variant="hero" className="w-full group" disabled={isSubmitting}>
+                    <TurnstileWidget onVerify={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
+                    <Button variant="hero" className="w-full group" disabled={isSubmitting || !turnstileToken}>
                       {isSubmitting ? (
                         <>
                           <Loader2 className="w-4 h-4 animate-spin mr-2" />

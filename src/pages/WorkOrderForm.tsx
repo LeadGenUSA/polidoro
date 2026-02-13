@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle, Loader2 } from 'lucide-react';
+import TurnstileWidget from '@/components/TurnstileWidget';
 import PhotoUpload from '@/components/work-order/PhotoUpload';
 
 const workOrderSchema = z.object({
@@ -67,6 +68,7 @@ const WorkOrderForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const { toast } = useToast();
   
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<WorkOrderFormData>({
@@ -83,7 +85,7 @@ const WorkOrderForm = () => {
     
     try {
       const { data: response, error } = await supabase.functions.invoke('send-work-order', {
-        body: { ...data, photos },
+        body: { ...data, photos, turnstileToken },
       });
 
       if (error) throw error;
@@ -441,11 +443,12 @@ const WorkOrderForm = () => {
               </CardContent>
             </Card>
 
-            <div className="text-center">
-              <p className="text-muted-foreground mb-4">
+            <div className="text-center space-y-4">
+              <p className="text-muted-foreground">
                 Please make sure all required fields are filled in before submitting!
               </p>
-              <Button type="submit" size="lg" disabled={isSubmitting} className="min-w-[200px]">
+              <TurnstileWidget onVerify={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
+              <Button type="submit" size="lg" disabled={isSubmitting || !turnstileToken} className="min-w-[200px]">
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

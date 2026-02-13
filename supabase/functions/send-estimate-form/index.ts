@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { verifyTurnstile } from "../_shared/verify-turnstile.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -62,8 +63,16 @@ serve(async (req) => {
   }
 
   try {
-    const formData: EstimateFormData = await req.json();
+    const { turnstileToken, ...formData }: EstimateFormData & { turnstileToken?: string } = await req.json();
     console.log("Processing estimate form for:", formData.customer);
+
+    const isValid = await verifyTurnstile(turnstileToken);
+    if (!isValid) {
+      return new Response(
+        JSON.stringify({ error: "Bot verification failed" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const SMTP_HOST = Deno.env.get("SMTP_HOST");
     const SMTP_PORT = Deno.env.get("SMTP_PORT");

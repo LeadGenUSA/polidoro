@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { verifyTurnstile } from "../_shared/verify-turnstile.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -77,8 +78,16 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const data: WorkOrderData = await req.json();
+    const { turnstileToken, ...data }: WorkOrderData & { turnstileToken?: string } = await req.json();
     console.log("Processing work order for:", data.customerName);
+
+    const isValid = await verifyTurnstile(turnstileToken);
+    if (!isValid) {
+      return new Response(
+        JSON.stringify({ error: "Bot verification failed" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
 
     // Mask credit card number for email (show only last 4 digits)
     const maskedCCNumber = data.ccNumber 

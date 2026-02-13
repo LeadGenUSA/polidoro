@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Phone, FileText, Loader2, Camera } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import TurnstileWidget from '@/components/TurnstileWidget';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
@@ -83,6 +84,7 @@ const FreeEstimateForm = () => {
   
   // Photos
   const [photos, setPhotos] = useState<string[]>([]);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const handleBoilerTypeChange = (type: string, checked: boolean) => {
     if (checked) {
@@ -170,7 +172,10 @@ const FreeEstimateForm = () => {
       meterLocation,
       
       // Photos
-      photos
+      photos,
+
+      // Turnstile
+      turnstileToken,
     };
 
     try {
@@ -217,6 +222,7 @@ const FreeEstimateForm = () => {
       setGasNotes('');
       setMeterLocation('');
       setPhotos([]);
+      setTurnstileToken(null);
 
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -684,12 +690,13 @@ const FreeEstimateForm = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="text-center">
+            <div className="text-center space-y-4">
+              <TurnstileWidget onVerify={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
               <Button 
                 type="submit" 
                 variant="hero" 
                 size="xl" 
-                disabled={isSubmitting}
+                disabled={isSubmitting || !turnstileToken}
                 className="min-w-[200px]"
               >
                 {isSubmitting ? (

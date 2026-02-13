@@ -7,6 +7,7 @@ import { Loader2, CheckCircle, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 const serviceOptions = [
   'Complaint',
@@ -19,6 +20,7 @@ const ContactForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     service: '',
     name: '',
@@ -34,13 +36,14 @@ const ContactForm = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('send-contact-form', {
-        body: formData,
+        body: { ...formData, turnstileToken },
       });
 
       if (error) throw error;
 
       setShowThankYou(true);
       setFormData({ service: '', name: '', city: '', phone: '', email: '', message: '' });
+      setTurnstileToken(null);
     } catch (error: any) {
       console.error('Error sending contact form:', error);
       toast({
@@ -118,7 +121,8 @@ const ContactForm = () => {
             className="min-h-[120px] resize-none"
           />
 
-          <Button variant="hero" size="xl" className="w-full sm:w-auto group" disabled={isSubmitting}>
+          <TurnstileWidget onVerify={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
+          <Button variant="hero" size="xl" className="w-full sm:w-auto group" disabled={isSubmitting || !turnstileToken}>
             {isSubmitting ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
