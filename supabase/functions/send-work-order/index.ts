@@ -32,12 +32,6 @@ interface WorkOrderData {
   paymentMethod?: string;
   billingStatus?: string;
   totalCharges?: string;
-  ccName?: string;
-  ccAddress?: string;
-  ccZip?: string;
-  ccNumber?: string;
-  ccExpiration?: string;
-  ccSecurityCode?: string;
   photos?: string[];
 }
 
@@ -88,11 +82,6 @@ const handler = async (req: Request): Promise<Response> => {
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
-
-    // Mask credit card number for email (show only last 4 digits)
-    const maskedCCNumber = data.ccNumber 
-      ? `****-****-****-${data.ccNumber.slice(-4)}` 
-      : 'Not provided';
 
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;">
@@ -153,17 +142,7 @@ const handler = async (req: Request): Promise<Response> => {
           <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Total Charges:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.totalCharges || 'N/A'}</td></tr>
         </table>
 
-        ${data.ccName ? `
-        <h2 style="color: #1e3a5f; margin-top: 24px;">Credit Card Information</h2>
-        <table style="width: 100%; border-collapse: collapse;">
-          <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Name on Card:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.ccName}</td></tr>
-          <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Billing Address:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.ccAddress || 'N/A'}</td></tr>
-          <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Billing Zip:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.ccZip || 'N/A'}</td></tr>
-          <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Card Number:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${maskedCCNumber}</td></tr>
-          <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Expiration:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.ccExpiration || 'N/A'}</td></tr>
-          <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Security Code:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.ccSecurityCode ? '***' : 'N/A'}</td></tr>
-        </table>
-        ` : ''}
+
 
         <div style="margin-top: 24px; padding: 16px; background: #e8f5e9; border-radius: 8px;">
           <p style="margin: 0; color: #2e7d32;"><strong>✓ Customer has accepted the terms and authorized this work order.</strong></p>

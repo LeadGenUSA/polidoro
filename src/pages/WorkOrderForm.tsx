@@ -50,14 +50,6 @@ const workOrderSchema = z.object({
   billingStatus: z.enum(['estimate_needed', 'email_paid_invoice', 'bill_customer', 'parts_ordered']).optional(),
   totalCharges: z.string().max(20).optional(),
   
-  // Credit Card Info (optional)
-  ccName: z.string().max(100).optional(),
-  ccAddress: z.string().max(200).optional(),
-  ccZip: z.string().max(10).optional(),
-  ccNumber: z.string().max(20).optional(),
-  ccExpiration: z.string().max(7).optional(),
-  ccSecurityCode: z.string().max(4).optional(),
-  
   // Authorization
   termsAccepted: z.boolean().refine(val => val === true, 'You must accept the terms'),
 });
@@ -375,39 +367,6 @@ const WorkOrderForm = () => {
                 <div>
                   <Label htmlFor="totalCharges">Total Charges</Label>
                   <Input id="totalCharges" {...register('totalCharges')} placeholder="$0.00" />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Credit Card Info */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-primary">Credit Card Information (if applicable)</CardTitle>
-              </CardHeader>
-              <CardContent className="grid md:grid-cols-2 gap-4">
-                <div className="md:col-span-2">
-                  <Label htmlFor="ccName">Name on Credit Card</Label>
-                  <Input id="ccName" {...register('ccName')} placeholder="Name as it appears on card" />
-                </div>
-                <div className="md:col-span-2">
-                  <Label htmlFor="ccAddress">Street Address of Credit Card</Label>
-                  <Input id="ccAddress" {...register('ccAddress')} placeholder="Billing address" />
-                </div>
-                <div>
-                  <Label htmlFor="ccZip">Zip Code of Credit Card</Label>
-                  <Input id="ccZip" {...register('ccZip')} placeholder="Billing zip code" />
-                </div>
-                <div>
-                  <Label htmlFor="ccNumber">Credit Card #</Label>
-                  <Input id="ccNumber" {...register('ccNumber')} placeholder="Card number" />
-                </div>
-                <div>
-                  <Label htmlFor="ccExpiration">Expiration Date (MM/YY)</Label>
-                  <Input id="ccExpiration" {...register('ccExpiration')} placeholder="MM/YY" />
-                </div>
-                <div>
-                  <Label htmlFor="ccSecurityCode">Security Code</Label>
-                  <Input id="ccSecurityCode" {...register('ccSecurityCode')} placeholder="CVV" maxLength={4} />
                 </div>
               </CardContent>
             </Card>
