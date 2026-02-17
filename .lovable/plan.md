@@ -1,32 +1,23 @@
 
+# Fix Review Notification Email Encoding
 
-# Show Call Button on iPad in Landscape Mode
+## Problem
+The review submission notification email arrives garbled because the `submit-review` edge function does not apply HTML minification before sending. All other email functions (`send-contact-form`, `send-work-order`, `send-customer-survey`, `send-estimate-form`) use a `compactEmailHtml()` helper to strip whitespace and newlines, preventing quoted-printable encoding artifacts like `=e2=94=81` and `=3d20`.
 
-## The Problem
-On an iPad in landscape mode (1024px wide), the "CALL US!" button disappears because:
-- The desktop CTA only appears at the `xl` breakpoint (1280px+), which iPads don't reach
-- The mobile CTA is restricted to portrait orientation only (`portrait:flex`)
+Additionally, the plain-text version uses Unicode box-drawing characters (`━`) and star symbols (`★☆`) that also get mangled. These should be replaced with ASCII equivalents.
 
-This creates a gap where no call button is visible on tablets in landscape.
+## Changes
 
-## The Fix
-Remove the portrait-only restriction from the mobile CTA button so it shows in both portrait and landscape orientations on devices below the `xl` breakpoint.
+**File:** `supabase/functions/submit-review/index.ts`
 
-**File:** `src/components/Navbar.tsx` (line 226)
-
-Change the class from:
-```
-xl:hidden portrait:flex hidden items-center
-```
-to:
-```
-xl:hidden flex items-center
-```
-
-This single class change ensures the call button appears on all sub-1280px screens regardless of orientation, including iPads in landscape mode.
+1. Add the `compactEmailHtml` helper function (same as other edge functions)
+2. Replace Unicode characters in the plain-text `content`:
+   - Use `*` instead of `★` and `-` instead of `☆` for star ratings
+   - Use `---` dashes instead of `━━━` box-drawing characters
+3. Wrap the HTML email body with `compactEmailHtml()` before passing to `client.send()`
+4. Also apply the same ASCII star replacement in the email subject line
 
 ## Technical Details
-- Only one line changes in one file
-- The desktop CTA (visible at `xl`+) remains unchanged
-- No layout conflicts: the button sits between the nav links area and the hamburger menu, where there is adequate space in landscape
-
+- The `compactEmailHtml` function strips all newlines and excess whitespace so the SMTP transport does not trigger quoted-printable line-wrapping on the HTML
+- ASCII-safe characters in the subject and plain-text body prevent encoding issues in non-HTML parts
+- This matches the pattern already established across all four other email edge functions
