@@ -1,17 +1,17 @@
 
 
-# Update SMTP Host
+# Update SMTP Host Secret
 
 ## Change
 
 Update the `SMTP_HOST` secret value to `smtp.bigcityplumbing.com`.
 
-This will affect all edge functions that send emails:
+This affects all backend functions that send emails:
 - Contact Form
 - Free Estimate Form
 - Work Order Form
 - Customer Survey
 - Review Notifications
 
-No code changes are needed -- only the secret value needs to be updated.
+No code changes needed -- only the secret value update.
 
