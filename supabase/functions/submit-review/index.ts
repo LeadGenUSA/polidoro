@@ -41,7 +41,7 @@ async function sendAdminNotification(review: ReviewSubmission) {
       connection: {
         hostname: smtpHost,
         port: smtpPort,
-        tls: true,
+        tls: smtpPort === 465,
         auth: {
           username: smtpUser,
           password: smtpPass,
