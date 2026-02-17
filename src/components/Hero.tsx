@@ -10,7 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import heroImage from '@/assets/hero-plumbing.jpg';
 import nycSkyline from '@/assets/nyc-skyline.png';
 import heroVideo from '@/assets/big-city-plumbing-and-heating.mp4';
-import navilendLogo from '@/assets/navilend-logo.png';
+
 import couponBadge from '@/assets/coupons-badge.png';
 interface SlideItem {
   type: 'video' | 'image';
@@ -276,14 +276,6 @@ const Hero = () => {
         </div>
       </div>
       
-      {/* Navilend Logo - Bottom Right */}
-      <div className="absolute bottom-24 right-8 z-20 hidden xl:block">
-        <img
-        src={navilendLogo}
-        alt="Navilend"
-        className="h-8 md:h-10 w-auto opacity-90 drop-shadow-[0_0_8px_rgba(255,255,255,0.6)] hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] transition-all" />
-
-      </div>
       
       {/* Bottom Wave */}
       <div className="absolute -bottom-px left-0 right-0">
