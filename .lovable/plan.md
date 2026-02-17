@@ -1,23 +1,40 @@
 
-# Fix Review Notification Email Encoding
 
-## Problem
-The review submission notification email arrives garbled because the `submit-review` edge function does not apply HTML minification before sending. All other email functions (`send-contact-form`, `send-work-order`, `send-customer-survey`, `send-estimate-form`) use a `compactEmailHtml()` helper to strip whitespace and newlines, preventing quoted-printable encoding artifacts like `=e2=94=81` and `=3d20`.
+# Redirect Old URLs to New Pages
 
-Additionally, the plain-text version uses Unicode box-drawing characters (`━`) and star symbols (`★☆`) that also get mangled. These should be replaced with ASCII equivalents.
+## Overview
+Add client-side redirects so visitors arriving from old URLs (bookmarks, search engine results, external links) are automatically sent to the correct new page.
 
-## Changes
+## Redirect Mapping
 
-**File:** `supabase/functions/submit-review/index.ts`
+| Old URL | New URL |
+|---------|---------|
+| `/authorized-navien-dealer/` | `/heating-services` |
+| `/big-city-plumbing-heating/` | `/` |
+| `/big-city-plumbing-heating/navien-group1/` | `/heating-services` |
+| `/stay-warm-with-a-complete-boiler-checkup/boilers2/` | `/heating-services` |
+| `/stay-warm-with-a-complete-boiler-checkup/` | `/heating-services` |
+| `/plumbing-repair-service-and-installations/` | `/plumbing-services` |
+| `/who-we-are/` | `/about-us` |
+| `/estimate-form/` | `/free-estimate` |
 
-1. Add the `compactEmailHtml` helper function (same as other edge functions)
-2. Replace Unicode characters in the plain-text `content`:
-   - Use `*` instead of `★` and `-` instead of `☆` for star ratings
-   - Use `---` dashes instead of `━━━` box-drawing characters
-3. Wrap the HTML email body with `compactEmailHtml()` before passing to `client.send()`
-4. Also apply the same ASCII star replacement in the email subject line
+## Implementation
+
+**File:** `src/App.tsx`
+
+- Import `Navigate` from `react-router-dom`
+- Add 8 redirect routes above the catch-all `*` route, each using `<Navigate to="/new-path" replace />` for an instant client-side redirect
+
+This approach keeps redirects in one place alongside all other routes, uses the existing router, and the `replace` prop ensures the old URL doesn't stay in browser history.
 
 ## Technical Details
-- The `compactEmailHtml` function strips all newlines and excess whitespace so the SMTP transport does not trigger quoted-printable line-wrapping on the HTML
-- ASCII-safe characters in the subject and plain-text body prevent encoding issues in non-HTML parts
-- This matches the pattern already established across all four other email edge functions
+
+```text
+Route definition pattern:
+<Route path="/old-url" element={<Navigate to="/new-url" replace />} />
+```
+
+- Trailing slashes are handled automatically by React Router
+- No new files or dependencies needed
+- No backend changes required
+
