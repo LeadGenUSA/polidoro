@@ -1,14 +1,17 @@
 
 
-# Update "Financing Available" Floating Box
+# Update SMTP Host
 
-## Changes
+## Change
 
-**File: `src/components/Hero.tsx`**
+Update the `SMTP_HOST` secret value to `smtp.bigcityplumbing.com`.
 
-1. Remove the NaviLend logo image from the "Financing Available" floating box
-2. The box is already positioned to the right of the coupon badge, so no layout changes needed
-3. Remove the unused `navilendLogo` import since it's no longer used anywhere
+This will affect all edge functions that send emails:
+- Contact Form
+- Free Estimate Form
+- Work Order Form
+- Customer Survey
+- Review Notifications
 
-The box will keep the same styling (`bg-card`, `rounded-2xl`, `shadow-large`, `animate-float`) but only contain the "Financing Available" text.
+No code changes are needed -- only the secret value needs to be updated.
 
