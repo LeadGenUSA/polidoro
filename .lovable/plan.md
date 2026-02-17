@@ -1,17 +1,12 @@
 
 
-# Update SMTP Host Secret
+# Update SMTP_PORT Secret
 
 ## Change
 
-Update the `SMTP_HOST` secret value to `smtp.bigcityplumbing.com`.
+Update the `SMTP_PORT` secret value to `465`.
 
-This affects all backend functions that send emails:
-- Contact Form
-- Free Estimate Form
-- Work Order Form
-- Customer Survey
-- Review Notifications
+This is the standard port for SMTP over SSL/TLS, which matches the current code configuration (all edge functions default to port 465 with `tls: true`).
 
 No code changes needed -- only the secret value update.
 
