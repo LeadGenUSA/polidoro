@@ -40,7 +40,6 @@ const services = [
     description: 'Comprehensive plumbing repair services for residential and commercial properties. From leaky faucets to complete pipe replacements, our licensed plumbers handle it all.',
     features: [
       'Leak detection and repair',
-      'Drain cleaning and unclogging',
       'Pipe repair and replacement',
       'Fixture installation and repair',
       'Water pressure issues',
