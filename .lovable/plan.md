@@ -1,27 +1,25 @@
-
-
-# Add Thank You Modal After Review Submission
+# Add "Financing Available" Floating Box to Hero
 
 ## Overview
-Replace the current toast notification with a polished modal dialog that thanks the user after successfully submitting a review on the `/reviews` page.
 
-## Current Behavior
-After submitting a review, a small toast notification appears briefly in the corner. This can be easy to miss.
+Add a floating box next to the existing coupon badge below the hero slideshow, styled similarly to the "5-star" floating card, saying "Financing Available". It will use a placeholder link for now that you can update later.
 
-## New Behavior
-A centered modal dialog will appear with a thank-you message, a star icon, and a close button. The form resets as it does now, and the modal provides clear confirmation that the submission was received.
+## Change
+
+**File: `src/components/Hero.tsx**`
+
+In the "Floating Card - Below Slideshow" section (around line 271-273), add a new floating box after the coupon badge image:
+
+- A styled card matching the existing floating card aesthetic (`bg-card`, `rounded-2xl`, `shadow-large`, `animate-float`)
+- Contains  "Financing Available" text
+- Wrapped in a link (`<a>`) with a placeholder `href="#"` so you can swap in the real URL later
+- Uses the same `animate-float` animation with a staggered delay for visual appeal
+
+The final floating row will show: **5-star card** | **Coupon badge** | **Financing Available box**
 
 ## Technical Details
 
-### File: `src/pages/TestimonialsPage.tsx`
-- Add a `showThankYou` state variable (boolean, default `false`)
-- On successful submission, set `showThankYou` to `true` instead of showing a toast
-- Add a `Dialog` component at the bottom of the page that displays when `showThankYou` is `true`
-- The dialog will contain:
-  - A star/check icon
-  - "Thank You!" heading
-  - Message: "Your review has been submitted and will appear after approval."
-  - A "Close" button that sets `showThankYou` back to `false`
-- Import `Dialog`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription` from existing UI components
-- Keep the error toasts as-is (only the success path changes)
-
+- Add a new `<a href="#" ...>` element after the coupon badge `<Link>`, containing:
+  - The NaviLend logo image (sized to ~40px)
+  - Text: "Financing Available"
+- Styled with `bg-card p-4 rounded-2xl shadow-large animate-float animation-delay-400 hover:scale-105 transition-transform`
