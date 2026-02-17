@@ -7,6 +7,15 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+const compactEmailHtml = (html: string) =>
+  html
+    .replace(/\r\n/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .replace(/\n{2,}/g, "\n")
+    .replace(/\n/g, "")
+    .trim();
+
 interface ReviewSubmission {
   author_name: string
   email: string
@@ -40,36 +49,15 @@ async function sendAdminNotification(review: ReviewSubmission) {
       },
     })
 
-    const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating)
+    const asciiStars = '*'.repeat(review.rating) + '-'.repeat(5 - review.rating)
+    const htmlStars = '&#9733;'.repeat(review.rating) + '&#9734;'.repeat(5 - review.rating)
 
     await client.send({
       from: smtpUser,
       to: 'mike@bigcityplumbing.com',
-      subject: `New Review Submitted - ${review.author_name} (${stars})`,
-      content: `
-A new customer review has been submitted and is awaiting your approval.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-CUSTOMER DETAILS
-Name: ${review.author_name}
-Email: ${review.email}
-Location: ${review.location || 'Not provided'}
-
-REVIEW
-Rating: ${stars} (${review.rating}/5)
-Title: ${review.title || 'No title'}
-
-${review.text}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-To approve or reject this review, please log in to the Admin Dashboard:
-https://polidoro.lovable.app/admin
-
-This is an automated notification from Big City Plumbing & Heating.
-      `.trim(),
-      html: `
+      subject: `New Review Submitted - ${review.author_name} (${asciiStars})`,
+      content: `A new customer review has been submitted and is awaiting your approval.\n\n---------------------------------------\n\nCUSTOMER DETAILS\nName: ${review.author_name}\nEmail: ${review.email}\nLocation: ${review.location || 'Not provided'}\n\nREVIEW\nRating: ${asciiStars} (${review.rating}/5)\nTitle: ${review.title || 'No title'}\n\n${review.text}\n\n---------------------------------------\n\nTo approve or reject this review, please log in to the Admin Dashboard:\nhttps://polidoro.lovable.app/admin\n\nThis is an automated notification from Big City Plumbing & Heating.`,
+      html: compactEmailHtml(`
 <!DOCTYPE html>
 <html>
 <head>
@@ -97,7 +85,7 @@ This is an automated notification from Big City Plumbing & Heating.
       <p class="value"><strong>${review.author_name}</strong><br>${review.email}${review.location ? `<br>📍 ${review.location}` : ''}</p>
       
       <div class="review-box">
-        <p class="stars">${stars}</p>
+        <p class="stars">${htmlStars}</p>
         ${review.title ? `<p style="font-weight: bold; margin: 10px 0 5px 0;">"${review.title}"</p>` : ''}
         <p style="margin: 0;">${review.text}</p>
       </div>
@@ -111,7 +99,7 @@ This is an automated notification from Big City Plumbing & Heating.
   </div>
 </body>
 </html>
-      `.trim(),
+      `),
     })
 
     await client.close()
