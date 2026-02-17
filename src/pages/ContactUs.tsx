@@ -10,8 +10,8 @@ const ContactUs = () => {
       <SEO
         title="Contact Us - Big City Plumbing and Heating"
         description="Get in touch for plumbing and heating services in Long Island and NYC. Call 631-361-9500 or 718-326-5833 for estimates, repairs, and emergency service."
-        path="/contact-us"
-      />
+        path="/contact-us" />
+
       <Navbar />
       
       {/* Hero Header */}
@@ -43,7 +43,7 @@ const ContactUs = () => {
               {/* NYC */}
               <div>
                 <h2 className="font-heading text-xl font-bold text-primary uppercase mb-1">New York City:</h2>
-                <p className="text-muted-foreground">68-01 79 Street Middle Village NY 11379</p>
+                
                 <a href="tel:7183265833" className="text-lg font-bold text-foreground hover:text-primary transition-colors block">
                   718.326.5833
                 </a>
@@ -80,8 +80,8 @@ const ContactUs = () => {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Big City Plumbing & Heating Showroom Location"
-                />
+                  title="Big City Plumbing & Heating Showroom Location" />
+
               </div>
             </div>
           </div>
@@ -92,8 +92,8 @@ const ContactUs = () => {
       <ContactForm />
 
       <Footer />
-    </div>
-  );
+    </div>);
+
 };
 
 export default ContactUs;
