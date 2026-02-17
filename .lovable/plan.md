@@ -1,28 +1,32 @@
 
 
-# Create llm.txt for Big City Plumbing and Heating
+# Show Call Button on iPad in Landscape Mode
 
-## Overview
-Create an `llm.txt` file and update `robots.txt` to help AI models understand the business.
+## The Problem
+On an iPad in landscape mode (1024px wide), the "CALL US!" button disappears because:
+- The desktop CTA only appears at the `xl` breakpoint (1280px+), which iPads don't reach
+- The mobile CTA is restricted to portrait orientation only (`portrait:flex`)
 
-## Files to create/modify
+This creates a gap where no call button is visible on tablets in landscape.
 
-### 1. New file: `public/llm.txt`
-Plain-text file with structured business information:
+## The Fix
+Remove the portrait-only restriction from the mobile CTA button so it shows in both portrait and landscape orientations on devices below the `xl` breakpoint.
 
-- **Business**: Big City Plumbing and Heating
-- **Owner**: Michael Polidoro, Former NYC Plumbing Inspector, Master Plumber
-- **Address**: 2639 Middle Country Rd, Centereach, NY 11720
-- **Phones**: 631-361-9500 (Long Island), 718-326-5833 (NYC)
-- **Website**: https://www.bigcityplumbing.com
-- **Service areas**: Nassau County, Suffolk County, Queens, Brooklyn, Manhattan, Bronx, Staten Island
-- **Plumbing services**: Repairs, installations, permits, RPZ, water heaters, slab leaks, gas lines, water filtration, emergency service
-- **Heating services**: Boiler installation, oil-to-gas conversion, radiant heat, tankless water heaters, Navien certified
-- **Credentials**: 35+ years experience, 5000+ projects, licensed and insured, authorized Navien dealer, 24-hour response time
+**File:** `src/components/Navbar.tsx` (line 226)
 
-### 2. Update: `public/robots.txt`
-Add a comment and reference line pointing to `llm.txt` so AI crawlers can discover it.
+Change the class from:
+```
+xl:hidden portrait:flex hidden items-center
+```
+to:
+```
+xl:hidden flex items-center
+```
 
-## Technical notes
-- File is placed in `public/` so Vite serves it at the site root (`bigcityplumbing.com/llm.txt`)
-- No code changes or new dependencies required
+This single class change ensures the call button appears on all sub-1280px screens regardless of orientation, including iPads in landscape mode.
+
+## Technical Details
+- Only one line changes in one file
+- The desktop CTA (visible at `xl`+) remains unchanged
+- No layout conflicts: the button sits between the nav links area and the hamburger menu, where there is adequate space in landscape
+
