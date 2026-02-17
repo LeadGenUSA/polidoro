@@ -46,11 +46,11 @@ const CouponPage = () => {
               <div className="p-8 md:p-12 text-center">
                 {/* Logo */}
                 <div className="flex justify-center mb-6">
-                  <img 
-                    src={logo} 
-                    alt="Big City Plumbing & Heating" 
-                    className="w-24 h-24 rounded-full object-cover"
-                  />
+                  <img
+                    src={logo}
+                    alt="Big City Plumbing & Heating"
+                    className="w-24 h-24 rounded-full object-cover" />
+
                 </div>
 
                 {/* Company Name */}
@@ -62,7 +62,7 @@ const CouponPage = () => {
                 <div className="my-8">
                   <div className="inline-block bg-secondary/10 rounded-2xl px-8 py-6">
                     <span className="font-heading text-6xl md:text-7xl font-bold text-secondary">
-                      10%
+                      $25
                     </span>
                     <span className="block font-heading text-2xl md:text-3xl font-bold text-primary mt-2">
                       OFF
@@ -108,11 +108,11 @@ const CouponPage = () => {
 
             {/* Print Button */}
             <div className="text-center mt-8 print:hidden">
-              <Button 
+              <Button
                 onClick={handlePrint}
                 size="lg"
-                className="gap-2"
-              >
+                className="gap-2">
+
                 <Printer className="w-5 h-5" />
                 Print This Coupon
               </Button>
@@ -185,8 +185,8 @@ const CouponPage = () => {
           }
         }
       `}</style>
-    </div>
-  );
+    </div>);
+
 };
 
 export default CouponPage;
