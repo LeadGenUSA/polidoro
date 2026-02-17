@@ -174,7 +174,7 @@ const Hero = () => {
                   <Clock className="w-6 h-6 text-secondary" />
                 </div>
                 <div>
-                  <span className="font-bold text-lg">24-Hour ResponseTime </span>
+                  <span className="font-bold text-lg">24 Hour ResponseTime </span>
                   
                 </div>
               </div>
