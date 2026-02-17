@@ -12,6 +12,7 @@ import nycSkyline from '@/assets/nyc-skyline.png';
 import heroVideo from '@/assets/big-city-plumbing-and-heating.mp4';
 
 import couponBadge from '@/assets/coupons-badge.png';
+import navilendLogo from '@/assets/navilend-logo.png';
 interface SlideItem {
   type: 'video' | 'image';
   src: string;
@@ -271,6 +272,10 @@ const Hero = () => {
               <Link to="/tenpercent-coupon">
                 <img src={couponBadge} alt="Click here for coupons" className="h-20 w-auto animate-float animation-delay-200 hover:scale-105 transition-transform drop-shadow-lg" />
               </Link>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="bg-card p-4 rounded-2xl shadow-large animate-float animation-delay-400 hover:scale-105 transition-transform inline-flex items-center gap-3">
+                <img src={navilendLogo} alt="NaviLend Financing" className="h-10 w-auto object-contain" />
+                <p className="font-heading font-bold text-foreground">Financing Available</p>
+              </a>
             </div>
           </div>
         </div>
