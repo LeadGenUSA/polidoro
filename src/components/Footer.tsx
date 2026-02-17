@@ -160,6 +160,9 @@ const Footer = () => {
             <Link to="/terms-of-service" className="text-primary-foreground/60 hover:text-primary-foreground text-sm transition-colors">
               Terms of Service
             </Link>
+            <Link to="/sitemap" className="text-primary-foreground/60 hover:text-primary-foreground text-sm transition-colors">
+              Sitemap
+            </Link>
             <Link 
               to="/admin/login" 
               className="text-primary-foreground/40 hover:text-primary-foreground/60 text-sm transition-colors flex items-center gap-1"

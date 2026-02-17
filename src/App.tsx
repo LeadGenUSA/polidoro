@@ -26,6 +26,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import ContactUs from "./pages/ContactUs";
 import NotFound from "./pages/NotFound";
+import Sitemap from "./pages/Sitemap";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import CookieConsent from "./components/CookieConsent";
 
@@ -62,6 +63,7 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/sitemap" element={<Sitemap />} />
             {/* Old URL redirects */}
             <Route path="/authorized-navien-dealer" element={<Navigate to="/heating-services" replace />} />
             <Route path="/big-city-plumbing-heating/navien-group1" element={<Navigate to="/heating-services" replace />} />
