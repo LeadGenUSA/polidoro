@@ -223,7 +223,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile CTA - portrait only */}
-          <div className="xl:hidden portrait:flex hidden items-center">
+          <div className="xl:hidden flex items-center">
             <Button variant="navCta" size="sm" asChild>
               <a href="tel:631-361-9500" className="flex items-center gap-1">
                 <Phone className="w-4 h-4" />
