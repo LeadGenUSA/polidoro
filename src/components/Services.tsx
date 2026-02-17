@@ -19,7 +19,7 @@ const services = [
   {
     icon: Fuel,
     title: 'Gas Conversion',
-    description: 'Professional gas line installation and conversion services with National Grid & Con Ed rebates.',
+    description: 'Professional gas line installation and conversion services.',
   },
   {
     icon: Wrench,
