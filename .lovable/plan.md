@@ -1,25 +1,14 @@
-# Add "Financing Available" Floating Box to Hero
 
-## Overview
 
-Add a floating box next to the existing coupon badge below the hero slideshow, styled similarly to the "5-star" floating card, saying "Financing Available". It will use a placeholder link for now that you can update later.
+# Update "Financing Available" Floating Box
 
-## Change
+## Changes
 
-**File: `src/components/Hero.tsx**`
+**File: `src/components/Hero.tsx`**
 
-In the "Floating Card - Below Slideshow" section (around line 271-273), add a new floating box after the coupon badge image:
+1. Remove the NaviLend logo image from the "Financing Available" floating box
+2. The box is already positioned to the right of the coupon badge, so no layout changes needed
+3. Remove the unused `navilendLogo` import since it's no longer used anywhere
 
-- A styled card matching the existing floating card aesthetic (`bg-card`, `rounded-2xl`, `shadow-large`, `animate-float`)
-- Contains  "Financing Available" text
-- Wrapped in a link (`<a>`) with a placeholder `href="#"` so you can swap in the real URL later
-- Uses the same `animate-float` animation with a staggered delay for visual appeal
+The box will keep the same styling (`bg-card`, `rounded-2xl`, `shadow-large`, `animate-float`) but only contain the "Financing Available" text.
 
-The final floating row will show: **5-star card** | **Coupon badge** | **Financing Available box**
-
-## Technical Details
-
-- Add a new `<a href="#" ...>` element after the coupon badge `<Link>`, containing:
-  - The NaviLend logo image (sized to ~40px)
-  - Text: "Financing Available"
-- Styled with `bg-card p-4 rounded-2xl shadow-large animate-float animation-delay-400 hover:scale-105 transition-transform`
