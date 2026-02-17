@@ -210,11 +210,12 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     // Create SMTP client using Hostgator credentials
+    const surveySmtpPort = parseInt(Deno.env.get("SMTP_PORT") || "465");
     const client = new SMTPClient({
       connection: {
         hostname: Deno.env.get("SMTP_HOST")!,
-        port: parseInt(Deno.env.get("SMTP_PORT") || "465"),
-        tls: true,
+        port: surveySmtpPort,
+        tls: surveySmtpPort === 465,
         auth: {
           username: Deno.env.get("SMTP_USER")!,
           password: Deno.env.get("SMTP_PASS")!,

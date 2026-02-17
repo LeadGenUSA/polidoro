@@ -96,11 +96,15 @@ This message was submitted via the Big City Plumbing & Heating website contact f
 </html>
     `;
 
+    const smtpPort = parseInt(Deno.env.get("SMTP_PORT") || "465");
+    const useImplicitTls = smtpPort === 465;
+    console.log(`Connecting to SMTP on port ${smtpPort}, implicit TLS: ${useImplicitTls}`);
+
     const client = new SMTPClient({
       connection: {
         hostname: Deno.env.get("SMTP_HOST")!,
-        port: parseInt(Deno.env.get("SMTP_PORT") || "465"),
-        tls: true,
+        port: smtpPort,
+        tls: useImplicitTls,
         auth: {
           username: Deno.env.get("SMTP_USER")!,
           password: Deno.env.get("SMTP_PASS")!,

@@ -188,11 +188,12 @@ serve(async (req) => {
     // Send email using SMTP
     const { SMTPClient } = await import("https://deno.land/x/denomailer@1.6.0/mod.ts");
     
+    const estSmtpPort = parseInt(SMTP_PORT);
     const client = new SMTPClient({
       connection: {
         hostname: SMTP_HOST,
-        port: parseInt(SMTP_PORT),
-        tls: true,
+        port: estSmtpPort,
+        tls: estSmtpPort === 465,
         auth: {
           username: SMTP_USER,
           password: SMTP_PASS,
