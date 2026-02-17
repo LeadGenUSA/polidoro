@@ -3,7 +3,7 @@ import { CheckCircle2 } from 'lucide-react';
 const stats = [
   { value: '35+', label: 'Years Experience' },
   { value: '5000+', label: 'Projects Completed' },
-  { value: '24/7', label: 'Response Time' },
+  { value: '24-Hour', label: 'Response Time' },
   { value: '100%', label: 'Satisfaction Rate' },
 ];
 
