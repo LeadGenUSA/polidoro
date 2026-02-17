@@ -57,7 +57,7 @@ const Sitemap = () => {
       />
       <Navbar />
 
-      <section className="hero-gradient py-16 md:py-20">
+      <section className="hero-gradient pt-28 md:pt-32 pb-16 md:pb-20">
         <div className="container mx-auto px-4 lg:px-8">
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-primary-foreground">
             Sitemap
