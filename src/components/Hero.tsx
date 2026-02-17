@@ -65,7 +65,7 @@ const Hero = () => {
           if (b.is_default_first) return 1;
           return a.display_order - b.display_order;
         });
-        const dbSlides: SlideItem[] = sortedData.map(item => ({
+        const dbSlides: SlideItem[] = sortedData.map((item) => ({
           type: item.type as 'video' | 'image',
           src: item.file_url,
           alt: item.alt_text || undefined,
@@ -151,9 +151,9 @@ const Hero = () => {
             </ul>
             
             <p className="text-lg md:text-xl opacity-90 mb-8 max-w-xl">
-              Serving Nassau, Suffolk & NYC with professional plumbing repair, installation, 
-              and heating services. Available 24/7 for emergencies.
-            </p>
+              Serving Nassau, Suffolk & NYC with professional plumbing repair, installation, and heating services. 24/ response time.
+            
+          </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
               <Button variant="hero" size="xl" className="group" asChild>
@@ -278,11 +278,11 @@ const Hero = () => {
       
       {/* Navilend Logo - Bottom Right */}
       <div className="absolute bottom-24 right-8 z-20 hidden xl:block">
-        <img 
-          src={navilendLogo} 
-          alt="Navilend" 
-          className="h-8 md:h-10 w-auto opacity-90 drop-shadow-[0_0_8px_rgba(255,255,255,0.6)] hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] transition-all"
-        />
+        <img
+        src={navilendLogo}
+        alt="Navilend"
+        className="h-8 md:h-10 w-auto opacity-90 drop-shadow-[0_0_8px_rgba(255,255,255,0.6)] hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] transition-all" />
+
       </div>
       
       {/* Bottom Wave */}
