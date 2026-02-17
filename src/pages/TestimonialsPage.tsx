@@ -5,13 +5,14 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Star, Quote, MapPin, Calendar, Send, MessageSquarePlus, ThumbsUp, Award, Users, Loader2, Globe } from 'lucide-react';
+import { Star, Quote, MapPin, Calendar, Send, MessageSquarePlus, ThumbsUp, Award, Users, Loader2, Globe, CheckCircle2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useApprovedReviews, Review } from '@/hooks/useReviews';
 import StarRating from '@/components/StarRating';
 import { supabase } from '@/integrations/supabase/client';
 import TurnstileWidget from '@/components/TurnstileWidget';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 const stats = [{
   icon: Star,
   value: '5.0',
@@ -39,6 +40,7 @@ const TestimonialsPage = () => {
   } = useApprovedReviews();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -93,10 +95,7 @@ const TestimonialsPage = () => {
         return;
       }
       
-      toast({
-        title: "Thank you for your review!",
-        description: "Your testimonial has been submitted and will appear after approval."
-      });
+      setShowThankYou(true);
       
       setFormData({
         name: '',
@@ -334,6 +333,24 @@ const TestimonialsPage = () => {
           </div>
         </div>
       </section>
+
+      {/* Thank You Modal */}
+      <Dialog open={showThankYou} onOpenChange={setShowThankYou}>
+        <DialogContent className="sm:max-w-md text-center">
+          <DialogHeader className="items-center">
+            <div className="w-16 h-16 rounded-full cta-gradient flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 className="w-8 h-8 text-secondary-foreground" />
+            </div>
+            <DialogTitle className="text-2xl">Thank You!</DialogTitle>
+            <DialogDescription className="text-base">
+              Your review has been submitted and will appear after approval. We appreciate your feedback!
+            </DialogDescription>
+          </DialogHeader>
+          <Button variant="hero" onClick={() => setShowThankYou(false)} className="mt-2">
+            Close
+          </Button>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>;
