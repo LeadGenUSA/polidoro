@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { verifyTurnstile } from "../_shared/verify-turnstile.ts";
+import { sendEmail } from "../_shared/send-email.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -72,15 +73,6 @@ serve(async (req) => {
         JSON.stringify({ error: "Bot verification failed" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
-    }
-
-    const SMTP_HOST = Deno.env.get("SMTP_HOST");
-    const SMTP_PORT = Deno.env.get("SMTP_PORT");
-    const SMTP_USER = Deno.env.get("SMTP_USER");
-    const SMTP_PASS = Deno.env.get("SMTP_PASS");
-
-    if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS) {
-      throw new Error("SMTP configuration is missing");
     }
 
     const emailHtml = `
@@ -185,33 +177,14 @@ serve(async (req) => {
 </html>
     `;
 
-    // Send email using SMTP
-    const { SMTPClient } = await import("https://deno.land/x/denomailer@1.6.0/mod.ts");
-    
-    const estSmtpPort = parseInt(SMTP_PORT);
-    const client = new SMTPClient({
-      connection: {
-        hostname: SMTP_HOST,
-        port: estSmtpPort,
-        tls: estSmtpPort === 465,
-        auth: {
-          username: SMTP_USER,
-          password: SMTP_PASS,
-        },
-      },
-    });
-
-    await client.send({
-      from: SMTP_USER,
+    await sendEmail({
       to: "mike@bigcityplumbing.com",
       replyTo: formData.email,
       subject: `Estimate Request from ${formData.customer}`,
-      content: "Please view this email in an HTML-capable email client.",
       html: compactEmailHtml(emailHtml),
     });
 
-    await client.close();
-    console.log("Estimate email sent successfully via SMTP");
+    console.log("Estimate email sent successfully via Resend");
 
     // Save submission to database
     try {
@@ -262,7 +235,6 @@ serve(async (req) => {
       }
     } catch (dbErr) {
       console.error("Database save failed:", dbErr);
-      // Don't fail the request if DB save fails - email was already sent
     }
 
     return new Response(

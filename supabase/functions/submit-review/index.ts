@@ -1,6 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { SMTPClient } from 'https://deno.land/x/denomailer@1.6.0/mod.ts'
 import { verifyTurnstile } from '../_shared/verify-turnstile.ts'
+import { sendEmail } from '../_shared/send-email.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -26,37 +26,13 @@ interface ReviewSubmission {
 }
 
 async function sendAdminNotification(review: ReviewSubmission) {
-  const smtpHost = Deno.env.get('SMTP_HOST')
-  const smtpPort = parseInt(Deno.env.get('SMTP_PORT') || '465')
-  const smtpUser = Deno.env.get('SMTP_USER')
-  const smtpPass = Deno.env.get('SMTP_PASS')
-
-  if (!smtpHost || !smtpUser || !smtpPass) {
-    console.error('SMTP credentials not configured')
-    return
-  }
-
   try {
-    const client = new SMTPClient({
-      connection: {
-        hostname: smtpHost,
-        port: smtpPort,
-        tls: smtpPort === 465,
-        auth: {
-          username: smtpUser,
-          password: smtpPass,
-        },
-      },
-    })
-
     const asciiStars = '*'.repeat(review.rating) + '-'.repeat(5 - review.rating)
     const htmlStars = '&#9733;'.repeat(review.rating) + '&#9734;'.repeat(5 - review.rating)
 
-    await client.send({
-      from: smtpUser,
+    await sendEmail({
       to: 'mike@bigcityplumbing.com',
       subject: `New Review Submitted - ${review.author_name} (${asciiStars})`,
-      content: `A new customer review has been submitted and is awaiting your approval.\n\n---------------------------------------\n\nCUSTOMER DETAILS\nName: ${review.author_name}\nEmail: ${review.email}\nLocation: ${review.location || 'Not provided'}\n\nREVIEW\nRating: ${asciiStars} (${review.rating}/5)\nTitle: ${review.title || 'No title'}\n\n${review.text}\n\n---------------------------------------\n\nTo approve or reject this review, please log in to the Admin Dashboard:\nhttps://polidoro.lovable.app/admin\n\nThis is an automated notification from Big City Plumbing & Heating.`,
       html: compactEmailHtml(`
 <!DOCTYPE html>
 <html>
@@ -77,12 +53,12 @@ async function sendAdminNotification(review: ReviewSubmission) {
 <body>
   <div class="container">
     <div class="header">
-      <h1 style="margin: 0; font-size: 20px;">📝 New Review Submitted</h1>
+      <h1 style="margin: 0; font-size: 20px;">New Review Submitted</h1>
       <p style="margin: 5px 0 0 0; opacity: 0.9;">Awaiting your approval</p>
     </div>
     <div class="content">
       <p class="label">Customer</p>
-      <p class="value"><strong>${review.author_name}</strong><br>${review.email}${review.location ? `<br>📍 ${review.location}` : ''}</p>
+      <p class="value"><strong>${review.author_name}</strong><br>${review.email}${review.location ? `<br>${review.location}` : ''}</p>
       
       <div class="review-box">
         <p class="stars">${htmlStars}</p>
@@ -90,7 +66,7 @@ async function sendAdminNotification(review: ReviewSubmission) {
         <p style="margin: 0;">${review.text}</p>
       </div>
       
-      <a href="https://polidoro.lovable.app/admin" class="cta">Review in Admin Dashboard →</a>
+      <a href="https://polidoro.lovable.app/admin" class="cta">Review in Admin Dashboard</a>
     </div>
     <div class="footer">
       Big City Plumbing & Heating<br>
@@ -102,15 +78,13 @@ async function sendAdminNotification(review: ReviewSubmission) {
       `),
     })
 
-    await client.close()
-    console.log('Admin notification email sent successfully')
+    console.log('Admin notification email sent successfully via Resend')
   } catch (error) {
     console.error('Failed to send admin notification:', error)
   }
 }
 
 Deno.serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -118,13 +92,10 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    
-    // Use service role to bypass RLS for inserting pending reviews
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     const { turnstileToken, ...body }: ReviewSubmission & { turnstileToken?: string } = await req.json()
 
-    // Verify Turnstile token
     const isValid = await verifyTurnstile(turnstileToken)
     if (!isValid) {
       return new Response(
@@ -132,7 +103,6 @@ Deno.serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
-    
     
     // Validate required fields
     if (!body.author_name || body.author_name.trim().length === 0) {
@@ -156,7 +126,6 @@ Deno.serve(async (req) => {
       )
     }
     
-    // Validate email format if provided
     if (body.email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (!emailRegex.test(body.email)) {
@@ -167,7 +136,6 @@ Deno.serve(async (req) => {
       }
     }
     
-    // Validate text lengths
     if (body.author_name.length > 100) {
       return new Response(
         JSON.stringify({ error: 'Name must be less than 100 characters' }),
@@ -196,7 +164,6 @@ Deno.serve(async (req) => {
       )
     }
 
-    // Check if this is an admin submission (auto-approve)
     const adminEmails = ['admin@bigcityph.com', 'admin@bigcityplumbing.com']
     const isAdminSubmission = adminEmails.includes(body.email?.toLowerCase().trim() || '')
     
@@ -208,7 +175,6 @@ Deno.serve(async (req) => {
       isAdminSubmission
     })
 
-    // Insert review - auto-approve if from admin email
     const { data, error } = await supabase
       .from('reviews')
       .insert({
@@ -235,7 +201,6 @@ Deno.serve(async (req) => {
 
     console.log('Review submitted successfully:', data.id, isAdminSubmission ? '(auto-approved)' : '(pending)')
 
-    // Send admin notification email only for non-admin submissions
     if (!isAdminSubmission) {
       sendAdminNotification(body).catch(err => console.error('Email notification failed:', err))
     }
