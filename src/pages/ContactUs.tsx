@@ -43,13 +43,13 @@ const ContactUs = () => {
               {/* NYC */}
               <div>
                 <h2 className="font-heading text-xl font-bold text-primary uppercase mb-1">New York City:</h2>
-                
+                <p className="text-muted-foreground">68-01 79 Street Middle Village NY 11379</p>
                 <a href="tel:7183265833" className="text-lg font-bold text-foreground hover:text-primary transition-colors block">
                   718.326.5833
                 </a>
-                <a href="tel:7185044876" className="text-lg font-bold text-foreground hover:text-primary transition-colors block">
-                  718.504.4876
-                </a>
+                
+
+
               </div>
 
               <div className="space-y-4 text-muted-foreground leading-relaxed">
