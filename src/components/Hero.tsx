@@ -151,7 +151,7 @@ const Hero = () => {
             </ul>
             
             <p className="text-lg md:text-xl opacity-90 mb-8 max-w-xl">
-              Serving Nassau, Suffolk & NYC with professional plumbing repair, installation, and heating services. 24/ response time.
+              Serving Nassau, Suffolk & NYC with professional plumbing repair, installation, and heating services. 
             
           </p>
             
