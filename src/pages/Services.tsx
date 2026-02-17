@@ -86,7 +86,7 @@ const services = [
     slug: 'emergency-services',
     description: '24-hour response time for plumbing and heating emergencies. When disaster strikes, our rapid response team is ready to help protect your property.',
     features: [
-      '24-hour emergency response',
+      '24-hour response time',
       'Burst pipe repair',
       'No heat emergencies',
       'Gas leak detection',
