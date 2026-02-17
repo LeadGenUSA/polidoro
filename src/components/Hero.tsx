@@ -175,7 +175,7 @@ const Hero = () => {
                 </div>
                 <div>
                   <span className="font-bold text-lg">24-Hour ResponseTime </span>
-                  <p className="text-sm opacity-80">Emergency Service</p>
+                  
                 </div>
               </div>
               <div className="flex items-center gap-3">
