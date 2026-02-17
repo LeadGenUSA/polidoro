@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { verifyTurnstile } from "../_shared/verify-turnstile.ts";
+import { sendEmail } from "../_shared/send-email.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -55,8 +55,6 @@ const formatBillingStatus = (status?: string): string => {
   return status ? statuses[status] || status : 'Not specified';
 };
 
-// Keep HTML to a single compact line to avoid transport re-wrapping that can
-// show up as quoted-printable artifacts (e.g. "=20") in some mail clients.
 const compactEmailHtml = (html: string) =>
   html
     .replace(/\r\n/g, "\n")
@@ -142,8 +140,6 @@ const handler = async (req: Request): Promise<Response> => {
           <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Total Charges:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.totalCharges || 'N/A'}</td></tr>
         </table>
 
-
-
         <div style="margin-top: 24px; padding: 16px; background: #e8f5e9; border-radius: 8px;">
           <p style="margin: 0; color: #2e7d32;"><strong>✓ Customer has accepted the terms and authorized this work order.</strong></p>
         </div>
@@ -165,31 +161,13 @@ const handler = async (req: Request): Promise<Response> => {
       recipients.push(data.emailTo);
     }
 
-    // Create SMTP client using Hostgator credentials
-    const woSmtpPort = parseInt(Deno.env.get("SMTP_PORT") || "465");
-    const client = new SMTPClient({
-      connection: {
-        hostname: Deno.env.get("SMTP_HOST")!,
-        port: woSmtpPort,
-        tls: woSmtpPort === 465,
-        auth: {
-          username: Deno.env.get("SMTP_USER")!,
-          password: Deno.env.get("SMTP_PASS")!,
-        },
-      },
-    });
-
-    await client.send({
-      from: Deno.env.get("SMTP_USER")!,
+    await sendEmail({
       to: recipients,
       subject: `Work Order - ${data.customerName} - ${data.streetAddress}`,
-      content: "Please view this email in an HTML-compatible email client.",
       html: compactEmailHtml(emailHtml),
     });
 
-    await client.close();
-
-    console.log("Work order email sent successfully via SMTP");
+    console.log("Work order email sent successfully via Resend");
 
     // Save submission to database (excluding credit card data for security)
     try {
@@ -223,8 +201,6 @@ const handler = async (req: Request): Promise<Response> => {
         total_charges: data.totalCharges || null,
         photos: data.photos || [],
         status: 'new'
-        // NOTE: Credit card data (ccName, ccAddress, ccZip, ccNumber, ccExpiration, ccSecurityCode) 
-        // is intentionally NOT stored in the database for security compliance
       });
 
       if (dbError) {
@@ -234,7 +210,6 @@ const handler = async (req: Request): Promise<Response> => {
       }
     } catch (dbErr) {
       console.error("Database save failed:", dbErr);
-      // Don't fail the request if DB save fails - email was already sent
     }
 
     return new Response(JSON.stringify({ success: true }), {

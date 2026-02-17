@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { verifyTurnstile } from "../_shared/verify-turnstile.ts";
+import { sendEmail } from "../_shared/send-email.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -96,38 +96,18 @@ This message was submitted via the Big City Plumbing & Heating website contact f
 </html>
     `;
 
-    const smtpPort = parseInt(Deno.env.get("SMTP_PORT") || "465");
-    const useImplicitTls = smtpPort === 465;
-    console.log(`Connecting to SMTP on port ${smtpPort}, implicit TLS: ${useImplicitTls}`);
-
-    const client = new SMTPClient({
-      connection: {
-        hostname: Deno.env.get("SMTP_HOST")!,
-        port: smtpPort,
-        tls: useImplicitTls,
-        auth: {
-          username: Deno.env.get("SMTP_USER")!,
-          password: Deno.env.get("SMTP_PASS")!,
-        },
-      },
-    });
-
     const subject = data.service
       ? `Website Contact (${data.service}): ${data.name}`
       : `Website Contact: ${data.name}`;
 
-    await client.send({
-      from: Deno.env.get("SMTP_USER")!,
+    await sendEmail({
       to: "mike@bigcityplumbing.com",
       subject,
-      content: "Please view this email in an HTML-compatible email client.",
       html: compactEmailHtml(emailHtml),
       replyTo: data.email,
     });
 
-    await client.close();
-
-    console.log("Contact form email sent successfully via SMTP");
+    console.log("Contact form email sent successfully via Resend");
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

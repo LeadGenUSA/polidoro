@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { verifyTurnstile } from "../_shared/verify-turnstile.ts";
+import { sendEmail } from "../_shared/send-email.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -43,8 +43,6 @@ const formatYesNoMaybe = (value?: string): string => {
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
 
-// Keep HTML to a single compact line to avoid transport re-wrapping that can
-// show up as quoted-printable artifacts (e.g. "=20") in some mail clients.
 const compactEmailHtml = (html: string) =>
   html
     .replace(/\r\n/g, "\n")
@@ -209,32 +207,14 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Create SMTP client using Hostgator credentials
-    const surveySmtpPort = parseInt(Deno.env.get("SMTP_PORT") || "465");
-    const client = new SMTPClient({
-      connection: {
-        hostname: Deno.env.get("SMTP_HOST")!,
-        port: surveySmtpPort,
-        tls: surveySmtpPort === 465,
-        auth: {
-          username: Deno.env.get("SMTP_USER")!,
-          password: Deno.env.get("SMTP_PASS")!,
-        },
-      },
-    });
-
-    await client.send({
-      from: Deno.env.get("SMTP_USER")!,
+    await sendEmail({
       to: "mike@bigcityplumbing.com",
       subject: `Customer Survey from ${data.customerName}`,
-      content: "Please view this email in an HTML-compatible email client.",
       html: compactEmailHtml(emailHtml),
       replyTo: data.email,
     });
 
-    await client.close();
-
-    console.log("Survey email sent successfully via SMTP");
+    console.log("Survey email sent successfully via Resend");
 
     // Save submission to database
     try {
@@ -275,7 +255,6 @@ const handler = async (req: Request): Promise<Response> => {
       }
     } catch (dbErr) {
       console.error("Database save failed:", dbErr);
-      // Don't fail the request if DB save fails - email was already sent
     }
 
     return new Response(JSON.stringify({ success: true }), {
