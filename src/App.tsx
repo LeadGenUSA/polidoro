@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
@@ -62,6 +62,15 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/contact-us" element={<ContactUs />} />
+            {/* Old URL redirects */}
+            <Route path="/authorized-navien-dealer" element={<Navigate to="/heating-services" replace />} />
+            <Route path="/big-city-plumbing-heating/navien-group1" element={<Navigate to="/heating-services" replace />} />
+            <Route path="/big-city-plumbing-heating" element={<Navigate to="/" replace />} />
+            <Route path="/stay-warm-with-a-complete-boiler-checkup/boilers2" element={<Navigate to="/heating-services" replace />} />
+            <Route path="/stay-warm-with-a-complete-boiler-checkup" element={<Navigate to="/heating-services" replace />} />
+            <Route path="/plumbing-repair-service-and-installations" element={<Navigate to="/plumbing-services" replace />} />
+            <Route path="/who-we-are" element={<Navigate to="/about-us" replace />} />
+            <Route path="/estimate-form" element={<Navigate to="/free-estimate" replace />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
