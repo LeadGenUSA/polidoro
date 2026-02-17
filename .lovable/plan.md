@@ -1,40 +1,48 @@
 
 
-# Redirect Old URLs to New Pages
+# HTML Sitemap Page
 
 ## Overview
-Add client-side redirects so visitors arriving from old URLs (bookmarks, search engine results, external links) are automatically sent to the correct new page.
+Create a visitor-facing `/sitemap` page that lists all public pages organized by category, improving navigation and SEO with internal linking.
 
-## Redirect Mapping
+## Page Structure
 
-| Old URL | New URL |
-|---------|---------|
-| `/authorized-navien-dealer/` | `/heating-services` |
-| `/big-city-plumbing-heating/` | `/` |
-| `/big-city-plumbing-heating/navien-group1/` | `/heating-services` |
-| `/stay-warm-with-a-complete-boiler-checkup/boilers2/` | `/heating-services` |
-| `/stay-warm-with-a-complete-boiler-checkup/` | `/heating-services` |
-| `/plumbing-repair-service-and-installations/` | `/plumbing-services` |
-| `/who-we-are/` | `/about-us` |
-| `/estimate-form/` | `/free-estimate` |
+The page will be organized into these categories:
+
+**Main Pages**: Home, Services, About Us, Contact Us
+
+**Services**: Plumbing Services, Heating Services
+
+**Resources**: Blog, How-To Videos, Projects Gallery, Reviews
+
+**Forms**: Free Estimate, Work Order, Customer Survey
+
+**Legal**: Privacy Policy, Terms of Service
 
 ## Implementation
 
-**File:** `src/App.tsx`
+### 1. New file: `src/pages/Sitemap.tsx`
+- Follow the same layout pattern as other pages (Navbar, SEO, hero section, content, Footer)
+- Display links grouped by category in a clean grid layout
+- Include SEO component with appropriate title/description
+- Each link uses React Router `Link` component for client-side navigation
 
-- Import `Navigate` from `react-router-dom`
-- Add 8 redirect routes above the catch-all `*` route, each using `<Navigate to="/new-path" replace />` for an instant client-side redirect
+### 2. Update `src/App.tsx`
+- Import the new Sitemap page
+- Add route: `/sitemap`
 
-This approach keeps redirects in one place alongside all other routes, uses the existing router, and the `replace` prop ensures the old URL doesn't stay in browser history.
+### 3. Update `src/components/Footer.tsx`
+- Add a "Sitemap" link in the bottom bar next to Privacy Policy and Terms of Service
+
+### 4. Update `public/sitemap.xml`
+- Add the `/sitemap` page entry
+
+### 5. Update `public/robots.txt`
+- No changes needed (already allows all pages)
 
 ## Technical Details
-
-```text
-Route definition pattern:
-<Route path="/old-url" element={<Navigate to="/new-url" replace />} />
-```
-
-- Trailing slashes are handled automatically by React Router
-- No new files or dependencies needed
-- No backend changes required
+- Follows existing page patterns (Navbar + hero-gradient header + content + Footer)
+- Uses the existing SEO component for meta tags
+- Grid layout: 2 columns on mobile, 4 columns on desktop
+- Each category styled as a card with a heading and list of links
 
