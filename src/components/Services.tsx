@@ -24,7 +24,7 @@ const services = [
   {
     icon: Wrench,
     title: 'Emergency Services',
-    description: '24 hour response on plumbing and heating repairs. We\'re here when you need us most.',
+    description: '24-hour response time on plumbing and heating repairs. We\'re here when you need us most.',
   },
   {
     icon: ShieldCheck,
