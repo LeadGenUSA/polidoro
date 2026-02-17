@@ -12,7 +12,7 @@ const testimonials = [{
 }, {
   name: 'Maria S.',
   location: 'Nassau County, NY',
-  text: 'Had an emergency leak at 2 AM. They answered immediately and had someone at my house within an hour. True 24/7 service when you need it most.',
+  text: 'Had an emergency leak at 2 AM. They answered immediately and had someone at my house within an hour. True 24/7 response when you need it most.',
   rating: 5
 }];
 const Testimonials = () => {
