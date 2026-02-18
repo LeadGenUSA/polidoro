@@ -178,7 +178,7 @@ serve(async (req) => {
     `;
 
     await sendEmail({
-      to: "mike@bigcityplumbing.com",
+      to: ["mike@bigcityplumbing.com", "diane@bigcityplumbing.com", "info@bigcityplumbing.com"],
       replyTo: formData.email,
       subject: `Estimate Request from ${formData.customer}`,
       html: compactEmailHtml(emailHtml),

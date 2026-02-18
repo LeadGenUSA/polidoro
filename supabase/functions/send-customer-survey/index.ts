@@ -208,7 +208,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     await sendEmail({
-      to: "mike@bigcityplumbing.com",
+      to: ["mike@bigcityplumbing.com", "diane@bigcityplumbing.com", "info@bigcityplumbing.com"],
       subject: `Customer Survey from ${data.customerName}`,
       html: compactEmailHtml(emailHtml),
       replyTo: data.email,
