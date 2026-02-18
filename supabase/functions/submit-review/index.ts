@@ -31,7 +31,7 @@ async function sendAdminNotification(review: ReviewSubmission) {
     const htmlStars = '&#9733;'.repeat(review.rating) + '&#9734;'.repeat(5 - review.rating)
 
     await sendEmail({
-      to: 'mike@bigcityplumbing.com',
+      to: ['mike@bigcityplumbing.com', 'diane@bigcityplumbing.com', 'info@bigcityplumbing.com'],
       subject: `New Review Submitted - ${review.author_name} (${asciiStars})`,
       html: compactEmailHtml(`
 <!DOCTYPE html>

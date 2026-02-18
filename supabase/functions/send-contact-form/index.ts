@@ -101,7 +101,7 @@ This message was submitted via the Big City Plumbing & Heating website contact f
       : `Website Contact: ${data.name}`;
 
     await sendEmail({
-      to: "mike@bigcityplumbing.com",
+      to: ["mike@bigcityplumbing.com", "diane@bigcityplumbing.com", "info@bigcityplumbing.com"],
       subject,
       html: compactEmailHtml(emailHtml),
       replyTo: data.email,
