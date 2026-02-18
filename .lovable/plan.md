@@ -1,13 +1,32 @@
 
+## Standardize Email Recipients Across All Forms
 
-## Remove "Call Us" Button from Hamburger Menu
+Currently, only the Work Order form sends to all three email addresses. The other four forms send only to `mike@bigcityplumbing.com`. This change updates them all to match.
 
-The "CALL US! 631-361-9500" button currently appears inside the mobile hamburger menu, but a dedicated "CALL US!" button is already visible in the navbar bar itself for all viewports below 1280px. This makes the in-menu version redundant.
+### Current State
 
-### Change
+| Form | Current Recipients |
+|---|---|
+| Contact Form | mike@ only |
+| Free Estimate | mike@ only |
+| Customer Survey | mike@ only |
+| Review Notification | mike@ only |
+| Work Order | mike@, diane@, info@ (already correct) |
 
-**File: `src/components/Navbar.tsx`**
+### Changes
 
-Remove the `Button` element at the bottom of the mobile menu (the one wrapped in `<Button variant="navCta" size="lg" className="mt-2" asChild>` with the full phone number). This is located after the "Contact" link inside the mobile menu's `div`.
+**4 edge function files** will be updated to change the `to:` field from a single email string to an array of all three recipients:
 
-No other changes needed -- the always-visible mobile CTA button outside the hamburger menu already provides click-to-call access.
+```
+["mike@bigcityplumbing.com", "diane@bigcityplumbing.com", "info@bigcityplumbing.com"]
+```
+
+The shared `send-email.ts` helper already supports arrays, so no changes needed there.
+
+**Files to update:**
+1. `supabase/functions/send-contact-form/index.ts` -- line 104
+2. `supabase/functions/send-estimate-form/index.ts` -- line 181
+3. `supabase/functions/send-customer-survey/index.ts` -- line 211
+4. `supabase/functions/submit-review/index.ts` -- line 34
+
+All four edge functions will be redeployed automatically after the changes.
