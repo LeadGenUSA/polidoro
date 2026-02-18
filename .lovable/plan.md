@@ -1,18 +1,13 @@
 
 
-## Add Thank You Page to Free Estimate Form
+## Remove "Call Us" Button from Hamburger Menu
 
-After a successful submission, the Free Estimate Form currently just shows a toast notification and resets the form. The other forms (Work Order, Customer Survey) show a full "Thank You" screen instead. This change will match that pattern.
+The "CALL US! 631-361-9500" button currently appears inside the mobile hamburger menu, but a dedicated "CALL US!" button is already visible in the navbar bar itself for all viewports below 1280px. This makes the in-menu version redundant.
 
-### What will change
+### Change
 
-**File: `src/pages/FreeEstimateForm.tsx`**
+**File: `src/components/Navbar.tsx`**
 
-1. Add an `isSubmitted` state variable (like Work Order and Survey forms already have).
-2. On successful submission, set `isSubmitted = true` instead of just showing a toast and resetting form fields. The form reset logic can be removed since the component re-renders with the thank you screen.
-3. Add an `if (isSubmitted)` block before the main return that renders a thank you page with:
-   - Navbar and Footer for consistency
-   - Blue hero header saying "Estimate Submitted"
-   - A card with a green checkmark, "Thank You!" heading, a message about reviewing the estimate, and phone numbers for urgent matters
-   - A "Submit Another Estimate" button that sets `isSubmitted` back to false
-4. This follows the exact same pattern used in `WorkOrderForm.tsx` (lines 102-137).
+Remove the `Button` element at the bottom of the mobile menu (the one wrapped in `<Button variant="navCta" size="lg" className="mt-2" asChild>` with the full phone number). This is located after the "Contact" link inside the mobile menu's `div`.
+
+No other changes needed -- the always-visible mobile CTA button outside the hamburger menu already provides click-to-call access.
