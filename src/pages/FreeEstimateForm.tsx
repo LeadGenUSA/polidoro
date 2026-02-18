@@ -258,8 +258,6 @@ const FreeEstimateForm = () => {
                 <p className="text-muted-foreground">
                   For urgent matters, call us at{' '}
                   <a href="tel:631-361-9500" className="text-primary font-semibold hover:underline">631-361-9500</a>
-                  {' '}or{' '}
-                  <a href="tel:516-584-4855" className="text-primary font-semibold hover:underline">516-584-4855</a>
                 </p>
                 <Button onClick={() => setIsSubmitted(false)} variant="outline">
                   Submit Another Estimate
