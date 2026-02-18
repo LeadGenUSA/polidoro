@@ -7,7 +7,8 @@ import SmartTextarea from '@/components/SmartTextarea';
 import SmartInput from '@/components/SmartInput';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Phone, FileText, Loader2, Camera } from 'lucide-react';
+import { Phone, FileText, Loader2, Camera, CheckCircle } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import TurnstileWidget from '@/components/TurnstileWidget';
@@ -35,6 +36,7 @@ const meterPositions = [
 const FreeEstimateForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   
   // Customer Info
   const [customer, setCustomer] = useState('');
@@ -185,44 +187,11 @@ const FreeEstimateForm = () => {
 
       if (error) throw error;
 
+      setIsSubmitted(true);
       toast({
         title: "Estimate Request Submitted!",
         description: "We'll review your information and get back to you soon.",
       });
-
-      // Reset form
-      setCustomer('');
-      setEmail('');
-      setCostOfJob('');
-      setSelectedBoilerTypes([]);
-      setBoilerSize('');
-      setBaseboard('');
-      setBuriedTankSize([]);
-      setPumpAndFoam('');
-      setTankSand('');
-      setBuriedPriceAdditional('');
-      setInteriorTankRemoved('');
-      setInteriorTankBehindWall('');
-      setInteriorPriceAdditional('');
-      setExterior275Removal('');
-      setExteriorPriceAdditional('');
-      setCustomerResponsibleForTank('');
-      setTankNotes('');
-      setSteamSystem('');
-      setThermostatsIncluded('');
-      setExistingChimneyLined('');
-      setChimneyLinedNotes('');
-      setVentLocation('');
-      setVentLocationNotes('');
-      setNumberOfZones('');
-      setZoneSize('');
-      setBoilerAccess('');
-      setGasNeededFor([]);
-      setGasInHouse('');
-      setGasNotes('');
-      setMeterLocation('');
-      setPhotos([]);
-      setTurnstileToken(null);
 
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -261,6 +230,48 @@ const FreeEstimateForm = () => {
       </div>
     </RadioGroup>
   );
+
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        
+        <section className="relative bg-primary pt-32 pb-16">
+          <div className="container mx-auto px-4 max-w-4xl text-center">
+            <h1 className="text-4xl font-heading font-bold text-primary-foreground mb-4">
+              Estimate Submitted
+            </h1>
+          </div>
+        </section>
+        
+        <main className="flex-1 py-12 bg-muted/30">
+          <div className="container mx-auto px-4 max-w-2xl">
+            <Card className="text-center py-16">
+              <CardContent className="space-y-6">
+                <CheckCircle className="w-20 h-20 text-primary mx-auto" />
+                <h2 className="text-3xl font-heading font-bold text-foreground">
+                  Thank You!
+                </h2>
+                <p className="text-muted-foreground text-lg">
+                  Your estimate request has been submitted successfully. We will review your information and get back to you shortly.
+                </p>
+                <p className="text-muted-foreground">
+                  For urgent matters, call us at{' '}
+                  <a href="tel:631-361-9500" className="text-primary font-semibold hover:underline">631-361-9500</a>
+                  {' '}or{' '}
+                  <a href="tel:516-584-4855" className="text-primary font-semibold hover:underline">516-584-4855</a>
+                </p>
+                <Button onClick={() => setIsSubmitted(false)} variant="outline">
+                  Submit Another Estimate
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
