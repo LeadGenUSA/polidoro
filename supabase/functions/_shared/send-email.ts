@@ -15,7 +15,7 @@ export async function sendEmail(options: {
       Authorization: `Bearer ${RESEND_API_KEY}`,
     },
     body: JSON.stringify({
-      from: options.from || "Big City Plumbing <noreply@bigcityplumber.com>",
+      from: options.from || "Big City Plumbing <noreply@bigcityplumbing.com>",
       to: Array.isArray(options.to) ? options.to : [options.to],
       subject: options.subject,
       html: options.html,
