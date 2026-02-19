@@ -113,9 +113,11 @@ const Financing = () => {
 
                 {/* Card Body */}
                 <div className="p-6 flex flex-col flex-1">
-                  <h3 className="font-heading text-xl font-bold text-foreground mb-1">{program.title}</h3>
-                  <p className="text-secondary font-semibold text-sm mb-3">{program.subtitle}</p>
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-6 flex-1">{program.description}</p>
+                  <div className="flex-1 mb-6">
+                    <h3 className="font-heading text-xl font-bold text-foreground mb-1">{program.title}</h3>
+                    <p className="text-secondary font-semibold text-sm mb-3">{program.subtitle}</p>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{program.description}</p>
+                  </div>
 
                   <Button asChild className="w-full mb-4">
                     <a href={program.link} target="_blank" rel="noopener noreferrer">
@@ -124,7 +126,7 @@ const Financing = () => {
                   </Button>
 
                   {/* Disclaimer */}
-                  <p className="text-[11px] text-muted-foreground leading-relaxed border-t border-border pt-4 mt-auto">
+                  <p className="text-[11px] text-muted-foreground leading-relaxed border-t border-border pt-4">
                     {program.disclaimer}
                   </p>
                 </div>
