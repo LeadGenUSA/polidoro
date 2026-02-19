@@ -1,38 +1,21 @@
 
-## Fix: Align "PreQualify Now" Buttons Across All Financing Cards
+## Remove Background Image from Financing Hero Section
 
-### Root Cause
+### What's Changing
 
-Each loan card is a flex column (`flex flex-col`). Inside the card body, the description `<p>` has `flex-1` applied, which is meant to push the button down. However, the **subtitle text wraps to different lengths** across the three cards (e.g., "No Payments or Interest for 12 Months" wraps to two lines on some screen sizes), causing the description block to start at different vertical offsets — and therefore the button lands at inconsistent heights.
+The hero section currently has two layers:
+1. An `<img>` tag with the Regions branded banner (`regions-hero-banner.jpg`) absolutely positioned to fill the full section
+2. A gradient overlay (`bg-gradient-to-r from-primary/90...`) on top of it
 
 ### Fix
 
-In `src/pages/Financing.tsx`, restructure the card body so:
+In `src/pages/Financing.tsx`:
 
-1. A single `div` with `flex-1` contains the title, subtitle, and description — this block absorbs all the extra space.
-2. The button and disclaimer sit **below** that block in a separate non-growing section, so they are always anchored to the bottom of the card.
-
-**Before (simplified):**
-```
-card body (flex flex-col flex-1)
-  ├─ h3 title
-  ├─ p subtitle
-  ├─ p description  ← flex-1 here
-  ├─ Button         ← floats at different heights
-  └─ p disclaimer
-```
-
-**After:**
-```
-card body (flex flex-col flex-1)
-  ├─ div (flex-1)   ← grows to fill space
-  │   ├─ h3 title
-  │   ├─ p subtitle
-  │   └─ p description
-  ├─ Button         ← always at same vertical position
-  └─ p disclaimer
-```
+1. **Remove** the `<img src={regionsBanner} .../>` element (lines 51–55)
+2. **Replace** the transparent gradient overlay with a solid `hero-gradient` background (same class used on other hero sections in the site), so the section still has a branded look without the background photo
+3. **Remove** the now-unused `regionsBanner` import at the top of the file
+4. **Remove** `relative overflow-hidden` layout helpers that were only needed to contain the absolute-positioned image — simplify the section's className
 
 ### File Changed
 
-- **`src/pages/Financing.tsx`** — Wrap the title/subtitle/description in a `<div className="flex-1">` and remove `flex-1` from the description `<p>`. Remove `mb-6 flex-1` from the description and use `mb-6` on the wrapper div instead. Remove `mt-auto` from the disclaimer since it's no longer needed.
+- **`src/pages/Financing.tsx`** only
