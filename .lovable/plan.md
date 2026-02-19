@@ -1,29 +1,34 @@
 
-## Show Desktop Nav Links on iPad Landscape
+## Shorten CTA Button Text at lg Breakpoint
 
-### Background
+### The Problem
 
-The Navbar currently uses the `xl` breakpoint (1280px) to switch between the hamburger/mobile menu and the full desktop nav. This was intentionally set wide to prevent link crowding on iPad landscape. However, you now want the full nav links visible on iPad landscape (1024px wide), with the hamburger menu still used on iPad portrait (768px).
+At 1024px (iPad landscape), the desktop CTA button shows "CALL US! 631-361-9500" in full, which takes up too much horizontal space and crowds the nav links.
 
 ### The Fix
 
-Change every `xl:` breakpoint reference in `src/components/Navbar.tsx` to `lg:` (1024px). This single change affects:
+The desktop CTA button (lines 217–224) currently shows the full number at all `lg:` and above sizes. The solution is to show:
 
-- Desktop nav bar: `hidden xl:flex` → `hidden lg:flex`
-- Desktop CTA call button (large): `hidden xl:flex` → `hidden lg:flex`
-- Mobile CTA call button (small): `xl:hidden` → `lg:hidden`
-- Mobile hamburger menu button: `xl:hidden` → `lg:hidden`
-- Mobile slide-down menu panel: `xl:hidden` → `lg:hidden`
+- **lg (1024px — iPad landscape):** "CALL US!" only — no phone number
+- **xl (1280px+ — desktop):** Full "CALL US! 631-361-9500"
 
-After this change:
-- **iPad portrait (768px)** — hamburger menu, as before
-- **iPad landscape (1024px)** — full desktop nav links visible
-- **Desktop (1280px+)** — full desktop nav links visible, as before
+This is achieved by using Tailwind's responsive `hidden/inline` span utilities inside the single button:
 
-### Note on Link Spacing
+```tsx
+{/* CTA Button */}
+<div className="hidden lg:flex items-center">
+  <Button variant="navCta" size="lg" asChild>
+    <a href="tel:631-361-9500" className="flex items-center gap-2">
+      <Phone className="w-4 h-4" />
+      CALL US!
+      <span className="hidden xl:inline">631-361-9500</span>
+    </a>
+  </Button>
+</div>
+```
 
-At 1024px the nav bar will be tighter than at 1280px. The current `gap-8` between links may be slightly snug but should fit. If any links appear to wrap or overlap after the change, the gap or font size can be adjusted as a follow-up.
+The phone number is wrapped in a `<span className="hidden xl:inline">` — invisible at `lg` (1024px), visible at `xl` (1280px+).
 
 ### File Changed
 
-- **`src/components/Navbar.tsx`** — replace all 5 occurrences of `xl:` breakpoints with `lg:` (lines 91, 217, 227, 238, 247)
+- **`src/components/Navbar.tsx`** — lines 219–222 only (the desktop CTA button content)
