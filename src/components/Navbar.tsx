@@ -21,6 +21,7 @@ const externalLinks = [
   { name: 'Work Order Form', href: '/work-order', external: false },
   { name: 'Customer Survey Form', href: '/customer-survey', external: false },
   { name: 'Blog', href: '/blog', external: false },
+  { name: 'Financing', href: '/financing', external: false },
 ];
 
 const navLinks = [

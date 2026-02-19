@@ -272,9 +272,9 @@ const Hero = () => {
               <Link to="/tenpercent-coupon">
                 <img src={couponBadge} alt="Click here for coupons" className="h-20 w-auto animate-float animation-delay-200 hover:scale-105 transition-transform drop-shadow-lg" />
               </Link>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="bg-card p-4 rounded-2xl shadow-large animate-float animation-delay-400 hover:scale-105 transition-transform inline-flex items-center gap-3">
+              <Link to="/financing" className="bg-card p-4 rounded-2xl shadow-large animate-float animation-delay-400 hover:scale-105 transition-transform inline-flex items-center gap-3">
                 <p className="font-heading font-bold text-foreground">Financing Available</p>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
