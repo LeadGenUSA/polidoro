@@ -115,7 +115,7 @@ const Financing = () => {
                 <div className="p-6 flex flex-col flex-1">
                   <div className="flex-1 mb-6">
                     <h3 className="font-heading text-xl font-bold text-foreground mb-1">{program.title}</h3>
-                    <p className="text-secondary font-semibold text-sm mb-3">{program.subtitle}</p>
+                    <p className="text-secondary font-semibold text-sm mb-1">{program.subtitle}</p>
                     <p className="text-muted-foreground text-sm leading-relaxed">{program.description}</p>
                   </div>
 
