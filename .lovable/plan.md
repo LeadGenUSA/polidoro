@@ -1,21 +1,22 @@
 
-## Remove Background Image from Financing Hero Section
+## Replace "Financing Available" Text Button with Regions Logo Image
 
 ### What's Changing
 
-The hero section currently has two layers:
-1. An `<img>` tag with the Regions branded banner (`regions-hero-banner.jpg`) absolutely positioned to fill the full section
-2. A gradient overlay (`bg-gradient-to-r from-primary/90...`) on top of it
+In `src/components/Hero.tsx`, the current "Financing Available" floating card (lines 275–277) displays plain text inside a card box. We'll replace the text with the uploaded Regions Home Improvement Financing logo image, keeping the same card style and link behavior.
 
-### Fix
+### Steps
 
-In `src/pages/Financing.tsx`:
+**1. Copy the uploaded image into the project**
+- Source: `user-uploads://image001-2.png`
+- Destination: `src/assets/financing/regions-logo.png` (overwrite the existing placeholder logo already there)
 
-1. **Remove** the `<img src={regionsBanner} .../>` element (lines 51–55)
-2. **Replace** the transparent gradient overlay with a solid `hero-gradient` background (same class used on other hero sections in the site), so the section still has a branded look without the background photo
-3. **Remove** the now-unused `regionsBanner` import at the top of the file
-4. **Remove** `relative overflow-hidden` layout helpers that were only needed to contain the absolute-positioned image — simplify the section's className
+**2. Update `src/components/Hero.tsx`**
+- Import `regionsLogo` from `@/assets/financing/regions-logo.png` (already exists in the financing page, just needs adding to Hero.tsx)
+- Replace the `<p>Financing Available</p>` inside the Link with `<img src={regionsLogo} alt="Regions Home Improvement Financing" className="h-12 w-auto object-contain" />`
+- Keep the wrapping `<Link>` and card styles (`bg-card p-4 rounded-2xl shadow-large animate-float animation-delay-400 hover:scale-105 transition-transform`) intact so it still floats and links to `/financing`
 
 ### File Changed
 
-- **`src/pages/Financing.tsx`** only
+- **`src/assets/financing/regions-logo.png`** — replaced with the uploaded Regions logo
+- **`src/components/Hero.tsx`** — swap text for logo image, add import
