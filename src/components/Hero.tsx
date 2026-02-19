@@ -12,6 +12,7 @@ import nycSkyline from '@/assets/nyc-skyline.png';
 import heroVideo from '@/assets/big-city-plumbing-and-heating.mp4';
 
 import couponBadge from '@/assets/coupons-badge.png';
+import regionsLogo from '@/assets/financing/regions-logo.png';
 
 interface SlideItem {
   type: 'video' | 'image';
@@ -273,7 +274,7 @@ const Hero = () => {
                 <img src={couponBadge} alt="Click here for coupons" className="h-20 w-auto animate-float animation-delay-200 hover:scale-105 transition-transform drop-shadow-lg" />
               </Link>
               <Link to="/financing" className="bg-card p-4 rounded-2xl shadow-large animate-float animation-delay-400 hover:scale-105 transition-transform inline-flex items-center gap-3">
-                <p className="font-heading font-bold text-foreground">Financing Available</p>
+                <img src={regionsLogo} alt="Regions Home Improvement Financing" className="h-12 w-auto object-contain" />
               </Link>
             </div>
           </div>
