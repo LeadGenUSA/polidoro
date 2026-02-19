@@ -216,9 +216,10 @@ const Navbar = () => {
           {/* CTA Button */}
           <div className="hidden lg:flex items-center">
             <Button variant="navCta" size="lg" asChild>
-              <a href="tel:631-361-9500" className="flex items-center gap-2">
+        <a href="tel:631-361-9500" className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                CALL US! 631-361-9500
+                CALL US!
+                <span className="hidden xl:inline">631-361-9500</span>
               </a>
             </Button>
           </div>
