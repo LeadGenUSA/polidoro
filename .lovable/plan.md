@@ -1,56 +1,38 @@
 
-## Create a Financing Page
+## Fix: Align "PreQualify Now" Buttons Across All Financing Cards
 
-### What We're Building
+### Root Cause
 
-A new `/financing` page showcasing the three Regions Bank home improvement loan programs, with clickable banners that open the pre-qualification portal in a new tab. The "Financing Available" button in the Hero section will be linked to this page.
+Each loan card is a flex column (`flex flex-col`). Inside the card body, the description `<p>` has `flex-1` applied, which is meant to push the button down. However, the **subtitle text wraps to different lengths** across the three cards (e.g., "No Payments or Interest for 12 Months" wraps to two lines on some screen sizes), causing the description block to start at different vertical offsets — and therefore the button lands at inconsistent heights.
 
-### Files to Create / Modify
+### Fix
 
-**1. Copy uploaded assets to `src/assets/financing/`**
-- `PreQualify_AsLowAs_8.99_TIL.png` — Traditional Installment Loan banner
-- `PreQualify_12Mo-SAC.png` — 12-Month Same-As-Cash banner
-- `PreQualify_9.99-5Yr.png` — 9.99% 5-Year Loan banner
-- `1-ELP_Regions_branded_social_banner_ad_template_General_1600x1600_07312024_digital_v1.jpg` — Hero banner image
-- `image001.png` — Regions Home Improvement Financing logo
+In `src/pages/Financing.tsx`, restructure the card body so:
 
-**2. Create `src/pages/Financing.tsx`**
+1. A single `div` with `flex-1` contains the title, subtitle, and description — this block absorbs all the extra space.
+2. The button and disclaimer sit **below** that block in a separate non-growing section, so they are always anchored to the bottom of the card.
 
-The page will include:
+**Before (simplified):**
+```
+card body (flex flex-col flex-1)
+  ├─ h3 title
+  ├─ p subtitle
+  ├─ p description  ← flex-1 here
+  ├─ Button         ← floats at different heights
+  └─ p disclaimer
+```
 
-- **Hero section** — using the Regions branded banner image with a headline "Flexible Financing for Your Home Project"
-- **Intro section** — brief copy explaining financing is available through Regions Bank
-- **Three loan cards** — each with:
-  - The banner image as a clickable link (opens in new tab)
-  - Loan program title
-  - Key benefit summary
-  - Legal disclaimer text (from the text file)
-  - "PreQualify Now" button linking to the specific EnerBank URL
+**After:**
+```
+card body (flex flex-col flex-1)
+  ├─ div (flex-1)   ← grows to fill space
+  │   ├─ h3 title
+  │   ├─ p subtitle
+  │   └─ p description
+  ├─ Button         ← always at same vertical position
+  └─ p disclaimer
+```
 
-The three programs and their links:
-  - **Traditional Installment Loan** (as low as 8.99% APR) → `https://prequalification.enerbank.com/apply/loanproduct?...loanCode=DEL2622...`
-  - **12-Month Same-As-Cash** (no payments/interest for 12 months) → `https://prequalification.enerbank.com/apply/loanproduct?...loanCode=DEL2625...`
-  - **9.99% APR 5-Year Loan** → `https://prequalification.enerbank.com/apply/loanproduct?...loanCode=DEL2674...`
+### File Changed
 
-- **CTA section** at the bottom — "Have questions? Call us" with the phone number
-
-- **SEO component** with appropriate title/description
-
-**3. Update `src/App.tsx`**
-- Add `import Financing from "./pages/Financing";`
-- Add route: `<Route path="/financing" element={<Financing />} />`
-
-**4. Update `src/components/Hero.tsx`**
-- Change the "Financing Available" `<a href="#">` to `<Link to="/financing">` so it navigates to the new page
-
-**5. Update `src/components/Navbar.tsx`**
-- Add `{ name: 'Financing', href: '/financing', external: false }` to the `externalLinks` array so it appears in the "Links" dropdown in both desktop and mobile menus
-
-**6. Update `src/components/Footer.tsx`**
-- Add a "Financing" link to the Quick Links section
-
-### Technical Notes
-- All banner images are imported as ES6 modules from `src/assets/financing/`
-- All EnerBank links open with `target="_blank" rel="noopener noreferrer"`
-- Legal disclaimer text is displayed in small print below each loan card, matching the content from the text file exactly
-- SEO metadata included for the new page
+- **`src/pages/Financing.tsx`** — Wrap the title/subtitle/description in a `<div className="flex-1">` and remove `flex-1` from the description `<p>`. Remove `mb-6 flex-1` from the description and use `mb-6` on the wrapper div instead. Remove `mt-auto` from the disclaimer since it's no longer needed.
