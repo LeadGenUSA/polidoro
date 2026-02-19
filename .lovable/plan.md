@@ -1,19 +1,29 @@
 
-## Increase Regions Financing Card Size
+## Show Desktop Nav Links on iPad Landscape
 
-### What's Changing
+### Background
 
-The Regions logo card currently sits at `h-8` (logo) with `p-3` (card padding). The other floating items reach about `h-20` (coupon badge) and ~`h-20` total for the "Excellent Service" card (icon + text + padding). The Regions card needs to grow a bit to feel balanced without wrapping to a second line.
+The Navbar currently uses the `xl` breakpoint (1280px) to switch between the hamburger/mobile menu and the full desktop nav. This was intentionally set wide to prevent link crowding on iPad landscape. However, you now want the full nav links visible on iPad landscape (1024px wide), with the hamburger menu still used on iPad portrait (768px).
 
-### Adjustment
+### The Fix
 
-In `src/components/Hero.tsx`, line 277:
+Change every `xl:` breakpoint reference in `src/components/Navbar.tsx` to `lg:` (1024px). This single change affects:
 
-- **Logo height**: `h-8` → `h-10`  
-- **Card padding**: keep at `p-3` (no change needed — just the logo getting taller is enough to bring the card up to a comfortable size without overshooting)
+- Desktop nav bar: `hidden xl:flex` → `hidden lg:flex`
+- Desktop CTA call button (large): `hidden xl:flex` → `hidden lg:flex`
+- Mobile CTA call button (small): `xl:hidden` → `lg:hidden`
+- Mobile hamburger menu button: `xl:hidden` → `lg:hidden`
+- Mobile slide-down menu panel: `xl:hidden` → `lg:hidden`
 
-This gives the card an overall height closer to the other two items while remaining safely inline on all screen sizes.
+After this change:
+- **iPad portrait (768px)** — hamburger menu, as before
+- **iPad landscape (1024px)** — full desktop nav links visible
+- **Desktop (1280px+)** — full desktop nav links visible, as before
+
+### Note on Link Spacing
+
+At 1024px the nav bar will be tighter than at 1280px. The current `gap-8` between links may be slightly snug but should fit. If any links appear to wrap or overlap after the change, the gap or font size can be adjusted as a follow-up.
 
 ### File Changed
 
-- **`src/components/Hero.tsx`** — one-line change on line 277
+- **`src/components/Navbar.tsx`** — replace all 5 occurrences of `xl:` breakpoints with `lg:` (lines 91, 217, 227, 238, 247)
