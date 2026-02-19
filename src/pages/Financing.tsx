@@ -3,7 +3,6 @@ import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Phone, DollarSign } from 'lucide-react';
-import regionsBanner from '@/assets/financing/regions-hero-banner.jpg';
 import regionsLogo from '@/assets/financing/regions-logo.png';
 import banner899 from '@/assets/financing/PreQualify_AsLowAs_8.99_TIL.png';
 import banner12mo from '@/assets/financing/PreQualify_12Mo-SAC.png';
@@ -47,14 +46,8 @@ const Financing = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative min-h-[420px] flex items-center overflow-hidden">
-        <img
-          src={regionsBanner}
-          alt="Regions Bank Home Improvement Financing"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/75 to-primary/60" />
-        <div className="relative z-10 container mx-auto px-4 lg:px-8 pt-32 pb-16 text-primary-foreground">
+      <section className="hero-gradient min-h-[420px] flex items-center">
+        <div className="container mx-auto px-4 lg:px-8 pt-32 pb-16 text-primary-foreground">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/20 backdrop-blur-sm border border-secondary/30 mb-6">
               <DollarSign className="w-4 h-4 text-secondary" />
