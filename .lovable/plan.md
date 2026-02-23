@@ -1,71 +1,58 @@
 
 
-## Add Blog Ping Notifications on Publish
+## Change Review Source Labels for Website vs Admin Submissions
 
-### Why This Matters
+### What Changes
 
-Search engines can take days or weeks to discover new content through regular crawling. Pinging services like Google, Bing (IndexNow), and other aggregators immediately notifies them that new content exists, leading to faster indexing and visibility in search results.
+When a customer submits a review through the public Reviews page, it should be labeled **"Website Review"** in the Admin area. When an admin submits one using a known admin email, it should be labeled **"Manual"** and auto-approved as it does today.
 
-### What Will Be Added
+### Steps
 
-A new backend function called `ping-blog-post` that sends notifications to search engine ping services whenever a blog post is published. It will be triggered automatically in two places:
+**1. Add "website" to the `review_source` database enum**
 
-1. When an admin approves/publishes a post via the Blog Manager
-2. When the AI auto-generates a post (if auto-publish is ever enabled)
+Run a migration to add `'website'` as a new allowed value:
 
-### Ping Targets
-
-- **IndexNow** (covers Bing, Yandex, Seznam, Naver) -- single API call notifies multiple engines
-- **Google Ping** (sitemaps ping endpoint: `https://www.google.com/ping?sitemap=...`)
-
-### Implementation Details
-
-**1. New backend function: `supabase/functions/ping-blog-post/index.ts`**
-
-Accepts a blog post slug, constructs the full URL, and sends pings:
-
-- IndexNow API: `POST https://api.indexnow.org/indexnow` with the post URL and a site-owned key file
-- Google sitemap ping: `GET https://www.google.com/ping?sitemap=https://www.bigcityplumbing.com/sitemap.xml`
-
-Logs results for debugging.
-
-**2. New file: `public/indexnow-key.txt`**
-
-A simple text file containing the IndexNow verification key (a random hex string). This file must be publicly accessible at the site root for IndexNow to verify ownership.
-
-**3. Update `supabase/config.toml`**
-
-Add the new function entry with `verify_jwt = false`.
-
-**4. Update `src/components/admin/BlogPostEditor.tsx`**
-
-After a post status is set to `published`, call the ping function with the post's slug.
-
-**5. Update `supabase/functions/generate-blog-post/index.ts`**
-
-Add an optional ping call after post creation (currently posts are created as drafts, so pinging would only occur if the status were changed to published).
-
-### Flow
-
-```text
-Admin clicks "Approve & Publish"
-       |
-       v
-BlogPostEditor saves status = 'published'
-       |
-       v
-Calls ping-blog-post function with slug
-       |
-       +---> IndexNow API (Bing, Yandex, etc.)
-       +---> Google sitemap ping
+```sql
+ALTER TYPE review_source ADD VALUE 'website';
 ```
 
-### Files Changed
+This keeps existing `manual`, `google`, and `imported` values intact.
 
-| File | Change |
-|---|---|
-| `supabase/functions/ping-blog-post/index.ts` | New function -- sends pings to IndexNow and Google |
-| `public/indexnow-key.txt` | New file -- IndexNow ownership verification key |
-| `supabase/config.toml` | Add `[functions.ping-blog-post]` entry |
-| `src/components/admin/BlogPostEditor.tsx` | Call ping function after publishing |
+**2. Update `supabase/functions/submit-review/index.ts`**
+
+Change the `source` field logic on line 186:
+
+- If admin email --> `source: 'manual'` (unchanged)
+- If regular customer --> `source: 'website'` (was `'manual'`)
+
+```
+source: isAdminSubmission ? 'manual' : 'website',
+```
+
+**3. Update `src/components/admin/ReviewCard.tsx`**
+
+Add the new source label to the `sourceLabels` map:
+
+```
+website: 'Website Review',
+```
+
+**4. Update `src/hooks/useReviews.tsx`**
+
+Add `'website'` to the `Review` interface's `source` union type:
+
+```
+source: 'google' | 'manual' | 'imported' | 'website';
+```
+
+### Summary
+
+| Submitter | Source Label in Admin | Status |
+|---|---|---|
+| Customer via /reviews page | Website Review | Pending (needs approval) |
+| Admin email via /reviews page | Manual | Auto-approved |
+| Google import | Google | Per existing logic |
+| Bulk import | Imported | Per existing logic |
+
+No other files need changes. Existing reviews already labeled `manual` will remain as-is.
 
