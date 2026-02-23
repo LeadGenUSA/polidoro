@@ -12,7 +12,7 @@ export interface Review {
   title: string | null;
   location: string | null;
   review_date: string | null;
-  source: 'google' | 'manual' | 'imported';
+  source: 'google' | 'manual' | 'imported' | 'website';
   status: 'pending' | 'approved' | 'rejected';
   category: string | null;
   approved_by: string | null;

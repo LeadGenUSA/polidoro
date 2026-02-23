@@ -565,7 +565,7 @@ export type Database = {
       app_role: "admin" | "user"
       blog_generation_frequency: "weekly" | "biweekly" | "monthly" | "quarterly"
       blog_post_status: "draft" | "published" | "rejected"
-      review_source: "google" | "manual" | "imported"
+      review_source: "google" | "manual" | "imported" | "website"
       review_status: "pending" | "approved" | "rejected"
       submission_status: "new" | "reviewed" | "archived"
     }
@@ -698,7 +698,7 @@ export const Constants = {
       app_role: ["admin", "user"],
       blog_generation_frequency: ["weekly", "biweekly", "monthly", "quarterly"],
       blog_post_status: ["draft", "published", "rejected"],
-      review_source: ["google", "manual", "imported"],
+      review_source: ["google", "manual", "imported", "website"],
       review_status: ["pending", "approved", "rejected"],
       submission_status: ["new", "reviewed", "archived"],
     },
