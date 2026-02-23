@@ -1,52 +1,28 @@
-## Enhance LocalBusiness Schema with aggregateRating, sameAs, and image
 
-### What's Changing
+## Fix: Allow Admins to View All Profiles
 
-Three new properties will be added to the `localBusinessSchema` object in `src/pages/Index.tsx`:
+### The Problem
 
-### 1. aggregateRating
+The `profiles` table only has a policy "Users can view their own profile" (`auth.uid() = user_id`). When an admin tries to grant rights by email, the `UserRolesManager` component queries `profiles` to find the target user, but the policy blocks the admin from seeing anyone else's profile. This causes the "No user found with that email" error.
 
-Adds a star rating summary that can appear in Google rich results:
+### The Fix
 
-```js
-"aggregateRating": {
-  "@type": "AggregateRating",
-  "ratingValue": "4.9",
-  "reviewCount": "70",
-  "bestRating": "5"
-}
+Add a new database security policy that allows admins to read all profiles. This is needed for the User Roles Manager to function.
+
+### Changes
+
+**1. Database migration** -- Add RLS policy on `profiles`:
+
+```sql
+CREATE POLICY "Admins can view all profiles"
+ON public.profiles
+FOR SELECT
+TO authenticated
+USING (public.has_role(auth.uid(), 'admin'));
 ```
 
-**Note:** You should adjust `ratingValue` and `reviewCount` to match your actual Google/Yelp numbers. I'll use placeholder values you can confirm.
-
-### 2. sameAs (social profiles)
-
-Links the business entity to its official social profiles, pulled from your footer:
-
-```js
-"sameAs": [
-  "http://www.facebook.com/bigcityplumbing",
-  "https://x.com/bigcityplumbing",
-  "https://www.linkedin.com/profile/view?id=AAkAAAUWvLUB1msy7omBhpMetwl7zMHANsC8wzs",
-  "http://www.yelp.com/biz/big-city-plumbing-and-heating-centereach",
-  "https://www.youtube.com/channel/UC8fcDyolqilmFXHt8pg377Q"
-]
-```
-
-### 3. image
-
-Provides a representative business image for rich results:
-
-```js
-"image": "https://www.bigcityplumbing.com/favicon.png"
-```
-
-This uses the same image as the existing `logo` property. If you have a higher-quality storefront or team photo hosted publicly, that would be even better.
+That's it -- one policy addition, no code changes needed. The existing `UserRolesManager` component will work as-is once admins can read all profile rows.
 
 ### File Changed
 
-- `**src/pages/Index.tsx**` -- add three properties to the `localBusinessSchema` object (after `priceRange` on line 48)
-
-### Technical Details
-
-All three properties are added as keys on the existing object literal. No other files or components need changes since the `SEO` component already serializes the full object to JSON-LD.
+- Database only (new RLS policy on `profiles` table)
