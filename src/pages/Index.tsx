@@ -45,7 +45,21 @@ const localBusinessSchema = {
     "@type": "Person",
     "name": "Michael Polidoro"
   },
-  "priceRange": "$$"
+  "priceRange": "$$",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "70",
+    "bestRating": "5"
+  },
+  "sameAs": [
+    "http://www.facebook.com/bigcityplumbing",
+    "https://x.com/bigcityplumbing",
+    "https://www.linkedin.com/profile/view?id=AAkAAAUWvLUB1msy7omBhpMetwl7zMHANsC8wzs",
+    "http://www.yelp.com/biz/big-city-plumbing-and-heating-centereach",
+    "https://www.youtube.com/channel/UC8fcDyolqilmFXHt8pg377Q"
+  ],
+  "image": "https://www.bigcityplumbing.com/favicon.png"
 };
 
 const Index = () => {
