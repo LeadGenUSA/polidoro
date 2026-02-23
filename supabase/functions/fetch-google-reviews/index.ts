@@ -118,20 +118,30 @@ Deno.serve(async (req) => {
 
     const existingIds = new Set(existingReviews?.map(r => r.google_review_id) || []);
 
+    // Normalize publish time to Unix timestamp for consistent google_review_id
+    const normalizePublishTime = (publishTime: string): string => {
+      if (!publishTime) return '0';
+      // If it's already a Unix timestamp (all digits), use as-is
+      if (/^\d+$/.test(publishTime)) return publishTime;
+      // Otherwise parse as date and convert to Unix seconds
+      const parsed = Date.parse(publishTime);
+      return isNaN(parsed) ? publishTime : String(Math.floor(parsed / 1000));
+    };
+
     // Prepare new reviews for insertion
     const newReviews = reviews
       .filter((review: any) => {
-        // Create a unique ID from author name and publish time
         const authorName = review.authorAttribution?.displayName || 'Anonymous';
-        const publishTime = review.publishTime || '';
+        const publishTime = normalizePublishTime(review.publishTime || '');
         const reviewId = `${authorName}_${publishTime}`;
         return !existingIds.has(reviewId);
       })
       .map((review: any) => {
         const authorName = review.authorAttribution?.displayName || 'Anonymous';
         const publishTime = review.publishTime || new Date().toISOString();
+        const normalizedTime = normalizePublishTime(publishTime);
         return {
-          google_review_id: `${authorName}_${publishTime}`,
+          google_review_id: `${authorName}_${normalizedTime}`,
           author_name: authorName,
           author_photo_url: review.authorAttribution?.photoUri || null,
           rating: review.rating,
