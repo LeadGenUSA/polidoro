@@ -1,58 +1,40 @@
 
 
-## Change Review Source Labels for Website vs Admin Submissions
+## Fix Duplicate Google Reviews on Import
 
-### What Changes
+### Problem
+When importing Google reviews, duplicates appear because:
+1. There is no unique constraint on the `google_review_id` column, so the database allows duplicate entries even with the same ID.
+2. The dedup check relies on an in-memory Set comparison that can fail if timestamps differ slightly between API calls.
 
-When a customer submits a review through the public Reviews page, it should be labeled **"Website Review"** in the Admin area. When an admin submits one using a known admin email, it should be labeled **"Manual"** and auto-approved as it does today.
+### Fix (2 changes)
 
-### Steps
-
-**1. Add "website" to the `review_source` database enum**
-
-Run a migration to add `'website'` as a new allowed value:
+**1. Database migration: Add a unique partial index on `google_review_id`**
 
 ```sql
-ALTER TYPE review_source ADD VALUE 'website';
+CREATE UNIQUE INDEX IF NOT EXISTS reviews_google_review_id_unique
+ON public.reviews (google_review_id)
+WHERE google_review_id IS NOT NULL;
 ```
 
-This keeps existing `manual`, `google`, and `imported` values intact.
+This prevents duplicate `google_review_id` values at the database level while allowing multiple NULL values (for website/manual reviews that don't have one).
 
-**2. Update `supabase/functions/submit-review/index.ts`**
+**2. Update `supabase/functions/fetch-google-reviews/index.ts`**
 
-Change the `source` field logic on line 186:
+Change the insert call to use upsert with `ignoreDuplicates: true` so that even if the in-memory filter misses a duplicate, the database silently skips it instead of creating a second row:
 
-- If admin email --> `source: 'manual'` (unchanged)
-- If regular customer --> `source: 'website'` (was `'manual'`)
-
-```
-source: isAdminSubmission ? 'manual' : 'website',
-```
-
-**3. Update `src/components/admin/ReviewCard.tsx`**
-
-Add the new source label to the `sourceLabels` map:
-
-```
-website: 'Website Review',
+```typescript
+const { error: insertError } = await supabaseAdmin
+  .from('reviews')
+  .upsert(newReviews, { onConflict: 'google_review_id', ignoreDuplicates: true });
 ```
 
-**4. Update `src/hooks/useReviews.tsx`**
+### What This Achieves
+- The unique index is the real safety net -- duplicates become impossible at the database level.
+- The upsert with `ignoreDuplicates` prevents insert errors when a duplicate is encountered.
+- Existing duplicate rows in the database will need to be cleaned up manually (the migration only prevents future duplicates; if there are current dupes, I can delete them as a separate step).
 
-Add `'website'` to the `Review` interface's `source` union type:
-
-```
-source: 'google' | 'manual' | 'imported' | 'website';
-```
-
-### Summary
-
-| Submitter | Source Label in Admin | Status |
-|---|---|---|
-| Customer via /reviews page | Website Review | Pending (needs approval) |
-| Admin email via /reviews page | Manual | Auto-approved |
-| Google import | Google | Per existing logic |
-| Bulk import | Imported | Per existing logic |
-
-No other files need changes. Existing reviews already labeled `manual` will remain as-is.
+### Files Changed
+- New migration SQL file (unique index)
+- `supabase/functions/fetch-google-reviews/index.ts` (upsert instead of insert)
 
