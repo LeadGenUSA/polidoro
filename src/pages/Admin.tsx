@@ -24,16 +24,18 @@ import {
   Camera,
   FileText,
   BookOpen,
-  Users
+  Users,
+  Video
 } from 'lucide-react';
 import { BlogManager } from '@/components/admin/BlogManager';
 import { UserRolesManager } from '@/components/admin/UserRolesManager';
+import { YouTubeVideosManager } from '@/components/admin/YouTubeVideosManager';
 import { useBlogPosts } from '@/hooks/useBlogPosts';
 
 const Admin = () => {
   const navigate = useNavigate();
   const { user, isAdmin, isLoading: authLoading, signOut } = useAuth();
-  const [adminSection, setAdminSection] = useState<'reviews' | 'slideshow' | 'gallery' | 'submissions' | 'blog' | 'users'>('reviews');
+  const [adminSection, setAdminSection] = useState<'reviews' | 'slideshow' | 'gallery' | 'submissions' | 'blog' | 'users' | 'videos'>('reviews');
   const { posts: blogDrafts } = useBlogPosts('draft');
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'all'>('pending');
   const { reviews, isLoading, fetchReviews, approveReview, rejectReview, deleteReview } = useReviews(activeTab);
@@ -157,9 +159,25 @@ const Admin = () => {
             <Users className="w-4 h-4" />
             Users
           </Button>
+          <Button
+            variant={adminSection === 'videos' ? 'default' : 'outline'}
+            onClick={() => setAdminSection('videos')}
+            className="gap-2"
+          >
+            <Video className="w-4 h-4" />
+            Videos
+          </Button>
         </div>
 
-        {adminSection === 'users' ? (
+        {adminSection === 'videos' ? (
+          <>
+            <div className="mb-8">
+              <h2 className="font-heading text-2xl font-bold text-foreground">YouTube Videos</h2>
+              <p className="text-muted-foreground">Sync and manage videos from your YouTube channel.</p>
+            </div>
+            <YouTubeVideosManager />
+          </>
+        ) : adminSection === 'users' ? (
           <>
             <div className="mb-8">
               <h2 className="font-heading text-2xl font-bold text-foreground">User Management</h2>
