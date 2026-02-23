@@ -1,97 +1,26 @@
 
 
-## Auto-Import YouTube Videos
+## Video Modal Playback
 
-### Overview
-Replace the hardcoded video list with live data fetched from the YouTube Data API v3, cached in the database to avoid hitting API quotas on every page load.
+### What changes
+When a user clicks the play button on a video thumbnail, instead of replacing the thumbnail with an inline iframe, a centered modal (dialog) will open with a large embedded YouTube player. Closing the modal stops playback.
 
-### Prerequisites
-- A **YouTube Data API v3 key** is needed. The existing `GOOGLE_PLACES_API_KEY` may work if the YouTube Data API is enabled on the same Google Cloud project, but it's safer to add a dedicated secret. You'll need to provide a Google API key with YouTube Data API v3 enabled.
+### How it works
+- Replace the current inline `playingVideo` iframe behavior with a Dialog modal
+- Clicking a video's play button sets `playingVideo` to that video's `youtube_id`, which opens the Dialog
+- The Dialog contains a responsive 16:9 iframe with the YouTube embed (autoplay enabled)
+- Closing the Dialog (X button, overlay click, or Escape) sets `playingVideo` back to `null`, which stops the video
+- Thumbnails always show as thumbnails in the grid (never replaced by iframes)
 
-### Architecture
+### Technical details
 
-1. **New database table: `youtube_videos`** -- caches video data so the page loads instantly without calling YouTube every time
-   - `id` (uuid, PK)
-   - `youtube_id` (text, unique) -- the YouTube video ID
-   - `title` (text)
-   - `description` (text)
-   - `thumbnail_url` (text)
-   - `duration` (text) -- formatted like "1:23"
-   - `view_count` (text)
-   - `published_at` (timestamptz)
-   - `is_active` (boolean, default true) -- allows hiding specific videos
-   - `category` (text, nullable) -- optional admin-assigned category
-   - `created_at` / `updated_at` (timestamptz)
-   - RLS: anyone can SELECT active videos; admins can manage all
+**File: `src/pages/HowToVideos.tsx`**
+- Import `Dialog`, `DialogContent` from `@/components/ui/dialog`
+- Remove the inline iframe branch from the thumbnail area (lines 118-125) so thumbnails always render
+- The play button `onClick` stays the same: `setPlayingVideo(video.youtube_id)`
+- Add a `Dialog` at the bottom of the component, controlled by `open={!!playingVideo}` and `onOpenChange` to clear `playingVideo`
+- Inside `DialogContent`, render a responsive 16:9 iframe pointing to the selected video with `?autoplay=1`
+- Use `max-w-4xl` on `DialogContent` for a large player area
+- Find the selected video's title for the iframe `title` attribute
 
-2. **New edge function: `fetch-youtube-videos`** (admin-only)
-   - Calls YouTube Data API `search.list` for channel `UC8fcDyolqilmFXHt8pg377Q` to get all video IDs
-   - Then calls `videos.list` to get duration, view count, and other details
-   - Upserts results into `youtube_videos` table (updating view counts, etc.)
-   - Uses `YOUTUBE_API_KEY` secret (will prompt you to add it)
-   - Deduplicates by `youtube_id` unique constraint
-
-3. **Update `src/pages/HowToVideos.tsx`**
-   - Fetch videos from `youtube_videos` table instead of using the hardcoded array
-   - Keep the category filter UI (categories will come from the data)
-   - Show a loading spinner while fetching
-   - Fall back to the current hardcoded list if the table is empty (first-time safety net)
-
-4. **Add "Sync Videos" button to Admin dashboard**
-   - New admin section tab or button within an existing section
-   - Calls the `fetch-youtube-videos` edge function
-   - Shows success/error feedback
-   - Optionally allows toggling `is_active` and setting categories per video
-
-### Technical Details
-
-**Database migration:**
-```sql
-CREATE TABLE public.youtube_videos (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  youtube_id text UNIQUE NOT NULL,
-  title text NOT NULL,
-  description text,
-  thumbnail_url text,
-  duration text,
-  view_count text,
-  published_at timestamptz,
-  is_active boolean NOT NULL DEFAULT true,
-  category text,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now()
-);
-
-ALTER TABLE public.youtube_videos ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Anyone can view active videos"
-  ON public.youtube_videos FOR SELECT
-  USING (is_active = true);
-
-CREATE POLICY "Admins can manage videos"
-  ON public.youtube_videos FOR ALL
-  USING (has_role(auth.uid(), 'admin'::app_role))
-  WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-```
-
-**Edge function (`fetch-youtube-videos/index.ts`):**
-- Authenticates admin user via JWT
-- Fetches channel videos using YouTube Data API v3 `search.list` (type=video, channelId, maxResults=50, order=date)
-- Fetches video details (duration, viewCount) via `videos.list` with `contentDetails,statistics` parts
-- Parses ISO 8601 duration (PT1M23S) into human-readable format (1:23)
-- Upserts all results into `youtube_videos` with `onConflict: 'youtube_id'`
-
-**Frontend changes:**
-- Query `youtube_videos` table ordered by `published_at DESC`
-- Remove hardcoded `videos` array
-- Derive category filter options dynamically from the data
-- Add loading state with spinner
-
-### Files Changed
-- New migration SQL (create `youtube_videos` table + RLS)
-- New `supabase/functions/fetch-youtube-videos/index.ts`
-- Update `supabase/config.toml` (add `verify_jwt = false` for new function)
-- Update `src/pages/HowToVideos.tsx` (fetch from DB)
-- Update `src/pages/Admin.tsx` (add Sync Videos button)
-- New secret: `YOUTUBE_API_KEY`
-
+Only one file needs to change: `src/pages/HowToVideos.tsx`.
