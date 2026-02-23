@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.check-spelling]
 verify_jwt = false
+
+[functions.ping-blog-post]
+verify_jwt = false

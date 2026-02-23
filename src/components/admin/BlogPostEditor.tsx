@@ -60,9 +60,21 @@ export const BlogPostEditor = ({ post, onUpdate, onDelete, onBack }: BlogPostEdi
     setIsSaving(false);
   };
 
+  const pingSearchEngines = async (slug: string) => {
+    try {
+      await supabase.functions.invoke('ping-blog-post', { body: { slug } });
+      console.log('Search engine ping sent for:', slug);
+    } catch (e) {
+      console.error('Ping failed (non-blocking):', e);
+    }
+  };
+
   const handleApprove = async () => {
     setIsSaving(true);
     await onUpdate(post.id, { title, meta_description: metaDescription, content, faqs, featured_image_url: featuredImageUrl, status: 'published' });
+    // Ping search engines after publishing (fire-and-forget)
+    const slug = post.slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    pingSearchEngines(slug);
     setIsSaving(false);
     onBack();
   };
