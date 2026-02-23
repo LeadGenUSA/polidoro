@@ -151,10 +151,10 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Insert new reviews using service role client (bypasses RLS)
+    // Upsert new reviews, silently skipping duplicates (bypasses RLS)
     const { error: insertError } = await supabaseAdmin
       .from('reviews')
-      .insert(newReviews);
+      .upsert(newReviews, { onConflict: 'google_review_id', ignoreDuplicates: true });
 
     if (insertError) {
       console.error('Error inserting reviews:', insertError);
