@@ -1,31 +1,97 @@
 
-## Clean Up Duplicate Reviews
 
-### What happened
-The Google Places API changed its timestamp format between imports (Unix epoch like `1671554996` vs ISO format like `2022-12-20T16:49:56.365586Z`). This caused different `google_review_id` values for the same review, bypassing the dedup logic.
+## Auto-Import YouTube Videos
 
-### Fix (2 parts)
+### Overview
+Replace the hardcoded video list with live data fetched from the YouTube Data API v3, cached in the database to avoid hitting API quotas on every page load.
 
-**1. Delete 5 duplicate rows from the database**
+### Prerequisites
+- A **YouTube Data API v3 key** is needed. The existing `GOOGLE_PLACES_API_KEY` may work if the YouTube Data API is enabled on the same Google Cloud project, but it's safer to add a dedicated secret. You'll need to provide a Google API key with YouTube Data API v3 enabled.
 
-Remove the newer copies (created 2026-02-17) for these authors:
-- Branko Yurisak
-- Byron F. Morales
-- Edd Hazell
-- Krissy K
-- Mike B
+### Architecture
 
-IDs to delete:
-- `c92ecf08-4de4-4ebe-bd11-5dc44b3a1d0e`
-- `a21e7b09-9c13-4c44-913c-158094460cfa`
-- `3f5eece3-eed4-4fe9-9551-e29b2b835509`
-- `de71a424-a188-49e4-b788-70da1cb5935b`
-- `6aa57c1b-7a53-4dab-90d1-6bf02a1211c9`
+1. **New database table: `youtube_videos`** -- caches video data so the page loads instantly without calling YouTube every time
+   - `id` (uuid, PK)
+   - `youtube_id` (text, unique) -- the YouTube video ID
+   - `title` (text)
+   - `description` (text)
+   - `thumbnail_url` (text)
+   - `duration` (text) -- formatted like "1:23"
+   - `view_count` (text)
+   - `published_at` (timestamptz)
+   - `is_active` (boolean, default true) -- allows hiding specific videos
+   - `category` (text, nullable) -- optional admin-assigned category
+   - `created_at` / `updated_at` (timestamptz)
+   - RLS: anyone can SELECT active videos; admins can manage all
 
-**2. Update the Edge Function to normalize the `google_review_id`**
+2. **New edge function: `fetch-youtube-videos`** (admin-only)
+   - Calls YouTube Data API `search.list` for channel `UC8fcDyolqilmFXHt8pg377Q` to get all video IDs
+   - Then calls `videos.list` to get duration, view count, and other details
+   - Upserts results into `youtube_videos` table (updating view counts, etc.)
+   - Uses `YOUTUBE_API_KEY` secret (will prompt you to add it)
+   - Deduplicates by `youtube_id` unique constraint
 
-The root cause is that the `google_review_id` is built from `authorName_publishTime`, but the `publishTime` format changed between API versions. The fix is to normalize the ID by parsing the publish time to a consistent format (Unix timestamp) before creating the composite key, so future imports always match existing records regardless of API format changes.
+3. **Update `src/pages/HowToVideos.tsx`**
+   - Fetch videos from `youtube_videos` table instead of using the hardcoded array
+   - Keep the category filter UI (categories will come from the data)
+   - Show a loading spinner while fetching
+   - Fall back to the current hardcoded list if the table is empty (first-time safety net)
 
-### Files changed
-- `supabase/functions/fetch-google-reviews/index.ts` (normalize google_review_id)
-- Database: delete 5 duplicate rows
+4. **Add "Sync Videos" button to Admin dashboard**
+   - New admin section tab or button within an existing section
+   - Calls the `fetch-youtube-videos` edge function
+   - Shows success/error feedback
+   - Optionally allows toggling `is_active` and setting categories per video
+
+### Technical Details
+
+**Database migration:**
+```sql
+CREATE TABLE public.youtube_videos (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  youtube_id text UNIQUE NOT NULL,
+  title text NOT NULL,
+  description text,
+  thumbnail_url text,
+  duration text,
+  view_count text,
+  published_at timestamptz,
+  is_active boolean NOT NULL DEFAULT true,
+  category text,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.youtube_videos ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view active videos"
+  ON public.youtube_videos FOR SELECT
+  USING (is_active = true);
+
+CREATE POLICY "Admins can manage videos"
+  ON public.youtube_videos FOR ALL
+  USING (has_role(auth.uid(), 'admin'::app_role))
+  WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
+```
+
+**Edge function (`fetch-youtube-videos/index.ts`):**
+- Authenticates admin user via JWT
+- Fetches channel videos using YouTube Data API v3 `search.list` (type=video, channelId, maxResults=50, order=date)
+- Fetches video details (duration, viewCount) via `videos.list` with `contentDetails,statistics` parts
+- Parses ISO 8601 duration (PT1M23S) into human-readable format (1:23)
+- Upserts all results into `youtube_videos` with `onConflict: 'youtube_id'`
+
+**Frontend changes:**
+- Query `youtube_videos` table ordered by `published_at DESC`
+- Remove hardcoded `videos` array
+- Derive category filter options dynamically from the data
+- Add loading state with spinner
+
+### Files Changed
+- New migration SQL (create `youtube_videos` table + RLS)
+- New `supabase/functions/fetch-youtube-videos/index.ts`
+- Update `supabase/config.toml` (add `verify_jwt = false` for new function)
+- Update `src/pages/HowToVideos.tsx` (fetch from DB)
+- Update `src/pages/Admin.tsx` (add Sync Videos button)
+- New secret: `YOUTUBE_API_KEY`
+
