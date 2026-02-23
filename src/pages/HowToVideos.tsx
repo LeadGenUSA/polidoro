@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
 import { Play, Clock, Eye, Youtube, Filter, Loader2 } from 'lucide-react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useYouTubeVideos } from '@/hooks/useYouTubeVideos';
 
@@ -115,37 +116,25 @@ const HowToVideos = () => {
                   >
                     {/* Thumbnail */}
                     <div className="relative aspect-video overflow-hidden">
-                      {playingVideo === video.youtube_id ? (
-                        <iframe
-                          src={`https://www.youtube.com/embed/${video.youtube_id}?autoplay=1`}
-                          title={video.title}
-                          className="absolute inset-0 w-full h-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
+                        <img
+                          src={video.thumbnail_url || ''}
+                          alt={video.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                      ) : (
-                        <>
-                          <img
-                            src={video.thumbnail_url || ''}
-                            alt={video.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                          <div className="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          <button
-                            onClick={() => setPlayingVideo(video.youtube_id)}
-                            className="absolute inset-0 flex items-center justify-center"
-                          >
-                            <div className="w-16 h-16 rounded-full cta-gradient flex items-center justify-center shadow-glow transform group-hover:scale-110 transition-transform duration-300">
-                              <Play className="w-7 h-7 text-secondary-foreground ml-1" fill="currentColor" />
-                            </div>
-                          </button>
-                          {video.duration && (
-                            <div className="absolute bottom-3 right-3 px-2 py-1 bg-foreground/80 rounded text-xs font-medium text-background">
-                              {video.duration}
-                            </div>
-                          )}
-                        </>
-                      )}
+                        <div className="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <button
+                          onClick={() => setPlayingVideo(video.youtube_id)}
+                          className="absolute inset-0 flex items-center justify-center"
+                        >
+                          <div className="w-16 h-16 rounded-full cta-gradient flex items-center justify-center shadow-glow transform group-hover:scale-110 transition-transform duration-300">
+                            <Play className="w-7 h-7 text-secondary-foreground ml-1" fill="currentColor" />
+                          </div>
+                        </button>
+                        {video.duration && (
+                          <div className="absolute bottom-3 right-3 px-2 py-1 bg-foreground/80 rounded text-xs font-medium text-background">
+                            {video.duration}
+                          </div>
+                        )}
                     </div>
 
                     {/* Content */}
@@ -197,6 +186,23 @@ const HowToVideos = () => {
           )}
         </div>
       </section>
+
+      {/* Video Modal */}
+      <Dialog open={!!playingVideo} onOpenChange={(open) => { if (!open) setPlayingVideo(null); }}>
+        <DialogContent className="max-w-4xl p-0 bg-black border-none overflow-hidden">
+          <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+            {playingVideo && (
+              <iframe
+                src={`https://www.youtube.com/embed/${playingVideo}?autoplay=1`}
+                title={videos.find(v => v.youtube_id === playingVideo)?.title || 'Video'}
+                className="absolute inset-0 w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
