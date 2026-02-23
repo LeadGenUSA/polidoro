@@ -1,40 +1,31 @@
 
+## Clean Up Duplicate Reviews
 
-## Fix Duplicate Google Reviews on Import
+### What happened
+The Google Places API changed its timestamp format between imports (Unix epoch like `1671554996` vs ISO format like `2022-12-20T16:49:56.365586Z`). This caused different `google_review_id` values for the same review, bypassing the dedup logic.
 
-### Problem
-When importing Google reviews, duplicates appear because:
-1. There is no unique constraint on the `google_review_id` column, so the database allows duplicate entries even with the same ID.
-2. The dedup check relies on an in-memory Set comparison that can fail if timestamps differ slightly between API calls.
+### Fix (2 parts)
 
-### Fix (2 changes)
+**1. Delete 5 duplicate rows from the database**
 
-**1. Database migration: Add a unique partial index on `google_review_id`**
+Remove the newer copies (created 2026-02-17) for these authors:
+- Branko Yurisak
+- Byron F. Morales
+- Edd Hazell
+- Krissy K
+- Mike B
 
-```sql
-CREATE UNIQUE INDEX IF NOT EXISTS reviews_google_review_id_unique
-ON public.reviews (google_review_id)
-WHERE google_review_id IS NOT NULL;
-```
+IDs to delete:
+- `c92ecf08-4de4-4ebe-bd11-5dc44b3a1d0e`
+- `a21e7b09-9c13-4c44-913c-158094460cfa`
+- `3f5eece3-eed4-4fe9-9551-e29b2b835509`
+- `de71a424-a188-49e4-b788-70da1cb5935b`
+- `6aa57c1b-7a53-4dab-90d1-6bf02a1211c9`
 
-This prevents duplicate `google_review_id` values at the database level while allowing multiple NULL values (for website/manual reviews that don't have one).
+**2. Update the Edge Function to normalize the `google_review_id`**
 
-**2. Update `supabase/functions/fetch-google-reviews/index.ts`**
+The root cause is that the `google_review_id` is built from `authorName_publishTime`, but the `publishTime` format changed between API versions. The fix is to normalize the ID by parsing the publish time to a consistent format (Unix timestamp) before creating the composite key, so future imports always match existing records regardless of API format changes.
 
-Change the insert call to use upsert with `ignoreDuplicates: true` so that even if the in-memory filter misses a duplicate, the database silently skips it instead of creating a second row:
-
-```typescript
-const { error: insertError } = await supabaseAdmin
-  .from('reviews')
-  .upsert(newReviews, { onConflict: 'google_review_id', ignoreDuplicates: true });
-```
-
-### What This Achieves
-- The unique index is the real safety net -- duplicates become impossible at the database level.
-- The upsert with `ignoreDuplicates` prevents insert errors when a duplicate is encountered.
-- Existing duplicate rows in the database will need to be cleaned up manually (the migration only prevents future duplicates; if there are current dupes, I can delete them as a separate step).
-
-### Files Changed
-- New migration SQL file (unique index)
-- `supabase/functions/fetch-google-reviews/index.ts` (upsert instead of insert)
-
+### Files changed
+- `supabase/functions/fetch-google-reviews/index.ts` (normalize google_review_id)
+- Database: delete 5 duplicate rows
