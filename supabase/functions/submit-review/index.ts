@@ -183,7 +183,7 @@ Deno.serve(async (req) => {
         title: body.title?.trim() || null,
         location: body.location?.trim() || null,
         rating: body.rating,
-        source: 'manual',
+        source: isAdminSubmission ? 'manual' : 'website',
         status: isAdminSubmission ? 'approved' : 'pending',
         approved_at: isAdminSubmission ? new Date().toISOString() : null,
         review_date: new Date().toISOString(),

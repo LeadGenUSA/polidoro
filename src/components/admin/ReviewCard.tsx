@@ -38,6 +38,7 @@ const sourceLabels = {
   google: 'Google',
   manual: 'Manual',
   imported: 'Imported',
+  website: 'Website Review',
 };
 
 const statusColors = {
