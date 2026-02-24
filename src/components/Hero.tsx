@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Shield, Clock, Award, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, Shield, Clock, Award, ChevronLeft, ChevronRight, DollarSign } from 'lucide-react';
 import navienNSS from '@/assets/navien-nss-boilers.png';
 import { Link } from 'react-router-dom';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
@@ -12,7 +12,7 @@ import nycSkyline from '@/assets/nyc-skyline.png';
 import heroVideo from '@/assets/big-city-plumbing-and-heating.mp4';
 
 import couponBadge from '@/assets/coupons-badge.png';
-import regionsLogo from '@/assets/financing/regions-logo.png';
+
 
 interface SlideItem {
   type: 'video' | 'image';
@@ -273,8 +273,9 @@ const Hero = () => {
               <Link to="/tenpercent-coupon">
                 <img src={couponBadge} alt="Click here for coupons" className="h-20 w-auto animate-float animation-delay-200 hover:scale-105 transition-transform drop-shadow-lg" />
               </Link>
-              <Link to="/financing" className="bg-card p-3 rounded-2xl shadow-large animate-float animation-delay-400 hover:scale-105 transition-transform inline-flex items-center gap-3">
-                <img src={regionsLogo} alt="Regions Home Improvement Financing" className="h-10 w-auto object-contain" />
+              <Link to="/financing" className="bg-card px-4 py-3 rounded-2xl shadow-large animate-float animation-delay-400 hover:scale-105 transition-transform inline-flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-secondary flex-shrink-0" />
+                <span className="text-sm font-semibold text-foreground whitespace-nowrap">Home Improvement Financing Available</span>
               </Link>
             </div>
           </div>
