@@ -1,26 +1,33 @@
+## Work Order Form: Require Photos and Allow Videos
 
+### Changes Overview
 
-## Video Modal Playback
+Three modifications to ensure work orders require at least one photo/video, accept MP4 video uploads, and display a warning message.
 
-### What changes
-When a user clicks the play button on a video thumbnail, instead of replacing the thumbnail with an inline iframe, a centered modal (dialog) will open with a large embedded YouTube player. Closing the modal stops playback.
+### 1. Add red bold warning text below "Photos" label
 
-### How it works
-- Replace the current inline `playingVideo` iframe behavior with a Dialog modal
-- Clicking a video's play button sets `playingVideo` to that video's `youtube_id`, which opens the Dialog
-- The Dialog contains a responsive 16:9 iframe with the YouTube embed (autoplay enabled)
-- Closing the Dialog (X button, overlay click, or Escape) sets `playingVideo` back to `null`, which stops the video
-- Thumbnails always show as thumbnails in the grid (never replaced by iframes)
+In the PhotoUpload component, add a red bold message immediately after the "Photos" label:  
+**"Work orders will not upload without a picture or video attached."**
 
-### Technical details
+### 2. Accept MP4 video files in the upload
 
-**File: `src/pages/HowToVideos.tsx`**
-- Import `Dialog`, `DialogContent` from `@/components/ui/dialog`
-- Remove the inline iframe branch from the thumbnail area (lines 118-125) so thumbnails always render
-- The play button `onClick` stays the same: `setPlayingVideo(video.youtube_id)`
-- Add a `Dialog` at the bottom of the component, controlled by `open={!!playingVideo}` and `onOpenChange` to clear `playingVideo`
-- Inside `DialogContent`, render a responsive 16:9 iframe pointing to the selected video with `?autoplay=1`
-- Use `max-w-4xl` on `DialogContent` for a large player area
-- Find the selected video's title for the iframe `title` attribute
+Update the file input `accept` attribute from `image/*` to `image/*,video/mp4` and adjust the file type validation to also allow `video/mp4` files.
 
-Only one file needs to change: `src/pages/HowToVideos.tsx`.
+### 3. Block form submission without at least one photo/video
+
+Add a validation check in the `onSubmit` handler in `WorkOrderForm.tsx` that shows an error toast and prevents submission if `photos.length === 0`.
+
+---
+
+### Technical Details
+
+**File: `src/components/work-order/PhotoUpload.tsx**`
+
+- After the `<Label>Photos</Label>` line, add: `<p className="text-destructive font-bold text-sm">Work orders will not upload without a picture or video attached.</p>`
+- Change `accept="image/*"` to `accept="image/*,video/mp4"`
+- Update the file type validation check from `!file.type.startsWith('image/')` to `!file.type.startsWith('image/') && file.type !== 'video/mp4'`
+- Update the helper text to mention MP4 video support
+
+**File: `src/pages/WorkOrderForm.tsx**`
+
+- In the `onSubmit` function, before setting `isSubmitting`, add a check: if `photos.length === 0`, show a destructive toast saying at least one photo is required and return early
