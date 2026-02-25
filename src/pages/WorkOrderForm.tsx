@@ -73,6 +73,15 @@ const WorkOrderForm = () => {
   const termsAccepted = watch('termsAccepted');
 
   const onSubmit = async (data: WorkOrderFormData) => {
+    if (photos.length === 0) {
+      toast({
+        title: 'Photos required',
+        description: 'Please attach at least one photo or video before submitting.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {

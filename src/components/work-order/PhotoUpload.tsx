@@ -38,7 +38,7 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
 
       for (const file of filesToUpload) {
         // Validate file type
-        if (!file.type.startsWith('image/')) {
+        if (!file.type.startsWith('image/') && file.type !== 'video/mp4') {
           toast({
             title: 'Invalid file type',
             description: `${file.name} is not an image file.`,
@@ -110,6 +110,7 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
   return (
     <div className="space-y-3">
       <Label>Photos</Label>
+      <p className="text-destructive font-bold text-sm">Work orders will not upload without a picture or video attached.</p>
       
       {/* Photo grid */}
       {photos.length > 0 && (
@@ -139,7 +140,7 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/*,video/mp4"
             multiple
             onChange={handleFileSelect}
             className="hidden"
@@ -165,7 +166,7 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
             )}
           </Button>
           <p className="text-xs text-muted-foreground mt-2">
-            Upload up to {maxPhotos} photos. Max 5MB each. Supported formats: JPG, PNG, WEBP.
+            Upload up to {maxPhotos} photos or videos. Max 5MB each. Supported formats: JPG, PNG, WEBP, MP4.
           </p>
         </div>
       )}
