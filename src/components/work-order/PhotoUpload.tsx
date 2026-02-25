@@ -47,11 +47,13 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
           continue;
         }
 
-        // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
+        // Validate file size (max 5MB for images, 20MB for videos)
+        const maxSize = file.type === 'video/mp4' ? 20 * 1024 * 1024 : 5 * 1024 * 1024;
+        const maxLabel = file.type === 'video/mp4' ? '20MB' : '5MB';
+        if (file.size > maxSize) {
           toast({
             title: 'File too large',
-            description: `${file.name} exceeds 5MB limit.`,
+            description: `${file.name} exceeds ${maxLabel} limit.`,
             variant: 'destructive',
           });
           continue;
@@ -166,7 +168,7 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
             )}
           </Button>
           <p className="text-xs text-muted-foreground mt-2">
-            Upload up to {maxPhotos} photos or videos. Max 5MB each. Supported formats: JPG, PNG, WEBP, MP4.
+            Upload up to {maxPhotos} photos or videos. Max 5MB per image, 20MB per video. Supported formats: JPG, PNG, WEBP, MP4.
           </p>
         </div>
       )}
