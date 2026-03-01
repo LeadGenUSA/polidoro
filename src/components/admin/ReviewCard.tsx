@@ -36,7 +36,7 @@ interface ReviewCardProps {
 
 const sourceLabels = {
   google: 'Google',
-  manual: 'Manual',
+  manual: 'By Admin',
   imported: 'Imported',
   website: 'Website Review',
 };
