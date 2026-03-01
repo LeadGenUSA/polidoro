@@ -214,7 +214,7 @@ const TestimonialsPage = () => {
                                   <span className="text-muted-foreground">Google Review</span>
                                 </Badge>
                               )}
-                              {testimonial.source === 'manual' && (
+                              {(testimonial.source === 'manual' || testimonial.source === 'website') && (
                                 <Badge variant="outline" className="flex items-center gap-1 text-xs bg-card border-border">
                                   <Globe className="w-3 h-3 text-primary" />
                                   <span className="text-muted-foreground">Website Review</span>
