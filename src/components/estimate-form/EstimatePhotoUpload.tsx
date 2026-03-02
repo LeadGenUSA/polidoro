@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
 import { X, Loader2, ImagePlus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { uploadFileWithConversion, isHeicFile } from '@/lib/upload-helpers';
 
 interface EstimatePhotoUploadProps {
   photos: string[];
@@ -38,7 +38,7 @@ const EstimatePhotoUpload = ({ photos, onPhotosChange, maxPhotos = 10 }: Estimat
 
       for (const file of filesToUpload) {
         // Validate file type
-        if (!file.type.startsWith('image/')) {
+        if (!file.type.startsWith('image/') && !isHeicFile(file)) {
           toast({
             title: 'Invalid file type',
             description: `${file.name} is not an image file.`,
@@ -57,14 +57,11 @@ const EstimatePhotoUpload = ({ photos, onPhotosChange, maxPhotos = 10 }: Estimat
           continue;
         }
 
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}-${file.name}`;
-        
-        const { data, error } = await supabase.storage
-          .from('estimate-photos')
-          .upload(fileName, file);
-
-        if (error) {
-          console.error('Upload error:', error);
+        try {
+          const publicUrl = await uploadFileWithConversion(file, 'estimate-photos');
+          uploadedUrls.push(publicUrl);
+        } catch (uploadErr: any) {
+          console.error('Upload error:', uploadErr);
           toast({
             title: 'Upload failed',
             description: `Failed to upload ${file.name}.`,
@@ -72,12 +69,6 @@ const EstimatePhotoUpload = ({ photos, onPhotosChange, maxPhotos = 10 }: Estimat
           });
           continue;
         }
-
-        const { data: urlData } = supabase.storage
-          .from('estimate-photos')
-          .getPublicUrl(data.path);
-
-        uploadedUrls.push(urlData.publicUrl);
       }
 
       if (uploadedUrls.length > 0) {
@@ -139,7 +130,7 @@ const EstimatePhotoUpload = ({ photos, onPhotosChange, maxPhotos = 10 }: Estimat
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/*,.heic,.heif"
             multiple
             onChange={handleFileSelect}
             className="hidden"
@@ -165,7 +156,7 @@ const EstimatePhotoUpload = ({ photos, onPhotosChange, maxPhotos = 10 }: Estimat
             )}
           </Button>
           <p className="text-xs text-muted-foreground mt-2">
-            Upload up to {maxPhotos} photos. Max 5MB each. Supported formats: JPG, PNG, WEBP.
+            Upload up to {maxPhotos} photos. Max 5MB each. Supported formats: JPG, PNG, WEBP, HEIC.
           </p>
         </div>
       )}
