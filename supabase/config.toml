@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.ping-blog-post]
 verify_jwt = false
+
+[functions.convert-image]
+verify_jwt = false

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { uploadFileWithConversion, isHeicFile } from '@/lib/upload-helpers';
 import heroImage from '@/assets/hero-plumbing.jpg';
 import heroVideo from '@/assets/big-city-plumbing-and-heating.mp4';
 
@@ -108,21 +109,12 @@ export const useSlideshow = () => {
   }, [fetchItems]);
 
   const uploadFile = async (file: File): Promise<string | null> => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${crypto.randomUUID()}.${fileExt}`;
-    const filePath = fileName;
-
-    const { error: uploadError } = await supabase.storage
-      .from('slideshow')
-      .upload(filePath, file);
-
-    if (uploadError) {
-      console.error('Upload error:', uploadError);
+    try {
+      return await uploadFileWithConversion(file, 'slideshow');
+    } catch (error) {
+      console.error('Upload error:', error);
       return null;
     }
-
-    const { data } = supabase.storage.from('slideshow').getPublicUrl(filePath);
-    return data.publicUrl;
   };
 
   const addItem = async (file: File, altText?: string, durationSeconds?: number, overlayTitle?: string, overlayText?: string, linkUrl?: string) => {

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { uploadFileWithConversion } from '@/lib/upload-helpers';
 
 export interface GalleryItem {
   id: string;
@@ -46,21 +47,7 @@ export const useGallery = () => {
 
   const uploadImage = async (file: File): Promise<string | null> => {
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${crypto.randomUUID()}.${fileExt}`;
-      const filePath = `${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('gallery')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: urlData } = supabase.storage
-        .from('gallery')
-        .getPublicUrl(filePath);
-
-      return urlData.publicUrl;
+      return await uploadFileWithConversion(file, 'gallery');
     } catch (error: any) {
       console.error('Error uploading image:', error);
       toast({

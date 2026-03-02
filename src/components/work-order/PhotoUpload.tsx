@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
-import { Camera, X, Loader2, ImagePlus } from 'lucide-react';
+import { X, Loader2, ImagePlus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { uploadFileWithConversion, isHeicFile } from '@/lib/upload-helpers';
 
 interface PhotoUploadProps {
   photos: string[];
@@ -38,7 +38,7 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
 
       for (const file of filesToUpload) {
         // Validate file type
-        if (!file.type.startsWith('image/') && file.type !== 'video/mp4') {
+        if (!file.type.startsWith('image/') && file.type !== 'video/mp4' && !isHeicFile(file)) {
           toast({
             title: 'Invalid file type',
             description: `${file.name} is not an image file.`,
@@ -59,14 +59,11 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
           continue;
         }
 
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}-${file.name}`;
-        
-        const { data, error } = await supabase.storage
-          .from('work-order-photos')
-          .upload(fileName, file);
-
-        if (error) {
-          console.error('Upload error:', error);
+        try {
+          const publicUrl = await uploadFileWithConversion(file, 'work-order-photos');
+          uploadedUrls.push(publicUrl);
+        } catch (uploadErr: any) {
+          console.error('Upload error:', uploadErr);
           toast({
             title: 'Upload failed',
             description: `Failed to upload ${file.name}.`,
@@ -74,12 +71,6 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
           });
           continue;
         }
-
-        const { data: urlData } = supabase.storage
-          .from('work-order-photos')
-          .getPublicUrl(data.path);
-
-        uploadedUrls.push(urlData.publicUrl);
       }
 
       if (uploadedUrls.length > 0) {
@@ -142,7 +133,7 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*,video/mp4"
+            accept="image/*,video/mp4,.heic,.heif"
             multiple
             onChange={handleFileSelect}
             className="hidden"
@@ -168,7 +159,7 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
             )}
           </Button>
           <p className="text-xs text-muted-foreground mt-2">
-            Upload up to {maxPhotos} photos or videos. Max 5MB per image, 20MB per video. Supported formats: JPG, PNG, WEBP, MP4.
+            Upload up to {maxPhotos} photos or videos. Max 5MB per image, 20MB per video. Supported formats: JPG, PNG, WEBP, HEIC, MP4.
           </p>
         </div>
       )}

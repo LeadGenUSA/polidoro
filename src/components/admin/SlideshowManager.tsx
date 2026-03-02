@@ -142,7 +142,7 @@ export const SlideshowManager = () => {
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*,video/*"
+            accept="image/*,video/*,.heic,.heif"
             onChange={handleFileSelect}
             className="hidden"
             id="slideshow-upload"

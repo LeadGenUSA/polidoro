@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, CheckCircle, XCircle, Trash2, Save, Loader2, ImagePlus, X } from 'lucide-react';
+import { uploadFileWithConversion, isHeicFile } from '@/lib/upload-helpers';
 
 interface BlogPostEditorProps {
   post: BlogPost;
@@ -29,7 +30,7 @@ export const BlogPostEditor = ({ post, onUpdate, onDelete, onBack }: BlogPostEdi
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
+    if (!file.type.startsWith('image/') && !isHeicFile(file)) {
       toast({ title: 'Invalid file type', description: 'Please select an image file.', variant: 'destructive' });
       return;
     }
@@ -40,11 +41,8 @@ export const BlogPostEditor = ({ post, onUpdate, onDelete, onBack }: BlogPostEdi
 
     setIsUploading(true);
     try {
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}-${file.name}`;
-      const { data, error } = await supabase.storage.from('blog-images').upload(fileName, file);
-      if (error) throw error;
-      const { data: urlData } = supabase.storage.from('blog-images').getPublicUrl(data.path);
-      setFeaturedImageUrl(urlData.publicUrl);
+      const publicUrl = await uploadFileWithConversion(file, 'blog-images');
+      setFeaturedImageUrl(publicUrl);
       toast({ title: 'Image uploaded successfully' });
     } catch {
       toast({ title: 'Upload failed', variant: 'destructive' });
@@ -109,7 +107,7 @@ export const BlogPostEditor = ({ post, onUpdate, onDelete, onBack }: BlogPostEdi
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept="image/*,.heic,.heif"
         onChange={handleImageUpload}
         className="hidden"
       />
