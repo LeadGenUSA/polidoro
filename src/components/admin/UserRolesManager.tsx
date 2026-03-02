@@ -95,8 +95,13 @@ export function UserRolesManager() {
       toast({ title: 'Admin Revoked', description: 'Admin access has been removed.' });
       queryClient.invalidateQueries({ queryKey: ['user-roles'] });
     },
-    onError: (error: Error) => {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    onError: (error: any) => {
+      const msg = error?.message || '';
+      if (msg.includes('Cannot delete the last admin')) {
+        toast({ title: 'Action Blocked', description: 'Cannot remove the last admin. At least one admin must exist.', variant: 'destructive' });
+      } else {
+        toast({ title: 'Error', description: msg, variant: 'destructive' });
+      }
     },
   });
 
