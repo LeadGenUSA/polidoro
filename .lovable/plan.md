@@ -1,23 +1,21 @@
 
 
-## Update Review Source Labels
+## Prevent Self-Revocation and Add Confirmation Dialog
 
-### Summary
-Three changes to clarify review labeling across admin and public pages.
+### Changes
 
-### 1. Admin Dashboard (ReviewCard.tsx)
-Change the source label for `manual` from "Manual" to "By Admin", keeping `website` as "Website Review".
+**File: `src/components/admin/UserRolesManager.tsx`**
 
-### 2. Public Reviews Page (TestimonialsPage.tsx)
-Add a badge for `website` source reviews so they also display "Website Review" -- currently only `manual` source shows the badge. Both `manual` and `website` will show the Globe icon with "Website Review" text on the public page.
-
----
+1. Import `useAuth` hook to get the current user's ID.
+2. Import `AlertDialog` components from the UI library.
+3. Add state to track which role ID is pending deletion (for the confirmation dialog).
+4. In the admin list, hide the delete button (or disable it) when the role's `user_id` matches the current logged-in user, preventing self-revocation.
+5. For other admins, clicking the trash icon opens a confirmation dialog instead of immediately revoking. The dialog will display the target admin's email and require explicit confirmation before proceeding.
 
 ### Technical Details
 
-**File: `src/components/admin/ReviewCard.tsx`**
-- Change `sourceLabels` map: `manual: 'Manual'` becomes `manual: 'By Admin'`
-
-**File: `src/pages/TestimonialsPage.tsx`**
-- Change the condition on line 217 from `testimonial.source === 'manual'` to `(testimonial.source === 'manual' || testimonial.source === 'website')` so both types show the "Website Review" badge on the public page
+- Use `useAuth()` to get `user.id` and compare against each `role.user_id`.
+- Use the existing `AlertDialog` component (`src/components/ui/alert-dialog.tsx`) for the confirmation prompt.
+- Store the selected role ID in local state (`roleToRevoke`). On confirm, call `revokeAdmin.mutate(roleToRevoke)` and clear the state.
+- The self-revocation button will be hidden entirely (not just disabled) to keep the UI clean.
 
