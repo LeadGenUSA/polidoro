@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Turnstile } from '@marsidev/react-turnstile';
 
 // Cloudflare Turnstile Site Key (public - safe to store in code)
@@ -12,10 +12,21 @@ interface TurnstileWidgetProps {
 const TurnstileWidget = ({ onVerify, onExpire }: TurnstileWidgetProps) => {
   const [hasError, setHasError] = useState(false);
 
+  // Patch window.turnstile.remove to prevent crash during unmount
+  useEffect(() => {
+    const patchTurnstile = () => {
+      if (window.turnstile && typeof window.turnstile.remove !== 'function') {
+        window.turnstile.remove = () => {};
+      }
+    };
+    patchTurnstile();
+    const interval = setInterval(patchTurnstile, 200);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleError = () => {
     console.warn('Turnstile widget error — bypassing in non-production environment');
     setHasError(true);
-    // Provide a bypass token so the submit button is enabled in preview/dev
     onVerify('TURNSTILE_BYPASS');
   };
 
