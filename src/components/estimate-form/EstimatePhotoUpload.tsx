@@ -13,6 +13,7 @@ interface EstimatePhotoUploadProps {
 
 const EstimatePhotoUpload = ({ photos, onPhotosChange, maxPhotos = 10 }: EstimatePhotoUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -57,6 +58,14 @@ const EstimatePhotoUpload = ({ photos, onPhotosChange, maxPhotos = 10 }: Estimat
           continue;
         }
 
+        const fileIndex = filesToUpload.indexOf(file) + 1;
+        const heic = isHeicFile(file);
+        setUploadStatus(
+          heic
+            ? `Converting HEIC to JPEG (${fileIndex}/${filesToUpload.length})...`
+            : `Uploading ${fileIndex}/${filesToUpload.length}...`
+        );
+
         try {
           const publicUrl = await uploadFileWithConversion(file, 'estimate-photos');
           uploadedUrls.push(publicUrl);
@@ -87,6 +96,7 @@ const EstimatePhotoUpload = ({ photos, onPhotosChange, maxPhotos = 10 }: Estimat
       });
     } finally {
       setIsUploading(false);
+      setUploadStatus('');
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -146,7 +156,7 @@ const EstimatePhotoUpload = ({ photos, onPhotosChange, maxPhotos = 10 }: Estimat
             {isUploading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Uploading...
+                {uploadStatus || 'Uploading...'}
               </>
             ) : (
               <>

@@ -23,6 +23,7 @@ export const BlogPostEditor = ({ post, onUpdate, onDelete, onBack }: BlogPostEdi
   const [featuredImageUrl, setFeaturedImageUrl] = useState(post.featured_image_url);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -40,6 +41,7 @@ export const BlogPostEditor = ({ post, onUpdate, onDelete, onBack }: BlogPostEdi
     }
 
     setIsUploading(true);
+    setIsConverting(isHeicFile(file));
     try {
       const publicUrl = await uploadFileWithConversion(file, 'blog-images');
       setFeaturedImageUrl(publicUrl);
@@ -48,6 +50,7 @@ export const BlogPostEditor = ({ post, onUpdate, onDelete, onBack }: BlogPostEdi
       toast({ title: 'Upload failed', variant: 'destructive' });
     } finally {
       setIsUploading(false);
+      setIsConverting(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
@@ -142,7 +145,7 @@ export const BlogPostEditor = ({ post, onUpdate, onDelete, onBack }: BlogPostEdi
             className="w-full h-32 border-dashed gap-2"
           >
             {isUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ImagePlus className="w-5 h-5" />}
-            {isUploading ? 'Uploading...' : 'Add Featured Image'}
+            {isUploading ? (isConverting ? 'Converting HEIC to JPEG...' : 'Uploading...') : 'Add Featured Image'}
           </Button>
         </div>
       )}

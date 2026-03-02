@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useGallery, GalleryItem } from '@/hooks/useGallery';
+import { isHeicFile } from '@/lib/upload-helpers';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -218,7 +219,7 @@ export const GalleryManager = () => {
                 {isUploading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Uploading...
+                    {selectedFile && isHeicFile(selectedFile) ? 'Converting HEIC to JPEG...' : 'Uploading...'}
                   </>
                 ) : (
                   'Add Photo'
