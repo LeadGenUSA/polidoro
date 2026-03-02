@@ -6,6 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, UserPlus, Trash2, Shield } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/useAuth';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface UserRole {
   id: string;
@@ -17,8 +22,10 @@ interface UserRole {
 
 export function UserRolesManager() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [email, setEmail] = useState('');
+  const [roleToRevoke, setRoleToRevoke] = useState<UserRole | null>(null);
 
   const { data: roles = [], isLoading } = useQuery({
     queryKey: ['user-roles'],
@@ -149,21 +156,51 @@ export function UserRolesManager() {
                     <Shield className="w-4 h-4 text-primary" />
                     <span className="text-sm font-medium">{role.email}</span>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => revokeAdmin.mutate(role.id)}
-                    disabled={revokeAdmin.isPending}
-                    className="text-destructive hover:text-destructive"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  {role.user_id !== user?.id && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setRoleToRevoke(role)}
+                      disabled={revokeAdmin.isPending}
+                      className="text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
+                  {role.user_id === user?.id && (
+                    <span className="text-xs text-muted-foreground italic">You</span>
+                  )}
                 </div>
               ))}
             </div>
           )}
         </CardContent>
       </Card>
+
+      <AlertDialog open={!!roleToRevoke} onOpenChange={(open) => !open && setRoleToRevoke(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Revoke Admin Access</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove admin access for <strong>{roleToRevoke?.email}</strong>? They will no longer be able to access the admin dashboard.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (roleToRevoke) {
+                  revokeAdmin.mutate(roleToRevoke.id);
+                  setRoleToRevoke(null);
+                }
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Revoke Access
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
