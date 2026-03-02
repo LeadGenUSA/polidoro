@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { isHeicFile } from '@/lib/upload-helpers';
 import { useSlideshow, SlideshowItem } from '@/hooks/useSlideshow';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,19 +35,21 @@ export const SlideshowManager = () => {
   const [overlayTitle, setOverlayTitle] = useState('');
   const [overlayText, setOverlayText] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
+  const [isConverting, setIsConverting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const isValidType = file.type.startsWith('image/') || file.type.startsWith('video/');
+    const isValidType = file.type.startsWith('image/') || file.type.startsWith('video/') || isHeicFile(file);
     if (!isValidType) {
       alert('Please select an image or video file');
       return;
     }
-
+    setIsConverting(isHeicFile(file));
     await addItem(file, altText, parseInt(duration) || 15, overlayTitle || undefined, overlayText || undefined, linkUrl || undefined);
+    setIsConverting(false);
     setAltText('');
     setDuration('15');
     setOverlayTitle('');
@@ -155,7 +158,7 @@ export const SlideshowManager = () => {
             {isUploading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Uploading...
+                {isConverting ? 'Converting HEIC to JPEG...' : 'Uploading...'}
               </>
             ) : (
               <>

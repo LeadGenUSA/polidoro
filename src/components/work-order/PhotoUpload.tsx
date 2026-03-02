@@ -13,6 +13,7 @@ interface PhotoUploadProps {
 
 const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -59,6 +60,14 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
           continue;
         }
 
+        const fileIndex = filesToUpload.indexOf(file) + 1;
+        const heic = isHeicFile(file);
+        setUploadStatus(
+          heic
+            ? `Converting HEIC to JPEG (${fileIndex}/${filesToUpload.length})...`
+            : `Uploading ${fileIndex}/${filesToUpload.length}...`
+        );
+
         try {
           const publicUrl = await uploadFileWithConversion(file, 'work-order-photos');
           uploadedUrls.push(publicUrl);
@@ -89,6 +98,7 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
       });
     } finally {
       setIsUploading(false);
+      setUploadStatus('');
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -149,7 +159,7 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
             {isUploading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Uploading...
+                {uploadStatus || 'Uploading...'}
               </>
             ) : (
               <>
