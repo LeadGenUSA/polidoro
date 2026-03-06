@@ -40,10 +40,21 @@ const Hero = () => {
   const [slides, setSlides] = useState<SlideItem[]>(defaultSlides);
   const autoplayRef = useRef<ReturnType<typeof Autoplay> | null>(null);
 
-  // Create autoplay plugin with dynamic delay based on current slide
+  // Track slides in a ref so the autoplay delay function always reads current slides
+  const slidesRef = useRef<SlideItem[]>(slides);
+  useEffect(() => {
+    slidesRef.current = slides;
+  }, [slides]);
+
+  // Create autoplay plugin with dynamic delay per slide
   const autoplayPlugin = useMemo(() => {
     const plugin = Autoplay({
-      delay: slides[0]?.duration_seconds ? slides[0].duration_seconds * 1000 : 15000,
+      delay: (_scrollSnaps, emblaApi) => {
+        return _scrollSnaps.map((_, index) => {
+          const slide = slidesRef.current[index];
+          return (slide?.duration_seconds || 15) * 1000;
+        });
+      },
       stopOnInteraction: false,
       stopOnMouseEnter: true
     });
@@ -82,23 +93,22 @@ const Hero = () => {
     fetchSlides();
   }, []);
 
-  // Update autoplay delay when slide changes
+  // Update carousel state on slide changes
   useEffect(() => {
-    if (!api || !autoplayRef.current) return;
-    const updateDelay = () => {
-      const currentSlide = slides[api.selectedScrollSnap()];
-      if (currentSlide && autoplayRef.current) {
-        // Reset autoplay with new delay
-        autoplayRef.current.reset();
-      }
+    if (!api) return;
+
+    const onSelect = () => {
+      setCurrent(api.selectedScrollSnap());
     };
+
     setCount(api.scrollSnapList().length);
     setCurrent(api.selectedScrollSnap());
-    api.on('select', () => {
-      setCurrent(api.selectedScrollSnap());
-      updateDelay();
-    });
-  }, [api, slides]);
+
+    api.on('select', onSelect);
+    return () => {
+      api.off('select', onSelect);
+    };
+  }, [api]);
   const scrollPrev = useCallback(() => {
     api?.scrollPrev();
   }, [api]);

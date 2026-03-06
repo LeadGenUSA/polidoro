@@ -1,16 +1,36 @@
 
 
-## Fix: Per-Slide Duration Not Respected in Autoplay
+## Enforce Minimum 1 Admin via Database Trigger
 
-### Problem
-The Embla `Autoplay` plugin is initialized once with a fixed `delay` (from the first slide's duration). When it advances, it always uses that same delay — it never reads the current slide's `duration_seconds`. So your 28-second video gets skipped after 15 seconds (or whatever the initial delay was).
+### Overview
+Add a database trigger on the `user_roles` table that prevents deleting the last remaining admin role. This provides server-side protection that cannot be bypassed, complementing the existing client-side self-revocation guard.
 
-### Solution
-Use the Autoplay plugin's `delay` option as a per-slide function by hooking into the carousel's `select` event to dynamically update the autoplay timer. Specifically:
+### Changes
 
-1. **In `Hero.tsx`**: After each slide transition (`api.on('select', ...)`), call `autoplayRef.current.stop()`, update the plugin's delay to match the current slide's `duration_seconds * 1000`, then call `autoplayRef.current.play()`. This resets the timer with the correct duration for each slide.
+**1. Database Migration: Create a validation trigger**
+- Create a function `prevent_last_admin_deletion()` that runs BEFORE DELETE on `user_roles`
+- The function counts remaining admin roles; if only 1 remains and it's the one being deleted, it raises an exception
+- This protects against all deletion paths: client UI, direct database access, or API calls
 
-2. The initial `Autoplay({ delay: ... })` will keep a sensible default (e.g. 15000ms) — the per-slide override happens on each transition.
+```text
+DELETE attempt on user_roles
+        |
+  [BEFORE DELETE trigger]
+        |
+  Count admin roles remaining
+        |
+  If this is the last one --> RAISE EXCEPTION
+  Otherwise              --> Allow deletion
+```
 
-This is a small change isolated to the `useEffect` that handles the `api.on('select')` event (~10 lines modified).
+**2. Update `UserRolesManager.tsx` client-side**
+- Catch the specific error message from the trigger in the `revokeAdmin` mutation's `onError` handler
+- Display a user-friendly toast: "Cannot remove the last admin. At least one admin must exist."
+
+### Technical Details
+
+- The trigger uses `SECURITY DEFINER` to bypass RLS when counting admin roles
+- The error message from Postgres will contain a identifiable string (e.g., "Cannot delete the last admin") that the client can detect
+- No changes to existing RLS policies are needed
+- The trigger only fires on DELETE, so granting new admin roles is unaffected
 
