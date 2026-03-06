@@ -85,19 +85,28 @@ const Hero = () => {
   // Update autoplay delay when slide changes
   useEffect(() => {
     if (!api || !autoplayRef.current) return;
-    const updateDelay = () => {
-      const currentSlide = slides[api.selectedScrollSnap()];
+
+    const onSelect = () => {
+      const idx = api.selectedScrollSnap();
+      setCurrent(idx);
+      const currentSlide = slides[idx];
       if (currentSlide && autoplayRef.current) {
-        // Reset autoplay with new delay
-        autoplayRef.current.reset();
+        const delay = (currentSlide.duration_seconds || 15) * 1000;
+        autoplayRef.current.stop();
+        // @ts-ignore - play accepts delay override
+        autoplayRef.current.play(delay);
       }
     };
+
     setCount(api.scrollSnapList().length);
     setCurrent(api.selectedScrollSnap());
-    api.on('select', () => {
-      setCurrent(api.selectedScrollSnap());
-      updateDelay();
-    });
+    // Also set initial slide delay
+    onSelect();
+
+    api.on('select', onSelect);
+    return () => {
+      api.off('select', onSelect);
+    };
   }, [api, slides]);
   const scrollPrev = useCallback(() => {
     api?.scrollPrev();
