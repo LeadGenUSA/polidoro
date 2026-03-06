@@ -40,10 +40,21 @@ const Hero = () => {
   const [slides, setSlides] = useState<SlideItem[]>(defaultSlides);
   const autoplayRef = useRef<ReturnType<typeof Autoplay> | null>(null);
 
-  // Create autoplay plugin with dynamic delay based on current slide
+  // Track slides in a ref so the autoplay delay function always reads current slides
+  const slidesRef = useRef<SlideItem[]>(slides);
+  useEffect(() => {
+    slidesRef.current = slides;
+  }, [slides]);
+
+  // Create autoplay plugin with dynamic delay per slide
   const autoplayPlugin = useMemo(() => {
     const plugin = Autoplay({
-      delay: slides[0]?.duration_seconds ? slides[0].duration_seconds * 1000 : 15000,
+      delay: (_scrollSnaps, emblaApi) => {
+        return _scrollSnaps.map((_, index) => {
+          const slide = slidesRef.current[index];
+          return (slide?.duration_seconds || 15) * 1000;
+        });
+      },
       stopOnInteraction: false,
       stopOnMouseEnter: true
     });
