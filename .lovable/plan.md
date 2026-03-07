@@ -1,38 +1,26 @@
 
 
-## Set Up Weekly Cron Job for Automatic Blog Generation
+## Update `public/sitemap.xml` with Published Blog Posts
 
-### What This Does
-A scheduled database job will automatically call the `check-blog-schedule` function once per week. That function checks if it's time to generate a post (based on your frequency setting), and if so, triggers `generate-blog-post` which pulls the next topic from your queue.
+### What Changes
+Update the static `public/sitemap.xml` to include all 8 currently published blog posts alongside the existing static pages.
 
-### Technical Steps
+### Blog Posts to Add
+Each as `https://www.bigcityplumbing.com/blog/:slug` with priority `0.6`, changefreq `monthly`, and `<lastmod>` from `published_at`:
 
-1. **Enable `pg_cron` and `pg_net` extensions** via a database migration
-2. **Create a weekly cron job** that calls the `check-blog-schedule` edge function every Monday at 9:00 AM UTC
-   - Uses `net.http_post` to invoke the function URL with the anon key
-   - The function itself checks the frequency setting, so even though the cron runs weekly, it will only generate a post when the interval has elapsed
+1. `how-to-prevent-frozen-pipes-in-long-island-homes` (2026-02-09)
+2. `authorized-navien-nss-dealer-installer-on-long-island` (2026-02-11)
+3. `signs-your-boiler-needs-replacement-before-a-new-york-winter` (2026-02-12)
+4. `emergency-heating-repair-cost-on-long-island` (2026-02-12)
+5. `certified-rpz-backflow-installer-tester-in-long-island` (2026-02-12)
+6. `regions-home-improvement-financing-a-complete-guide` (2026-02-25)
+7. `why-is-my-boiler-not-heating-evenly-in-my-nassau-county-home` (2026-02-25)
+8. `tankless-water-heater-installation-in-centereach-ny` (2026-03-07)
 
 ### Implementation
-A single SQL statement run via the database insert tool (not migration, since it contains project-specific URLs and keys):
+- **Single file edit**: Append 8 `<url>` entries to `public/sitemap.xml` before the closing `</urlset>` tag
+- No other file changes needed
 
-```sql
--- Enable extensions
-CREATE EXTENSION IF NOT EXISTS pg_cron WITH SCHEMA pg_catalog;
-CREATE EXTENSION IF NOT EXISTS pg_net WITH SCHEMA extensions;
-
--- Schedule: every Monday at 9 AM UTC
-SELECT cron.schedule(
-  'weekly-blog-check',
-  '0 9 * * 1',
-  $$
-  SELECT net.http_post(
-    url:='https://wjaulyvqzywcnkegnzoh.supabase.co/functions/v1/check-blog-schedule',
-    headers:='{"Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndqYXVseXZxenl3Y25rZWduem9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NTYzODUsImV4cCI6MjA4NTEzMjM4NX0.qlt8PJNz2KCp4d1-JyMP2eymvUy_hyBVpQDHfIZwfnI"}'::jsonb,
-    body:='{"time": "scheduled"}'::jsonb
-  ) AS request_id;
-  $$
-);
-```
-
-No code file changes needed — just a one-time database setup.
+### Going Forward
+Whenever you approve a new blog post, just ask me to update the sitemap and I'll add the new entry.
 
