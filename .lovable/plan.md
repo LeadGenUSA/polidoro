@@ -1,26 +1,36 @@
 
 
-## Update `public/sitemap.xml` with Published Blog Posts
+## Enforce Minimum 1 Admin via Database Trigger
 
-### What Changes
-Update the static `public/sitemap.xml` to include all 8 currently published blog posts alongside the existing static pages.
+### Overview
+Add a database trigger on the `user_roles` table that prevents deleting the last remaining admin role. This provides server-side protection that cannot be bypassed, complementing the existing client-side self-revocation guard.
 
-### Blog Posts to Add
-Each as `https://www.bigcityplumbing.com/blog/:slug` with priority `0.6`, changefreq `monthly`, and `<lastmod>` from `published_at`:
+### Changes
 
-1. `how-to-prevent-frozen-pipes-in-long-island-homes` (2026-02-09)
-2. `authorized-navien-nss-dealer-installer-on-long-island` (2026-02-11)
-3. `signs-your-boiler-needs-replacement-before-a-new-york-winter` (2026-02-12)
-4. `emergency-heating-repair-cost-on-long-island` (2026-02-12)
-5. `certified-rpz-backflow-installer-tester-in-long-island` (2026-02-12)
-6. `regions-home-improvement-financing-a-complete-guide` (2026-02-25)
-7. `why-is-my-boiler-not-heating-evenly-in-my-nassau-county-home` (2026-02-25)
-8. `tankless-water-heater-installation-in-centereach-ny` (2026-03-07)
+**1. Database Migration: Create a validation trigger**
+- Create a function `prevent_last_admin_deletion()` that runs BEFORE DELETE on `user_roles`
+- The function counts remaining admin roles; if only 1 remains and it's the one being deleted, it raises an exception
+- This protects against all deletion paths: client UI, direct database access, or API calls
 
-### Implementation
-- **Single file edit**: Append 8 `<url>` entries to `public/sitemap.xml` before the closing `</urlset>` tag
-- No other file changes needed
+```text
+DELETE attempt on user_roles
+        |
+  [BEFORE DELETE trigger]
+        |
+  Count admin roles remaining
+        |
+  If this is the last one --> RAISE EXCEPTION
+  Otherwise              --> Allow deletion
+```
 
-### Going Forward
-Whenever you approve a new blog post, just ask me to update the sitemap and I'll add the new entry.
+**2. Update `UserRolesManager.tsx` client-side**
+- Catch the specific error message from the trigger in the `revokeAdmin` mutation's `onError` handler
+- Display a user-friendly toast: "Cannot remove the last admin. At least one admin must exist."
+
+### Technical Details
+
+- The trigger uses `SECURITY DEFINER` to bypass RLS when counting admin roles
+- The error message from Postgres will contain a identifiable string (e.g., "Cannot delete the last admin") that the client can detect
+- No changes to existing RLS policies are needed
+- The trigger only fires on DELETE, so granting new admin roles is unaffected
 
