@@ -1,36 +1,40 @@
 
 
-## Enforce Minimum 1 Admin via Database Trigger
+## Add Topic Queue for Blog Scheduling
 
-### Overview
-Add a database trigger on the `user_roles` table that prevents deleting the last remaining admin role. This provides server-side protection that cannot be bypassed, complementing the existing client-side self-revocation guard.
+### Problem
+Currently, `blog_settings` only has a single `next_topic` text field. You can only set one topic at a time. You want to queue up 12 topics at once (for weekly generation over a quarter), then refill every quarter.
 
-### Changes
+### Solution
 
-**1. Database Migration: Create a validation trigger**
-- Create a function `prevent_last_admin_deletion()` that runs BEFORE DELETE on `user_roles`
-- The function counts remaining admin roles; if only 1 remains and it's the one being deleted, it raises an exception
-- This protects against all deletion paths: client UI, direct database access, or API calls
+**1. New `blog_topic_queue` table**
+- Columns: `id`, `topic` (text), `queue_order` (integer), `status` (pending/used), `created_at`, `used_at`
+- RLS: admin-only management, matching existing patterns
+- Each row = one scheduled topic, processed in order
 
-```text
-DELETE attempt on user_roles
-        |
-  [BEFORE DELETE trigger]
-        |
-  Count admin roles remaining
-        |
-  If this is the last one --> RAISE EXCEPTION
-  Otherwise              --> Allow deletion
-```
+**2. Update `generate-blog-post` edge function**
+- Instead of reading `blog_settings.next_topic`, query the first `pending` topic from `blog_topic_queue` ordered by `queue_order`
+- After using it, mark it as `used` with a timestamp
+- Fall back to random seasonal topic if the queue is empty
 
-**2. Update `UserRolesManager.tsx` client-side**
-- Catch the specific error message from the trigger in the `revokeAdmin` mutation's `onError` handler
-- Display a user-friendly toast: "Cannot remove the last admin. At least one admin must exist."
+**3. Update `BlogSettings.tsx` admin UI**
+- Replace the single "Next Topic" input with a **Topic Queue** section
+- Show a numbered list of pending topics with drag-to-reorder or simple up/down controls
+- Add an input to append new topics (one at a time or bulk-add with one per line via a textarea)
+- Show count: "5 of 12 topics remaining"
+- Allow removing individual topics from the queue
 
-### Technical Details
+**4. New `useBlogTopicQueue` hook**
+- CRUD operations for the `blog_topic_queue` table: fetch pending topics, add topics, remove topics, reorder
 
-- The trigger uses `SECURITY DEFINER` to bypass RLS when counting admin roles
-- The error message from Postgres will contain a identifiable string (e.g., "Cannot delete the last admin") that the client can detect
-- No changes to existing RLS policies are needed
-- The trigger only fires on DELETE, so granting new admin roles is unaffected
+### Changes Summary
+
+| Area | What changes |
+|------|-------------|
+| Database | New `blog_topic_queue` table with RLS |
+| Edge function | `generate-blog-post` reads from queue first |
+| Admin UI | Topic queue list with add/remove in `BlogSettings.tsx` |
+| Hook | New `useBlogTopicQueue.tsx` |
+
+The existing `next_topic` field on `blog_settings` can be deprecated (ignored) once the queue is in place. No other pages or public-facing behavior changes.
 
