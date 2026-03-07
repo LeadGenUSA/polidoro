@@ -80,6 +80,33 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_topic_queue: {
+        Row: {
+          created_at: string
+          id: string
+          queue_order: number
+          status: Database["public"]["Enums"]["topic_queue_status"]
+          topic: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          queue_order?: number
+          status?: Database["public"]["Enums"]["topic_queue_status"]
+          topic: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          queue_order?: number
+          status?: Database["public"]["Enums"]["topic_queue_status"]
+          topic?: string
+          used_at?: string | null
+        }
+        Relationships: []
+      }
       estimate_submissions: {
         Row: {
           baseboard: string | null
@@ -613,6 +640,7 @@ export type Database = {
       review_source: "google" | "manual" | "imported" | "website"
       review_status: "pending" | "approved" | "rejected"
       submission_status: "new" | "reviewed" | "archived"
+      topic_queue_status: "pending" | "used"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -746,6 +774,7 @@ export const Constants = {
       review_source: ["google", "manual", "imported", "website"],
       review_status: ["pending", "approved", "rejected"],
       submission_status: ["new", "reviewed", "archived"],
+      topic_queue_status: ["pending", "used"],
     },
   },
 } as const
