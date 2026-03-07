@@ -1,36 +1,38 @@
 
 
-## Enforce Minimum 1 Admin via Database Trigger
+## Set Up Weekly Cron Job for Automatic Blog Generation
 
-### Overview
-Add a database trigger on the `user_roles` table that prevents deleting the last remaining admin role. This provides server-side protection that cannot be bypassed, complementing the existing client-side self-revocation guard.
+### What This Does
+A scheduled database job will automatically call the `check-blog-schedule` function once per week. That function checks if it's time to generate a post (based on your frequency setting), and if so, triggers `generate-blog-post` which pulls the next topic from your queue.
 
-### Changes
+### Technical Steps
 
-**1. Database Migration: Create a validation trigger**
-- Create a function `prevent_last_admin_deletion()` that runs BEFORE DELETE on `user_roles`
-- The function counts remaining admin roles; if only 1 remains and it's the one being deleted, it raises an exception
-- This protects against all deletion paths: client UI, direct database access, or API calls
+1. **Enable `pg_cron` and `pg_net` extensions** via a database migration
+2. **Create a weekly cron job** that calls the `check-blog-schedule` edge function every Monday at 9:00 AM UTC
+   - Uses `net.http_post` to invoke the function URL with the anon key
+   - The function itself checks the frequency setting, so even though the cron runs weekly, it will only generate a post when the interval has elapsed
 
-```text
-DELETE attempt on user_roles
-        |
-  [BEFORE DELETE trigger]
-        |
-  Count admin roles remaining
-        |
-  If this is the last one --> RAISE EXCEPTION
-  Otherwise              --> Allow deletion
+### Implementation
+A single SQL statement run via the database insert tool (not migration, since it contains project-specific URLs and keys):
+
+```sql
+-- Enable extensions
+CREATE EXTENSION IF NOT EXISTS pg_cron WITH SCHEMA pg_catalog;
+CREATE EXTENSION IF NOT EXISTS pg_net WITH SCHEMA extensions;
+
+-- Schedule: every Monday at 9 AM UTC
+SELECT cron.schedule(
+  'weekly-blog-check',
+  '0 9 * * 1',
+  $$
+  SELECT net.http_post(
+    url:='https://wjaulyvqzywcnkegnzoh.supabase.co/functions/v1/check-blog-schedule',
+    headers:='{"Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndqYXVseXZxenl3Y25rZWduem9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NTYzODUsImV4cCI6MjA4NTEzMjM4NX0.qlt8PJNz2KCp4d1-JyMP2eymvUy_hyBVpQDHfIZwfnI"}'::jsonb,
+    body:='{"time": "scheduled"}'::jsonb
+  ) AS request_id;
+  $$
+);
 ```
 
-**2. Update `UserRolesManager.tsx` client-side**
-- Catch the specific error message from the trigger in the `revokeAdmin` mutation's `onError` handler
-- Display a user-friendly toast: "Cannot remove the last admin. At least one admin must exist."
-
-### Technical Details
-
-- The trigger uses `SECURITY DEFINER` to bypass RLS when counting admin roles
-- The error message from Postgres will contain a identifiable string (e.g., "Cannot delete the last admin") that the client can detect
-- No changes to existing RLS policies are needed
-- The trigger only fires on DELETE, so granting new admin roles is unaffected
+No code file changes needed — just a one-time database setup.
 
