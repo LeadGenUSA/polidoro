@@ -16,6 +16,7 @@ export interface SlideshowItem {
   overlay_title: string | null;
   overlay_text: string | null;
   link_url: string | null;
+  show_volume_controls: boolean;
   is_default_first: boolean;
   created_at: string;
   updated_at: string;
