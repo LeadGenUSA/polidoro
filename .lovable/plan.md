@@ -1,36 +1,35 @@
 
 
-## Enforce Minimum 1 Admin via Database Trigger
+## Dynamic Sitemap via Edge Function
 
 ### Overview
-Add a database trigger on the `user_roles` table that prevents deleting the last remaining admin role. This provides server-side protection that cannot be bypassed, complementing the existing client-side self-revocation guard.
+Create a `generate-sitemap` edge function that dynamically builds and serves `sitemap.xml` by querying published blog posts and merging with static pages. Submit this URL directly to Google Search Console. Keep the static `public/sitemap.xml` as-is for direct visitors.
 
 ### Changes
 
-**1. Database Migration: Create a validation trigger**
-- Create a function `prevent_last_admin_deletion()` that runs BEFORE DELETE on `user_roles`
-- The function counts remaining admin roles; if only 1 remains and it's the one being deleted, it raises an exception
-- This protects against all deletion paths: client UI, direct database access, or API calls
+| File | Change |
+|------|--------|
+| `supabase/functions/generate-sitemap/index.ts` | **New** — public endpoint returning XML sitemap |
+| `public/robots.txt` | Update `Sitemap:` to point to edge function URL |
+| `src/pages/Sitemap.tsx` | Add dynamic "Blog Posts" category |
 
-```text
-DELETE attempt on user_roles
-        |
-  [BEFORE DELETE trigger]
-        |
-  Count admin roles remaining
-        |
-  If this is the last one --> RAISE EXCEPTION
-  Otherwise              --> Allow deletion
+### Edge Function Logic
+- Uses `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to query `blog_posts` where `status = 'published'`, ordered by `published_at` desc
+- Hardcodes the same 16 static page URLs currently in `public/sitemap.xml`
+- For each blog post, generates a `<url>` entry using `/blog/{slug}` with `published_at` as `<lastmod>`
+- Returns `Content-Type: application/xml` with CORS headers
+- No JWT required — public endpoint
+
+### robots.txt Update
+```
+Sitemap: https://wjaulyvqzywcnkegnzoh.supabase.co/functions/v1/generate-sitemap
 ```
 
-**2. Update `UserRolesManager.tsx` client-side**
-- Catch the specific error message from the trigger in the `revokeAdmin` mutation's `onError` handler
-- Display a user-friendly toast: "Cannot remove the last admin. At least one admin must exist."
+### HTML Sitemap Update
+- Fetch published blog posts on mount using the existing public Supabase client
+- Render them as a new "Blog Posts" card in the grid alongside existing categories
 
-### Technical Details
-
-- The trigger uses `SECURITY DEFINER` to bypass RLS when counting admin roles
-- The error message from Postgres will contain a identifiable string (e.g., "Cannot delete the last admin") that the client can detect
-- No changes to existing RLS policies are needed
-- The trigger only fires on DELETE, so granting new admin roles is unaffected
+### What Stays
+- `public/sitemap.xml` remains untouched as a static fallback
+- No database changes needed
 
