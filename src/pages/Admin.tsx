@@ -28,6 +28,7 @@ import {
   Video
 } from 'lucide-react';
 import { BlogManager } from '@/components/admin/BlogManager';
+import { SitemapRegenerateButton } from '@/components/admin/SitemapRegenerateButton';
 import { UserRolesManager } from '@/components/admin/UserRolesManager';
 import { YouTubeVideosManager } from '@/components/admin/YouTubeVideosManager';
 import { useBlogPosts } from '@/hooks/useBlogPosts';
