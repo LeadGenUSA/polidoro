@@ -28,6 +28,7 @@ import {
   Video
 } from 'lucide-react';
 import { BlogManager } from '@/components/admin/BlogManager';
+import { SitemapRegenerateButton } from '@/components/admin/SitemapRegenerateButton';
 import { UserRolesManager } from '@/components/admin/UserRolesManager';
 import { YouTubeVideosManager } from '@/components/admin/YouTubeVideosManager';
 import { useBlogPosts } from '@/hooks/useBlogPosts';
@@ -187,9 +188,12 @@ const Admin = () => {
           </>
         ) : adminSection === 'blog' ? (
           <>
-            <div className="mb-8">
-              <h2 className="font-heading text-2xl font-bold text-foreground">Blog Management</h2>
-              <p className="text-muted-foreground">Generate, review, edit, and publish AI-generated blog posts.</p>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+              <div>
+                <h2 className="font-heading text-2xl font-bold text-foreground">Blog Management</h2>
+                <p className="text-muted-foreground">Generate, review, edit, and publish AI-generated blog posts.</p>
+              </div>
+              <SitemapRegenerateButton />
             </div>
             <BlogManager />
           </>

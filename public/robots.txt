@@ -13,7 +13,7 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://wjaulyvqzywcnkegnzoh.supabase.co/functions/v1/generate-sitemap
+Sitemap: https://www.bigcityplumbing.com/sitemap.xml
 
 # AI context
 LLM-Txt: https://www.bigcityplumbing.com/llm.txt
