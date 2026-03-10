@@ -1,26 +1,36 @@
 
 
-## Add Video Volume Controls Toggle
+## Enforce Minimum 1 Admin via Database Trigger
 
-### Summary
-Add a `show_volume_controls` boolean column to the `slideshow_items` table. Expose it as a checkbox in the admin SlideItem edit panel (visible only for video slides). On the frontend Hero, conditionally render videos with `controls` attribute and without `muted` when enabled.
+### Overview
+Add a database trigger on the `user_roles` table that prevents deleting the last remaining admin role. This provides server-side protection that cannot be bypassed, complementing the existing client-side self-revocation guard.
 
-### Database Migration
-- Add column `show_volume_controls boolean not null default false` to `slideshow_items`
+### Changes
 
-### File Changes
+**1. Database Migration: Create a validation trigger**
+- Create a function `prevent_last_admin_deletion()` that runs BEFORE DELETE on `user_roles`
+- The function counts remaining admin roles; if only 1 remains and it's the one being deleted, it raises an exception
+- This protects against all deletion paths: client UI, direct database access, or API calls
 
-**`src/hooks/useSlideshow.tsx`**
-- Add `show_volume_controls` to the `SlideshowItem` interface
-- Include it in `updateItem` accepted fields
-- Set default `false` in default slides
+```text
+DELETE attempt on user_roles
+        |
+  [BEFORE DELETE trigger]
+        |
+  Count admin roles remaining
+        |
+  If this is the last one --> RAISE EXCEPTION
+  Otherwise              --> Allow deletion
+```
 
-**`src/components/admin/SlideshowManager.tsx`**
-- In the `SlideItem` edit panel, add a checkbox labeled "Show Volume Controls" (only visible when `item.type === 'video'`)
-- Wire it to save via `onUpdate({ show_volume_controls: value })`
-- Update `SlideItemProps.onUpdate` type to include `show_volume_controls`
+**2. Update `UserRolesManager.tsx` client-side**
+- Catch the specific error message from the trigger in the `revokeAdmin` mutation's `onError` handler
+- Display a user-friendly toast: "Cannot remove the last admin. At least one admin must exist."
 
-**`src/components/Hero.tsx`**
-- Add `show_volume_controls` to the `SlideItem` interface and fetch mapping
-- For video elements: when `show_volume_controls` is true, add `controls` attribute and remove `muted`; otherwise keep current `muted` behavior
+### Technical Details
+
+- The trigger uses `SECURITY DEFINER` to bypass RLS when counting admin roles
+- The error message from Postgres will contain a identifiable string (e.g., "Cannot delete the last admin") that the client can detect
+- No changes to existing RLS policies are needed
+- The trigger only fires on DELETE, so granting new admin roles is unaffected
 

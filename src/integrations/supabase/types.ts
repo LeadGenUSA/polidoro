@@ -351,6 +351,7 @@ export type Database = {
           link_url: string | null
           overlay_text: string | null
           overlay_title: string | null
+          show_volume_controls: boolean
           type: string
           updated_at: string
         }
@@ -366,6 +367,7 @@ export type Database = {
           link_url?: string | null
           overlay_text?: string | null
           overlay_title?: string | null
+          show_volume_controls?: boolean
           type: string
           updated_at?: string
         }
@@ -381,6 +383,7 @@ export type Database = {
           link_url?: string | null
           overlay_text?: string | null
           overlay_title?: string | null
+          show_volume_controls?: boolean
           type?: string
           updated_at?: string
         }

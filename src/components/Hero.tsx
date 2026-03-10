@@ -22,6 +22,7 @@ interface SlideItem {
   overlay_title?: string | null;
   overlay_text?: string | null;
   link_url?: string | null;
+  show_volume_controls?: boolean;
 }
 const defaultSlides: SlideItem[] = [{
   type: 'video',
@@ -85,7 +86,8 @@ const Hero = () => {
           duration_seconds: item.duration_seconds || 15,
           overlay_title: item.overlay_title,
           overlay_text: item.overlay_text,
-          link_url: item.link_url
+          link_url: item.link_url,
+          show_volume_controls: item.show_volume_controls || false,
         }));
         setSlides(dbSlides);
       }
@@ -220,7 +222,7 @@ const Hero = () => {
                 <CarouselContent>
                   {slides.map((slide, index) => <CarouselItem key={index}>
                       {slide.link_url ? <a href={slide.link_url} target="_blank" rel="noopener noreferrer" className="block relative cursor-pointer group">
-                          {slide.type === 'video' ? <video src={slide.src} autoPlay muted loop playsInline className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
+                          {slide.type === 'video' ? <video src={slide.src} autoPlay muted={!slide.show_volume_controls} loop playsInline controls={slide.show_volume_controls} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
                           {/* Overlay Text */}
                           {(slide.overlay_title || slide.overlay_text) && <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
                               {slide.overlay_title && <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
@@ -233,7 +235,7 @@ const Hero = () => {
                           {/* Click indicator on hover */}
                           <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors pointer-events-none" />
                         </a> : <div className="relative">
-                          {slide.type === 'video' ? <video src={slide.src} autoPlay muted loop playsInline className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
+                          {slide.type === 'video' ? <video src={slide.src} autoPlay muted={!slide.show_volume_controls} loop playsInline controls={slide.show_volume_controls} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
                           {/* Overlay Text */}
                           {(slide.overlay_title || slide.overlay_text) && <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
                               {slide.overlay_title && <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">

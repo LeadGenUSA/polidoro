@@ -16,6 +16,7 @@ export interface SlideshowItem {
   overlay_title: string | null;
   overlay_text: string | null;
   link_url: string | null;
+  show_volume_controls: boolean;
   is_default_first: boolean;
   created_at: string;
   updated_at: string;
@@ -35,6 +36,7 @@ const defaultSlides: SlideshowItem[] = [
     overlay_title: null,
     overlay_text: null,
     link_url: null,
+    show_volume_controls: false,
     is_default_first: true,
     created_at: '',
     updated_at: '',
@@ -51,6 +53,7 @@ const defaultSlides: SlideshowItem[] = [
     overlay_title: null,
     overlay_text: null,
     link_url: null,
+    show_volume_controls: false,
     is_default_first: false,
     created_at: '',
     updated_at: '',
@@ -159,7 +162,7 @@ export const useSlideshow = () => {
     }
   };
 
-  const updateItem = async (id: string, updates: Partial<Pick<SlideshowItem, 'alt_text' | 'is_active' | 'display_order' | 'duration_seconds' | 'overlay_title' | 'overlay_text' | 'link_url' | 'is_default_first'>>) => {
+  const updateItem = async (id: string, updates: Partial<Pick<SlideshowItem, 'alt_text' | 'is_active' | 'display_order' | 'duration_seconds' | 'overlay_title' | 'overlay_text' | 'link_url' | 'show_volume_controls' | 'is_default_first'>>) => {
     try {
       const { error } = await supabase
         .from('slideshow_items')

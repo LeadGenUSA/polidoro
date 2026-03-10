@@ -1,0 +1,1 @@
+ALTER TABLE public.slideshow_items ADD COLUMN show_volume_controls boolean NOT NULL DEFAULT false;
