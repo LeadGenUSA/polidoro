@@ -221,7 +221,7 @@ interface SlideItemProps {
   totalItems: number;
   onMoveUp: () => void;
   onMoveDown: () => void;
-  onUpdate: (updates: Partial<Pick<SlideshowItem, 'is_active' | 'duration_seconds' | 'overlay_title' | 'overlay_text' | 'link_url'>>) => void;
+  onUpdate: (updates: Partial<Pick<SlideshowItem, 'is_active' | 'duration_seconds' | 'overlay_title' | 'overlay_text' | 'link_url' | 'show_volume_controls'>>) => void;
   onDelete: () => void;
   onSetDefaultFirst: () => void;
   isDefault: boolean;
