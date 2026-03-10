@@ -86,7 +86,8 @@ const Hero = () => {
           duration_seconds: item.duration_seconds || 15,
           overlay_title: item.overlay_title,
           overlay_text: item.overlay_text,
-          link_url: item.link_url
+          link_url: item.link_url,
+          show_volume_controls: item.show_volume_controls || false,
         }));
         setSlides(dbSlides);
       }
