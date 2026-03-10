@@ -1,10 +1,12 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { supabase } from '@/integrations/supabase/client';
 
-const sitemapCategories = [
+const staticCategories = [
   {
     title: 'Main Pages',
     links: [
@@ -48,6 +50,29 @@ const sitemapCategories = [
 ];
 
 const Sitemap = () => {
+  const [blogLinks, setBlogLinks] = useState<{ name: string; path: string }[]>([]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const { data } = await supabase
+        .from('blog_posts')
+        .select('title, slug')
+        .eq('status', 'published')
+        .order('published_at', { ascending: false });
+      if (data) {
+        setBlogLinks(data.map((p) => ({ name: p.title, path: `/blog/${p.slug}` })));
+      }
+    };
+    fetchPosts();
+  }, []);
+
+  const sitemapCategories = [
+    ...staticCategories,
+    ...(blogLinks.length > 0
+      ? [{ title: 'Blog Posts', links: blogLinks }]
+      : []),
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
