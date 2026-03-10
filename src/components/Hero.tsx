@@ -235,7 +235,7 @@ const Hero = () => {
                           {/* Click indicator on hover */}
                           <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors pointer-events-none" />
                         </a> : <div className="relative">
-                          {slide.type === 'video' ? <video src={slide.src} autoPlay muted loop playsInline className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
+                          {slide.type === 'video' ? <video src={slide.src} autoPlay muted={!slide.show_volume_controls} loop playsInline controls={slide.show_volume_controls} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
                           {/* Overlay Text */}
                           {(slide.overlay_title || slide.overlay_text) && <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
                               {slide.overlay_title && <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">

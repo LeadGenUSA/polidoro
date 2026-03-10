@@ -457,6 +457,18 @@ const SlideItem = ({
             />
             <p className="text-xs text-muted-foreground mt-1">Opens in a new tab when the slide is clicked</p>
           </div>
+          {item.type === 'video' && (
+            <div className="mb-4 flex items-center gap-2">
+              <Checkbox
+                id={`volume-${item.id}`}
+                checked={item.show_volume_controls}
+                onCheckedChange={(checked) => onUpdate({ show_volume_controls: !!checked })}
+              />
+              <Label htmlFor={`volume-${item.id}`} className="text-sm cursor-pointer">
+                Show Volume Controls (unmutes video)
+              </Label>
+            </div>
+          )}
           <div className="flex justify-end gap-2">
             <Button variant="outline" size="sm" onClick={() => setIsEditing(false)}>
               Cancel

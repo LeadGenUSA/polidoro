@@ -162,7 +162,7 @@ export const useSlideshow = () => {
     }
   };
 
-  const updateItem = async (id: string, updates: Partial<Pick<SlideshowItem, 'alt_text' | 'is_active' | 'display_order' | 'duration_seconds' | 'overlay_title' | 'overlay_text' | 'link_url' | 'is_default_first'>>) => {
+  const updateItem = async (id: string, updates: Partial<Pick<SlideshowItem, 'alt_text' | 'is_active' | 'display_order' | 'duration_seconds' | 'overlay_title' | 'overlay_text' | 'link_url' | 'show_volume_controls' | 'is_default_first'>>) => {
     try {
       const { error } = await supabase
         .from('slideshow_items')
