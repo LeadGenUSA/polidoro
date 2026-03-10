@@ -22,6 +22,7 @@ interface SlideItem {
   overlay_title?: string | null;
   overlay_text?: string | null;
   link_url?: string | null;
+  show_volume_controls?: boolean;
 }
 const defaultSlides: SlideItem[] = [{
   type: 'video',
