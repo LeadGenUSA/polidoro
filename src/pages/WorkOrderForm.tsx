@@ -177,7 +177,7 @@ const WorkOrderForm = () => {
               </CardHeader>
               <CardContent className="grid md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <Label htmlFor="customerName">Customer's Name *</Label>
+                  <Label htmlFor="customerName">Customer's Name</Label>
                   <Input id="customerName" {...register('customerName')} placeholder="Full Name" />
                   {errors.customerName && <p className="text-destructive text-sm mt-1">{errors.customerName.message}</p>}
                 </div>
