@@ -177,12 +177,12 @@ const WorkOrderForm = () => {
               </CardHeader>
               <CardContent className="grid md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <Label htmlFor="customerName">Customer's Name *</Label>
+                  <Label htmlFor="customerName">Customer's Name</Label>
                   <Input id="customerName" {...register('customerName')} placeholder="Full Name" />
                   {errors.customerName && <p className="text-destructive text-sm mt-1">{errors.customerName.message}</p>}
                 </div>
                 <div className="md:col-span-2">
-                  <Label htmlFor="streetAddress">Street Address *</Label>
+                  <Label htmlFor="streetAddress">Street Address</Label>
                   <Input id="streetAddress" {...register('streetAddress')} placeholder="123 Main St" />
                   {errors.streetAddress && <p className="text-destructive text-sm mt-1">{errors.streetAddress.message}</p>}
                 </div>
@@ -191,17 +191,17 @@ const WorkOrderForm = () => {
                   <Input id="aptNumber" {...register('aptNumber')} placeholder="Apt/Unit" />
                 </div>
                 <div>
-                  <Label htmlFor="phone">Phone # *</Label>
+                  <Label htmlFor="phone">Phone #</Label>
                   <Input id="phone" {...register('phone')} placeholder="(555) 555-5555" />
                   {errors.phone && <p className="text-destructive text-sm mt-1">{errors.phone.message}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="zipCode">Zip Code *</Label>
+                  <Label htmlFor="zipCode">Zip Code</Label>
                   <Input id="zipCode" {...register('zipCode')} placeholder="12345" />
                   {errors.zipCode && <p className="text-destructive text-sm mt-1">{errors.zipCode.message}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="email">Email (for our records) *</Label>
+                  <Label htmlFor="email">Email (for our records)</Label>
                   <Input id="email" type="email" {...register('email')} placeholder="customer@email.com" />
                   {errors.email && <p className="text-destructive text-sm mt-1">{errors.email.message}</p>}
                 </div>
@@ -236,7 +236,7 @@ const WorkOrderForm = () => {
                   <Input id="rgaNavienTech" {...register('rgaNavienTech')} placeholder="RGA# and tech name" />
                 </div>
                 <div className="md:col-span-2">
-                  <Label htmlFor="jobDescription">Job Description *</Label>
+                  <Label htmlFor="jobDescription">Job Description</Label>
                   <SmartTextarea 
                     id="jobDescription" 
                     value={watch('jobDescription') || ''} 
