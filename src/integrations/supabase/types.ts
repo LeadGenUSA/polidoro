@@ -495,6 +495,8 @@ export type Database = {
         Row: {
           apt_number: string | null
           billing_status: string | null
+          boiler_type: string | null
+          calendar_info: string | null
           created_at: string
           customer_name: string
           email: string
@@ -523,6 +525,8 @@ export type Database = {
         Insert: {
           apt_number?: string | null
           billing_status?: string | null
+          boiler_type?: string | null
+          calendar_info?: string | null
           created_at?: string
           customer_name: string
           email: string
@@ -551,6 +555,8 @@ export type Database = {
         Update: {
           apt_number?: string | null
           billing_status?: string | null
+          boiler_type?: string | null
+          calendar_info?: string | null
           created_at?: string
           customer_name?: string
           email?: string

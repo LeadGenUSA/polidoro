@@ -121,6 +121,7 @@ export const WorkOrderSubmissionCard = ({
               <div className="space-y-2">
                 <h4 className="font-semibold text-sm text-primary border-b pb-1">Job Details</h4>
                 <div className="text-sm space-y-1">
+                  <p><span className="font-medium">Boiler Type:</span> {formatValue(submission.boiler_type)}</p>
                   <p><span className="font-medium">Error Code:</span> {formatValue(submission.error_code)}</p>
                   <p><span className="font-medium">Make & Model:</span> {formatValue(submission.make_model)}</p>
                   <p><span className="font-medium">Serial #:</span> {formatValue(submission.serial_number)}</p>

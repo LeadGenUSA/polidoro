@@ -69,6 +69,8 @@ export interface WorkOrderSubmission {
   billing_status: string | null;
   total_charges: string | null;
   photos: string[] | null;
+  calendar_info: string | null;
+  boiler_type: string | null;
 }
 
 export interface SurveySubmission {

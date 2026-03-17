@@ -204,6 +204,8 @@ const handler = async (req: Request): Promise<Response> => {
         billing_status: data.billingStatus || null,
         total_charges: data.totalCharges || null,
         photos: data.photos || [],
+        calendar_info: data.calendarInfo || null,
+        boiler_type: data.boilerType || null,
         status: 'new'
       });
 
