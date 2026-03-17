@@ -113,6 +113,7 @@ export const WorkOrderSubmissionCard = ({
                   <p><span className="font-medium">Zip Code:</span> {submission.zip_code}</p>
                   <p><span className="font-medium">Email:</span> {submission.email}</p>
                   {submission.email_to && <p><span className="font-medium">CC Email:</span> {submission.email_to}</p>}
+                  {submission.calendar_info && <p><span className="font-medium">Calendar Info:</span> {submission.calendar_info}</p>}
                 </div>
               </div>
 
