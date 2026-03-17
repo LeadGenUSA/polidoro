@@ -205,7 +205,7 @@ const WorkOrderForm = () => {
                   {errors.zipCode && <p className="text-destructive text-sm mt-1">{errors.zipCode.message}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="email">Email (for our records)</Label>
+                  <Label htmlFor="email">Customer Email</Label>
                   <Input id="email" type="email" {...register('email')} placeholder="customer@email.com" />
                   {errors.email && <p className="text-destructive text-sm mt-1">{errors.email.message}</p>}
                 </div>
@@ -213,6 +213,10 @@ const WorkOrderForm = () => {
                   <Label htmlFor="emailTo">Email TO (send copy of this form TO:)</Label>
                   <Input id="emailTo" type="email" {...register('emailTo')} placeholder="recipient@email.com" />
                   {errors.emailTo && <p className="text-destructive text-sm mt-1">{errors.emailTo.message}</p>}
+                </div>
+                <div className="md:col-span-2">
+                  <Label htmlFor="calendarInfo">Calendar Info</Label>
+                  <Textarea id="calendarInfo" {...register('calendarInfo')} placeholder="Calendar details" rows={3} />
                 </div>
               </CardContent>
             </Card>
