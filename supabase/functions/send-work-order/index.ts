@@ -101,6 +101,7 @@ const handler = async (req: Request): Promise<Response> => {
 
         <h2 style="color: #1e3a5f; margin-top: 24px;">Job Details</h2>
         <table style="width: 100%; border-collapse: collapse;">
+          <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Boiler Type:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.boilerType || 'N/A'}</td></tr>
           <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Error Code:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.errorCode || 'N/A'}</td></tr>
           <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Make & Model:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.makeModel || 'N/A'}</td></tr>
           <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Serial #:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.serialNumber || 'N/A'}</td></tr>

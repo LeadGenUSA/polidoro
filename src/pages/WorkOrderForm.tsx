@@ -228,6 +228,23 @@ const WorkOrderForm = () => {
               </CardHeader>
               <CardContent className="grid md:grid-cols-2 gap-4">
                 <div>
+                  <Label>Boiler Type</Label>
+                  <Select onValueChange={(value) => setValue('boilerType', value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select boiler type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Navien">Navien</SelectItem>
+                      <SelectItem value="BOSCH">BOSCH</SelectItem>
+                      <SelectItem value="Burnham">Burnham</SelectItem>
+                      <SelectItem value="Weil McLain">Weil McLain</SelectItem>
+                      <SelectItem value="Plumbing repair">Plumbing repair</SelectItem>
+                      <SelectItem value="Heating Repair">Heating Repair</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
                   <Label htmlFor="errorCode">Error Code</Label>
                   <Input id="errorCode" {...register('errorCode')} placeholder="Error code if applicable" />
                 </div>
