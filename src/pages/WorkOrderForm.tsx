@@ -182,7 +182,7 @@ const WorkOrderForm = () => {
                   {errors.customerName && <p className="text-destructive text-sm mt-1">{errors.customerName.message}</p>}
                 </div>
                 <div className="md:col-span-2">
-                  <Label htmlFor="streetAddress">Street Address *</Label>
+                  <Label htmlFor="streetAddress">Street Address</Label>
                   <Input id="streetAddress" {...register('streetAddress')} placeholder="123 Main St" />
                   {errors.streetAddress && <p className="text-destructive text-sm mt-1">{errors.streetAddress.message}</p>}
                 </div>
