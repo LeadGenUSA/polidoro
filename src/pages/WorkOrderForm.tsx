@@ -30,7 +30,10 @@ const workOrderSchema = z.object({
   email: z.string().email('Invalid email address').max(100).optional().or(z.literal('')),
   emailTo: z.string().email('Invalid email address').max(100).optional().or(z.literal('')),
   
+  calendarInfo: z.string().max(500).optional(),
+  
   // Job Detail
+  boilerType: z.string().optional(),
   errorCode: z.string().max(50).optional(),
   makeModel: z.string().max(100).optional(),
   serialNumber: z.string().max(100).optional(),
