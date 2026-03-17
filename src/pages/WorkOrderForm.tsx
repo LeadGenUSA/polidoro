@@ -191,7 +191,7 @@ const WorkOrderForm = () => {
                   <Input id="aptNumber" {...register('aptNumber')} placeholder="Apt/Unit" />
                 </div>
                 <div>
-                  <Label htmlFor="phone">Phone # *</Label>
+                  <Label htmlFor="phone">Phone #</Label>
                   <Input id="phone" {...register('phone')} placeholder="(555) 555-5555" />
                   {errors.phone && <p className="text-destructive text-sm mt-1">{errors.phone.message}</p>}
                 </div>
