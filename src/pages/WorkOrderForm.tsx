@@ -236,7 +236,7 @@ const WorkOrderForm = () => {
                   <Input id="rgaNavienTech" {...register('rgaNavienTech')} placeholder="RGA# and tech name" />
                 </div>
                 <div className="md:col-span-2">
-                  <Label htmlFor="jobDescription">Job Description *</Label>
+                  <Label htmlFor="jobDescription">Job Description</Label>
                   <SmartTextarea 
                     id="jobDescription" 
                     value={watch('jobDescription') || ''} 
