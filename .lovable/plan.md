@@ -1,27 +1,36 @@
 
 
-## Three Changes to Work Order Form
+## Enforce Minimum 1 Admin via Database Trigger
 
-### File: `src/pages/WorkOrderForm.tsx`
+### Overview
+Add a database trigger on the `user_roles` table that prevents deleting the last remaining admin role. This provides server-side protection that cannot be bypassed, complementing the existing client-side self-revocation guard.
 
-**1. Add "Calendar Info" textbox under Customer Info section**
-- Add a new field `calendarInfo` to the Zod schema as `z.string().max(500).optional()`
-- Add a full-width textarea field after the `emailTo` field (after line 212), labeled "Calendar Info"
-- Use a standard `Textarea` component for this field
+### Changes
 
-**2. Rename "Email (for our records)" to "Customer Email"**
-- Line 204: Change the label text from `Email (for our records)` to `Customer Email`
+**1. Database Migration: Create a validation trigger**
+- Create a function `prevent_last_admin_deletion()` that runs BEFORE DELETE on `user_roles`
+- The function counts remaining admin roles; if only 1 remains and it's the one being deleted, it raises an exception
+- This protects against all deletion paths: client UI, direct database access, or API calls
 
-**3. Add "Boiler Type" dropdown under Job Detail**
-- Add `boilerType` to the Zod schema as `z.string().optional()`
-- Add a `Select` dropdown after the Job Detail `CardHeader` (before the Error Code field, around line 222) with these options:
-  - Navien, BOSCH, Burnham, Weil McLain, Plumbing repair, Heating Repair, Other
-- Use the existing shadcn `Select` component (`SelectTrigger`, `SelectContent`, `SelectItem`)
-- Wire it up with `setValue('boilerType', value)` since react-hook-form `register` doesn't work directly with radix Select
+```text
+DELETE attempt on user_roles
+        |
+  [BEFORE DELETE trigger]
+        |
+  Count admin roles remaining
+        |
+  If this is the last one --> RAISE EXCEPTION
+  Otherwise              --> Allow deletion
+```
 
-All three new fields are optional and will be passed through to the edge function in the existing `...data` spread. No database migration needed since these are informational fields included in the email body. The edge function and email template will need a minor update to include `calendarInfo` and `boilerType` in the email output.
+**2. Update `UserRolesManager.tsx` client-side**
+- Catch the specific error message from the trigger in the `revokeAdmin` mutation's `onError` handler
+- Display a user-friendly toast: "Cannot remove the last admin. At least one admin must exist."
 
-### File: `supabase/functions/send-work-order/index.ts`
-- Add `calendarInfo` and `boilerType` to the `WorkOrderData` interface
-- Include them in the email HTML template (Calendar Info under Customer Info section, Boiler Type under Job Detail section)
+### Technical Details
+
+- The trigger uses `SECURITY DEFINER` to bypass RLS when counting admin roles
+- The error message from Postgres will contain a identifiable string (e.g., "Cannot delete the last admin") that the client can detect
+- No changes to existing RLS policies are needed
+- The trigger only fires on DELETE, so granting new admin roles is unaffected
 

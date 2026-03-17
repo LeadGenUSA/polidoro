@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle, Loader2 } from 'lucide-react';
@@ -29,7 +30,10 @@ const workOrderSchema = z.object({
   email: z.string().email('Invalid email address').max(100).optional().or(z.literal('')),
   emailTo: z.string().email('Invalid email address').max(100).optional().or(z.literal('')),
   
+  calendarInfo: z.string().max(500).optional(),
+  
   // Job Detail
+  boilerType: z.string().optional(),
   errorCode: z.string().max(50).optional(),
   makeModel: z.string().max(100).optional(),
   serialNumber: z.string().max(100).optional(),
@@ -201,7 +205,7 @@ const WorkOrderForm = () => {
                   {errors.zipCode && <p className="text-destructive text-sm mt-1">{errors.zipCode.message}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="email">Email (for our records)</Label>
+                  <Label htmlFor="email">Customer Email</Label>
                   <Input id="email" type="email" {...register('email')} placeholder="customer@email.com" />
                   {errors.email && <p className="text-destructive text-sm mt-1">{errors.email.message}</p>}
                 </div>
@@ -209,6 +213,10 @@ const WorkOrderForm = () => {
                   <Label htmlFor="emailTo">Email TO (send copy of this form TO:)</Label>
                   <Input id="emailTo" type="email" {...register('emailTo')} placeholder="recipient@email.com" />
                   {errors.emailTo && <p className="text-destructive text-sm mt-1">{errors.emailTo.message}</p>}
+                </div>
+                <div className="md:col-span-2">
+                  <Label htmlFor="calendarInfo">Calendar Info</Label>
+                  <Textarea id="calendarInfo" {...register('calendarInfo')} placeholder="Calendar details" rows={3} />
                 </div>
               </CardContent>
             </Card>
@@ -219,6 +227,23 @@ const WorkOrderForm = () => {
                 <CardTitle className="text-primary">Job Detail</CardTitle>
               </CardHeader>
               <CardContent className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Boiler Type</Label>
+                  <Select onValueChange={(value) => setValue('boilerType', value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select boiler type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Navien">Navien</SelectItem>
+                      <SelectItem value="BOSCH">BOSCH</SelectItem>
+                      <SelectItem value="Burnham">Burnham</SelectItem>
+                      <SelectItem value="Weil McLain">Weil McLain</SelectItem>
+                      <SelectItem value="Plumbing repair">Plumbing repair</SelectItem>
+                      <SelectItem value="Heating Repair">Heating Repair</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div>
                   <Label htmlFor="errorCode">Error Code</Label>
                   <Input id="errorCode" {...register('errorCode')} placeholder="Error code if applicable" />
