@@ -21,12 +21,12 @@ import PhotoUpload from '@/components/work-order/PhotoUpload';
 
 const workOrderSchema = z.object({
   // Customer Info
-  customerName: z.string().min(1, 'Customer name is required').max(100),
-  streetAddress: z.string().min(1, 'Street address is required').max(200),
+  customerName: z.string().max(100).optional(),
+  streetAddress: z.string().max(200).optional(),
   aptNumber: z.string().max(20).optional(),
-  phone: z.string().min(1, 'Phone number is required').max(20),
-  zipCode: z.string().min(1, 'Zip code is required').max(10),
-  email: z.string().email('Invalid email address').max(100),
+  phone: z.string().max(20).optional(),
+  zipCode: z.string().max(10).optional(),
+  email: z.string().email('Invalid email address').max(100).optional().or(z.literal('')),
   emailTo: z.string().email('Invalid email address').max(100).optional().or(z.literal('')),
   
   // Job Detail
