@@ -96,6 +96,7 @@ const handler = async (req: Request): Promise<Response> => {
           <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Phone:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.phone}</td></tr>
           <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Zip Code:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.zipCode}</td></tr>
           <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Email:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${data.email}</td></tr>
+          ${data.calendarInfo ? `<tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Calendar Info:</strong></td><td style="padding: 8px; border: 1px solid #ddd; white-space: pre-wrap;">${data.calendarInfo}</td></tr>` : ''}
         </table>
 
         <h2 style="color: #1e3a5f; margin-top: 24px;">Job Details</h2>
