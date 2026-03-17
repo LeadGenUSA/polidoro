@@ -1,36 +1,25 @@
 
 
-## Enforce Minimum 1 Admin via Database Trigger
+## Add calendarInfo and boilerType to work_order_submissions
 
-### Overview
-Add a database trigger on the `user_roles` table that prevents deleting the last remaining admin role. This provides server-side protection that cannot be bypassed, complementing the existing client-side self-revocation guard.
-
-### Changes
-
-**1. Database Migration: Create a validation trigger**
-- Create a function `prevent_last_admin_deletion()` that runs BEFORE DELETE on `user_roles`
-- The function counts remaining admin roles; if only 1 remains and it's the one being deleted, it raises an exception
-- This protects against all deletion paths: client UI, direct database access, or API calls
-
-```text
-DELETE attempt on user_roles
-        |
-  [BEFORE DELETE trigger]
-        |
-  Count admin roles remaining
-        |
-  If this is the last one --> RAISE EXCEPTION
-  Otherwise              --> Allow deletion
+### Database Migration
+Add two nullable text columns to `work_order_submissions`:
+```sql
+ALTER TABLE public.work_order_submissions
+  ADD COLUMN calendar_info text,
+  ADD COLUMN boiler_type text;
 ```
 
-**2. Update `UserRolesManager.tsx` client-side**
-- Catch the specific error message from the trigger in the `revokeAdmin` mutation's `onError` handler
-- Display a user-friendly toast: "Cannot remove the last admin. At least one admin must exist."
+### Edge Function Update (`supabase/functions/send-work-order/index.ts`)
+Add the two new fields to the database insert (around line 153):
+- `calendar_info: data.calendarInfo || null`
+- `boiler_type: data.boilerType || null`
 
-### Technical Details
+### Admin Display (`src/components/admin/WorkOrderSubmissionCard.tsx`)
+Add Calendar Info and Boiler Type to the card display:
+- Show Calendar Info in the Customer Info section
+- Show Boiler Type in the Job Details section
 
-- The trigger uses `SECURITY DEFINER` to bypass RLS when counting admin roles
-- The error message from Postgres will contain a identifiable string (e.g., "Cannot delete the last admin") that the client can detect
-- No changes to existing RLS policies are needed
-- The trigger only fires on DELETE, so granting new admin roles is unaffected
+### Types
+The `WorkOrderSubmission` interface in `src/hooks/useSubmissions.tsx` needs `calendar_info` and `boiler_type` fields added. The generated types file will update automatically after migration.
 
