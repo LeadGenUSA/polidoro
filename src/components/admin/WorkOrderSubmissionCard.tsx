@@ -113,6 +113,7 @@ export const WorkOrderSubmissionCard = ({
                   <p><span className="font-medium">Zip Code:</span> {submission.zip_code}</p>
                   <p><span className="font-medium">Email:</span> {submission.email}</p>
                   {submission.email_to && <p><span className="font-medium">CC Email:</span> {submission.email_to}</p>}
+                  {submission.calendar_info && <p><span className="font-medium">Calendar Info:</span> {submission.calendar_info}</p>}
                 </div>
               </div>
 
@@ -120,6 +121,7 @@ export const WorkOrderSubmissionCard = ({
               <div className="space-y-2">
                 <h4 className="font-semibold text-sm text-primary border-b pb-1">Job Details</h4>
                 <div className="text-sm space-y-1">
+                  <p><span className="font-medium">Boiler Type:</span> {formatValue(submission.boiler_type)}</p>
                   <p><span className="font-medium">Error Code:</span> {formatValue(submission.error_code)}</p>
                   <p><span className="font-medium">Make & Model:</span> {formatValue(submission.make_model)}</p>
                   <p><span className="font-medium">Serial #:</span> {formatValue(submission.serial_number)}</p>
