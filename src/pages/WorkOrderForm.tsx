@@ -201,7 +201,7 @@ const WorkOrderForm = () => {
                   {errors.zipCode && <p className="text-destructive text-sm mt-1">{errors.zipCode.message}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="email">Email (for our records) *</Label>
+                  <Label htmlFor="email">Email (for our records)</Label>
                   <Input id="email" type="email" {...register('email')} placeholder="customer@email.com" />
                   {errors.email && <p className="text-destructive text-sm mt-1">{errors.email.message}</p>}
                 </div>
