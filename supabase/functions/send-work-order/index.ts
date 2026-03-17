@@ -17,6 +17,8 @@ interface WorkOrderData {
   zipCode: string;
   email: string;
   emailTo?: string;
+  calendarInfo?: string;
+  boilerType?: string;
   errorCode?: string;
   makeModel?: string;
   serialNumber?: string;
