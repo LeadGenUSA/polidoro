@@ -37,7 +37,7 @@ const workOrderSchema = z.object({
   errorCode: z.string().max(50).optional(),
   makeModel: z.string().max(100).optional(),
   serialNumber: z.string().max(100).optional(),
-  jobDescription: z.string().min(1, 'Job description is required').max(2000),
+  jobDescription: z.string().max(2000).optional(),
   recommendations: z.string().max(1000).optional(),
   rgaNavienTech: z.string().max(100).optional(),
   waterSamplingPH: z.string().max(20).optional(),
