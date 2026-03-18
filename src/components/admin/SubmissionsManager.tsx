@@ -36,6 +36,7 @@ export const SubmissionsManager = () => {
     isLoading, 
     counts, 
     updateStatus, 
+    updateWorkOrder,
     deleteSubmission, 
     exportToCSV 
   } = useSubmissions(submissionType, statusFilter);
