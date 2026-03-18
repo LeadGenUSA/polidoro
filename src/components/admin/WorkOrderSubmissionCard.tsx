@@ -53,9 +53,11 @@ const formatBillingStatus = (status: string | null): string => {
 export const WorkOrderSubmissionCard = ({ 
   submission, 
   onUpdateStatus, 
-  onDelete 
+  onDelete,
+  onEdit
 }: WorkOrderSubmissionCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   const statusColors: Record<SubmissionStatus, string> = {
     new: 'bg-yellow-100 text-yellow-800',
