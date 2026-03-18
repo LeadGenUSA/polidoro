@@ -13,14 +13,17 @@ import {
   MapPin,
   Phone,
   Wrench,
-  Image
+  Image,
+  Pencil
 } from 'lucide-react';
+import { WorkOrderEditDialog } from './WorkOrderEditDialog';
 import type { WorkOrderSubmission, SubmissionStatus } from '@/hooks/useSubmissions';
 
 interface WorkOrderSubmissionCardProps {
   submission: WorkOrderSubmission;
   onUpdateStatus: (id: string, status: SubmissionStatus) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string, data: Partial<WorkOrderSubmission>) => Promise<void>;
 }
 
 const formatValue = (value: string | null | undefined): string => {
@@ -50,9 +53,11 @@ const formatBillingStatus = (status: string | null): string => {
 export const WorkOrderSubmissionCard = ({ 
   submission, 
   onUpdateStatus, 
-  onDelete 
+  onDelete,
+  onEdit
 }: WorkOrderSubmissionCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   const statusColors: Record<SubmissionStatus, string> = {
     new: 'bg-yellow-100 text-yellow-800',
@@ -189,7 +194,15 @@ export const WorkOrderSubmissionCard = ({
             )}
 
             {/* Actions */}
-            <div className="flex gap-2 mt-4 pt-4 border-t">
+            <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t">
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => setEditOpen(true)}
+              >
+                <Pencil className="w-4 h-4 mr-1" />
+                Edit
+              </Button>
               {submission.status !== 'reviewed' && (
                 <Button 
                   size="sm" 
@@ -224,6 +237,12 @@ export const WorkOrderSubmissionCard = ({
           </CardContent>
         </CollapsibleContent>
       </Collapsible>
+      <WorkOrderEditDialog
+        submission={submission}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        onSave={onEdit}
+      />
     </Card>
   );
 };
