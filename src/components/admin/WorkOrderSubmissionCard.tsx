@@ -23,6 +23,7 @@ interface WorkOrderSubmissionCardProps {
   submission: WorkOrderSubmission;
   onUpdateStatus: (id: string, status: SubmissionStatus) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string, data: Partial<WorkOrderSubmission>) => Promise<void>;
 }
 
 const formatValue = (value: string | null | undefined): string => {
