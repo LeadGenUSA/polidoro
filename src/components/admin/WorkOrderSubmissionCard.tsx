@@ -237,6 +237,12 @@ export const WorkOrderSubmissionCard = ({
           </CardContent>
         </CollapsibleContent>
       </Collapsible>
+      <WorkOrderEditDialog
+        submission={submission}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        onSave={onEdit}
+      />
     </Card>
   );
 };

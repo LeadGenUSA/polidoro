@@ -350,6 +350,7 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
     counts,
     fetchSubmissions,
     updateStatus,
+    updateWorkOrder,
     deleteSubmission,
     exportToCSV,
   };

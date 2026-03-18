@@ -217,6 +217,7 @@ export const SubmissionsManager = () => {
                 submission={submission as WorkOrderSubmission}
                 onUpdateStatus={updateStatus}
                 onDelete={deleteSubmission}
+                onEdit={updateWorkOrder}
               />
             ))}
             {submissionType === 'surveys' && filteredSubmissions.map((submission) => (
