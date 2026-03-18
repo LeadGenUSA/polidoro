@@ -23,7 +23,8 @@ import {
   Archive as ArchiveIcon,
   Star,
   Loader2,
-  Search
+  Search,
+  Calendar
 } from 'lucide-react';
 
 export const SubmissionsManager = () => {
@@ -38,7 +39,8 @@ export const SubmissionsManager = () => {
     updateStatus, 
     updateWorkOrder,
     deleteSubmission, 
-    exportToCSV 
+    exportToCSV,
+    exportToICS
   } = useSubmissions(submissionType, statusFilter);
 
   const filteredSubmissions = useMemo(() => {
@@ -92,10 +94,18 @@ export const SubmissionsManager = () => {
           </TabsList>
         </Tabs>
 
-        <Button onClick={exportToCSV} variant="outline" className="gap-2">
-          <Download className="w-4 h-4" />
-          Export CSV
-        </Button>
+        <div className="flex gap-2">
+          {submissionType === 'work_orders' && (
+            <Button onClick={exportToICS} variant="outline" className="gap-2">
+              <Calendar className="w-4 h-4" />
+              Export to Outlook
+            </Button>
+          )}
+          <Button onClick={exportToCSV} variant="outline" className="gap-2">
+            <Download className="w-4 h-4" />
+            Export CSV
+          </Button>
+        </div>
       </div>
 
       {/* Search */}

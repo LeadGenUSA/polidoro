@@ -1,29 +1,36 @@
 
 
-## Export Work Orders as ICS Calendar Events
+## Enforce Minimum 1 Admin via Database Trigger
 
-### What
-Add an "Export to Outlook" button next to the existing "Export CSV" button in the Work Orders tab. Clicking it generates a `.ics` file containing all currently filtered work orders as calendar events, which Outlook can import directly.
+### Overview
+Add a database trigger on the `user_roles` table that prevents deleting the last remaining admin role. This provides server-side protection that cannot be bypassed, complementing the existing client-side self-revocation guard.
 
-### How
+### Changes
 
-#### `src/hooks/useSubmissions.tsx`
-- Add an `exportToICS` function alongside the existing `exportToCSV`
-- For each `WorkOrderSubmission`, generate a VEVENT with:
-  - **DTSTART/DTEND**: Use `job_date` if available, otherwise `created_at`. Default to a 2-hour event duration.
-  - **SUMMARY**: `"Work Order - {customer_name}"`
-  - **LOCATION**: `"{street_address}, {apt_number}, {zip_code}"`
-  - **DESCRIPTION**: Concatenate key fields: customer name, phone, email, job description, boiler type, error code, recommendations, calendar info, billing status, total charges
-  - **UID**: Use the work order `id` for uniqueness
-- Wrap all events in a VCALENDAR container with proper headers (`VERSION:2.0`, `PRODID`, `CALSCALE:GREGORIAN`)
-- Download as `work_orders_YYYY-MM-DD.ics`
+**1. Database Migration: Create a validation trigger**
+- Create a function `prevent_last_admin_deletion()` that runs BEFORE DELETE on `user_roles`
+- The function counts remaining admin roles; if only 1 remains and it's the one being deleted, it raises an exception
+- This protects against all deletion paths: client UI, direct database access, or API calls
 
-#### `src/components/admin/SubmissionsManager.tsx`
-- Add an "Export to Outlook" button (Calendar icon) next to "Export CSV", visible only when `submissionType === 'work_orders'`
-- Wire it to `exportToICS`
+```text
+DELETE attempt on user_roles
+        |
+  [BEFORE DELETE trigger]
+        |
+  Count admin roles remaining
+        |
+  If this is the last one --> RAISE EXCEPTION
+  Otherwise              --> Allow deletion
+```
 
-### ICS Format Details
-- Dates formatted as `YYYYMMDDTHHMMSS` (local time)
-- Text fields escaped (commas, semicolons, newlines per RFC 5545)
-- No external dependencies needed -- pure string generation
+**2. Update `UserRolesManager.tsx` client-side**
+- Catch the specific error message from the trigger in the `revokeAdmin` mutation's `onError` handler
+- Display a user-friendly toast: "Cannot remove the last admin. At least one admin must exist."
+
+### Technical Details
+
+- The trigger uses `SECURITY DEFINER` to bypass RLS when counting admin roles
+- The error message from Postgres will contain a identifiable string (e.g., "Cannot delete the last admin") that the client can detect
+- No changes to existing RLS policies are needed
+- The trigger only fires on DELETE, so granting new admin roles is unaffected
 

@@ -304,11 +304,7 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
 
   const exportToCSV = () => {
     if (submissions.length === 0) {
-      toast({
-        title: 'No data',
-        description: 'No submissions to export',
-        variant: 'destructive',
-      });
+      toast({ title: 'No data', description: 'No submissions to export', variant: 'destructive' });
       return;
     }
 
@@ -338,10 +334,85 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
-    toast({
-      title: 'Export Complete',
-      description: `Exported ${submissions.length} submissions to CSV`,
+    toast({ title: 'Export Complete', description: `Exported ${submissions.length} submissions to CSV` });
+  };
+
+  const exportToICS = () => {
+    if (type !== 'work_orders' || submissions.length === 0) {
+      toast({ title: 'No data', description: 'No work orders to export', variant: 'destructive' });
+      return;
+    }
+
+    const escapeICS = (text: string) =>
+      text.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+
+    const formatDate = (dateStr: string): string => {
+      const d = new Date(dateStr);
+      const pad = (n: number) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+    };
+
+    const addHours = (dateStr: string, hours: number): string => {
+      const d = new Date(dateStr);
+      d.setHours(d.getHours() + hours);
+      return formatDate(d.toISOString());
+    };
+
+    const events = (submissions as WorkOrderSubmission[]).map((wo) => {
+      const startDate = wo.job_date || wo.created_at;
+      const dtStart = formatDate(startDate);
+      const dtEnd = addHours(startDate, 2);
+
+      const location = [wo.street_address, wo.apt_number, wo.zip_code].filter(Boolean).join(', ');
+
+      const descParts = [
+        wo.customer_name && `Customer: ${wo.customer_name}`,
+        wo.phone && `Phone: ${wo.phone}`,
+        wo.email && `Email: ${wo.email}`,
+        wo.boiler_type && `Boiler Type: ${wo.boiler_type}`,
+        wo.error_code && `Error Code: ${wo.error_code}`,
+        wo.make_model && `Make/Model: ${wo.make_model}`,
+        wo.serial_number && `Serial: ${wo.serial_number}`,
+        wo.job_description && `Job: ${wo.job_description}`,
+        wo.recommendations && `Recommendations: ${wo.recommendations}`,
+        wo.calendar_info && `Calendar Info: ${wo.calendar_info}`,
+        wo.tech_on_job && `Tech: ${wo.tech_on_job}`,
+        wo.billing_status && `Billing: ${wo.billing_status}`,
+        wo.total_charges && `Total: ${wo.total_charges}`,
+      ].filter(Boolean).join('\\n');
+
+      return [
+        'BEGIN:VEVENT',
+        `UID:${wo.id}@bigcityplumbing`,
+        `DTSTART:${dtStart}`,
+        `DTEND:${dtEnd}`,
+        `SUMMARY:${escapeICS(`Work Order - ${wo.customer_name}`)}`,
+        location ? `LOCATION:${escapeICS(location)}` : '',
+        `DESCRIPTION:${escapeICS(descParts)}`,
+        'END:VEVENT',
+      ].filter(Boolean).join('\r\n');
     });
+
+    const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Big City Plumbing//Work Orders//EN',
+      'CALSCALE:GREGORIAN',
+      ...events,
+      'END:VCALENDAR',
+    ].join('\r\n');
+
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `work_orders_${new Date().toISOString().split('T')[0]}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast({ title: 'Export Complete', description: `Exported ${submissions.length} work orders to ICS` });
   };
 
   return {
@@ -353,6 +424,7 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
     updateWorkOrder,
     deleteSubmission,
     exportToCSV,
+    exportToICS,
   };
 };
 
