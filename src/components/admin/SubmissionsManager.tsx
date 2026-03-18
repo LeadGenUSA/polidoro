@@ -23,7 +23,8 @@ import {
   Archive as ArchiveIcon,
   Star,
   Loader2,
-  Search
+  Search,
+  Calendar
 } from 'lucide-react';
 
 export const SubmissionsManager = () => {
