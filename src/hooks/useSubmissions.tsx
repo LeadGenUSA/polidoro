@@ -424,6 +424,7 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
     updateWorkOrder,
     deleteSubmission,
     exportToCSV,
+    exportToICS,
   };
 };
 
