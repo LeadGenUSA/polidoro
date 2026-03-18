@@ -13,8 +13,10 @@ import {
   MapPin,
   Phone,
   Wrench,
-  Image
+  Image,
+  Pencil
 } from 'lucide-react';
+import { WorkOrderEditDialog } from './WorkOrderEditDialog';
 import type { WorkOrderSubmission, SubmissionStatus } from '@/hooks/useSubmissions';
 
 interface WorkOrderSubmissionCardProps {
