@@ -39,7 +39,8 @@ export const SubmissionsManager = () => {
     updateStatus, 
     updateWorkOrder,
     deleteSubmission, 
-    exportToCSV 
+    exportToCSV,
+    exportToICS
   } = useSubmissions(submissionType, statusFilter);
 
   const filteredSubmissions = useMemo(() => {
