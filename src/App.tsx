@@ -28,7 +28,7 @@ import ContactUs from "./pages/ContactUs";
 import NotFound from "./pages/NotFound";
 import Financing from "./pages/Financing";
 import Sitemap from "./pages/Sitemap";
-import GoogleAnalytics from "./components/GoogleAnalytics";
+import GoogleTagManager from "./components/GoogleTagManager";
 import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
