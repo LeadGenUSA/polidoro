@@ -41,7 +41,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <GoogleAnalytics />
+          <GoogleTagManager />
           <CookieConsent />
           <Routes>
             <Route path="/" element={<Index />} />
