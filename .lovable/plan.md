@@ -1,36 +1,33 @@
 
 
-## Enforce Minimum 1 Admin via Database Trigger
+## Install Google Tag Manager and Migrate GA4 Into It
 
-### Overview
-Add a database trigger on the `user_roles` table that prevents deleting the last remaining admin role. This provides server-side protection that cannot be bypassed, complementing the existing client-side self-revocation guard.
+### What Changes
+Replace the direct GA4 (`gtag.js`) script with Google Tag Manager (GTM). GA4 will then be configured as a tag *inside* GTM's web dashboard, not in code. This also lets you add Meta Pixel, Google Ads conversions, remarketing tags, and any other tracking from the GTM dashboard without future code changes.
 
-### Changes
+### Prerequisites
+You need a GTM Container ID (format: `GTM-XXXXXXX`). Create one at [tagmanager.google.com](https://tagmanager.google.com) if you don't have one yet. Inside GTM, add a "Google Analytics: GA4 Configuration" tag with your measurement ID `G-KXRSCVDJY5` and set it to fire on "All Pages".
 
-**1. Database Migration: Create a validation trigger**
-- Create a function `prevent_last_admin_deletion()` that runs BEFORE DELETE on `user_roles`
-- The function counts remaining admin roles; if only 1 remains and it's the one being deleted, it raises an exception
-- This protects against all deletion paths: client UI, direct database access, or API calls
+### File Changes
 
-```text
-DELETE attempt on user_roles
-        |
-  [BEFORE DELETE trigger]
-        |
-  Count admin roles remaining
-        |
-  If this is the last one --> RAISE EXCEPTION
-  Otherwise              --> Allow deletion
-```
+**Rename `src/components/GoogleAnalytics.tsx` → `src/components/GoogleTagManager.tsx`**
+- Replace the gtag.js script injection with the standard GTM snippet (`googletagmanager.com/gtm.js?id=GTM_ID`)
+- Keep the same consent-first logic: only inject the GTM script when `cookie-consent` is `accepted`
+- Keep admin route exclusion
+- Push a `pageview` event to `dataLayer` on each route change so GTM can pick it up
+- Add a `<noscript>` iframe fallback via a portal to `document.body`
 
-**2. Update `UserRolesManager.tsx` client-side**
-- Catch the specific error message from the trigger in the `revokeAdmin` mutation's `onError` handler
-- Display a user-friendly toast: "Cannot remove the last admin. At least one admin must exist."
+**Update `src/App.tsx`**
+- Change the import from `GoogleAnalytics` to `GoogleTagManager`
 
-### Technical Details
+**Update `index.html`**
+- No changes needed — the script is injected dynamically
 
-- The trigger uses `SECURITY DEFINER` to bypass RLS when counting admin roles
-- The error message from Postgres will contain a identifiable string (e.g., "Cannot delete the last admin") that the client can detect
-- No changes to existing RLS policies are needed
-- The trigger only fires on DELETE, so granting new admin roles is unaffected
+### GTM Container ID
+The GTM container ID will be stored as a constant in the component. Since it's a public/publishable ID (visible in page source on any site using GTM), it's safe to keep in code.
+
+### What You Configure in GTM Dashboard (no code needed)
+- GA4 Configuration tag with `G-KXRSCVDJY5`
+- Any future tags: Meta Pixel, Google Ads, Hotjar, etc.
+- Consent mode integration if desired
 
