@@ -40,6 +40,7 @@ const Hero = () => {
   const [count, setCount] = useState(0);
   const [slides, setSlides] = useState<SlideItem[]>(defaultSlides);
   const autoplayRef = useRef<ReturnType<typeof Autoplay> | null>(null);
+  const videoRefs = useRef<Map<number, HTMLVideoElement>>(new Map());
 
   // Track slides in a ref so the autoplay delay function always reads current slides
   const slidesRef = useRef<SlideItem[]>(slides);
@@ -111,6 +112,19 @@ const Hero = () => {
       api.off('select', onSelect);
     };
   }, [api]);
+
+  // Coordinate video playback: only the active slide's video plays
+  useEffect(() => {
+    videoRefs.current.forEach((video, index) => {
+      if (index === current) {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+        video.currentTime = 0;
+      }
+    });
+  }, [current, slides]);
   const scrollPrev = useCallback(() => {
     api?.scrollPrev();
   }, [api]);
@@ -222,7 +236,7 @@ const Hero = () => {
                 <CarouselContent>
                   {slides.map((slide, index) => <CarouselItem key={index}>
                       {slide.link_url ? <a href={slide.link_url} target="_blank" rel="noopener noreferrer" className="block relative cursor-pointer group">
-                          {slide.type === 'video' ? <video src={slide.src} autoPlay muted={!slide.show_volume_controls} playsInline controls={slide.show_volume_controls} onEnded={() => api?.scrollNext()} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
+                          {slide.type === 'video' ? <video ref={(el) => { if (el) videoRefs.current.set(index, el); else videoRefs.current.delete(index); }} src={slide.src} muted={!slide.show_volume_controls} playsInline controls={slide.show_volume_controls} onEnded={() => api?.scrollNext()} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
                           {/* Overlay Text */}
                           {(slide.overlay_title || slide.overlay_text) && <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
                               {slide.overlay_title && <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
@@ -235,7 +249,7 @@ const Hero = () => {
                           {/* Click indicator on hover */}
                           <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors pointer-events-none" />
                         </a> : <div className="relative">
-                          {slide.type === 'video' ? <video src={slide.src} autoPlay muted={!slide.show_volume_controls} playsInline controls={slide.show_volume_controls} onEnded={() => api?.scrollNext()} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
+                          {slide.type === 'video' ? <video ref={(el) => { if (el) videoRefs.current.set(index, el); else videoRefs.current.delete(index); }} src={slide.src} muted={!slide.show_volume_controls} playsInline controls={slide.show_volume_controls} onEnded={() => api?.scrollNext()} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
                           {/* Overlay Text */}
                           {(slide.overlay_title || slide.overlay_text) && <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
                               {slide.overlay_title && <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
