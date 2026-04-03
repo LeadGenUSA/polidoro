@@ -40,6 +40,7 @@ const Hero = () => {
   const [count, setCount] = useState(0);
   const [slides, setSlides] = useState<SlideItem[]>(defaultSlides);
   const autoplayRef = useRef<ReturnType<typeof Autoplay> | null>(null);
+  const videoRefs = useRef<Map<number, HTMLVideoElement>>(new Map());
 
   // Track slides in a ref so the autoplay delay function always reads current slides
   const slidesRef = useRef<SlideItem[]>(slides);
