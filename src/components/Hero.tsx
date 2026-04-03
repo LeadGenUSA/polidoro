@@ -114,7 +114,7 @@ const Hero = () => {
   }, [api]);
 
   // Coordinate video playback: only the active slide's video plays
-  useEffect(() => {
+  const playActiveVideo = useCallback(() => {
     videoRefs.current.forEach((video, index) => {
       if (index === current) {
         video.currentTime = 0;
@@ -124,7 +124,11 @@ const Hero = () => {
         video.currentTime = 0;
       }
     });
-  }, [current, slides, videoRefsReady]);
+  }, [current]);
+
+  useEffect(() => {
+    playActiveVideo();
+  }, [playActiveVideo, slides]);
   const scrollPrev = useCallback(() => {
     api?.scrollPrev();
   }, [api]);
