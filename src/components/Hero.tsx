@@ -125,7 +125,7 @@ const Hero = () => {
         video.currentTime = 0;
       }
     });
-  }, [current, slides]);
+  }, [current, slides, videoRefsReady]);
   const scrollPrev = useCallback(() => {
     api?.scrollPrev();
   }, [api]);
