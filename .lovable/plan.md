@@ -1,47 +1,33 @@
 
 
-## Fix First Video Not Auto-Playing
+## Install Google Ads Tag (AW-17977213592)
 
 ### Problem
-On initial page load, the video playback `useEffect` runs when `current = 0`, but at that point the video element hasn't been registered in the `videoRefs` map yet (the carousel/video haven't mounted). When the video ref callback later fires and registers the element, nothing triggers the playback effect again because `current` is still `0`.
+The Google Ads tag is not installed anywhere in the codebase. Google Ads scanner (like GTM's scanner) needs to see the `gtag.js` snippet directly in the HTML to detect it.
 
-### Solution
-Add a small trigger mechanism so the first video starts playing once it's actually registered in the ref map.
+### Recommended Approach
+Since you already have GTM installed, the **best practice** is to add the Google Ads tag **inside your GTM container** (via the GTM dashboard) rather than hardcoding another script. However, Google Ads' tag detection scanner often doesn't recognize tags loaded through GTM — it specifically looks for the `gtag.js` snippet in the page source.
 
-### Changes — `src/components/Hero.tsx`
+To satisfy the scanner **and** respect your existing Consent Mode setup, we'll add the Google Ads `gtag('config')` call directly in `index.html` alongside the existing consent defaults.
 
-1. **Track video ref registration with a counter state** — add a `videoRefsReady` state counter that increments each time a video ref is registered via the callback. Include it as a dependency in the playback `useEffect`.
+### Changes
 
-2. **Update video ref callbacks** — when a video element is registered in the map, increment the counter to re-trigger the playback effect.
+#### `index.html`
+After the existing consent default script block and before the GTM script, add:
 
-3. **Playback effect** — add `videoRefsReady` to the dependency array of the existing coordination `useEffect` so it re-runs when new video elements mount:
-
-```tsx
-const [videoRefsReady, setVideoRefsReady] = useState(0);
-
-// ref callback becomes:
-ref={(el) => {
-  if (el) {
-    videoRefs.current.set(index, el);
-    setVideoRefsReady(c => c + 1);
-  } else {
-    videoRefs.current.delete(index);
-  }
-}}
-
-// playback effect adds videoRefsReady:
-useEffect(() => {
-  videoRefs.current.forEach((video, idx) => {
-    if (idx === current) {
-      video.currentTime = 0;
-      video.play().catch(() => {});
-    } else {
-      video.pause();
-      video.currentTime = 0;
-    }
-  });
-}, [current, slides, videoRefsReady]);
+```html
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17977213592"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('config', 'AW-17977213592');
+</script>
 ```
 
-This ensures that when the first video element mounts and registers its ref, the playback effect fires and starts playing it.
+This will:
+- Be detected by the Google Ads scanner immediately
+- Automatically respect the Consent Mode defaults (`denied`) already set above it
+- Start firing conversion data once consent is granted via the cookie banner
+
+No other files need changes — the existing `GoogleTagManager.tsx` consent update logic already calls `gtag('consent', 'update', ...)` which applies to all gtag-based tags on the page.
 
