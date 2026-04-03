@@ -112,6 +112,19 @@ const Hero = () => {
       api.off('select', onSelect);
     };
   }, [api]);
+
+  // Coordinate video playback: only the active slide's video plays
+  useEffect(() => {
+    videoRefs.current.forEach((video, index) => {
+      if (index === current) {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+        video.currentTime = 0;
+      }
+    });
+  }, [current, slides]);
   const scrollPrev = useCallback(() => {
     api?.scrollPrev();
   }, [api]);
