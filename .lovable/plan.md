@@ -1,33 +1,35 @@
 
 
-## Install Google Ads Tag (AW-17977213592)
+## Fix Favicon Showing Lovable Icon in Search Results
 
-### Problem
-The Google Ads tag is not installed anywhere in the codebase. Google Ads scanner (like GTM's scanner) needs to see the `gtag.js` snippet directly in the HTML to detect it.
-
-### Recommended Approach
-Since you already have GTM installed, the **best practice** is to add the Google Ads tag **inside your GTM container** (via the GTM dashboard) rather than hardcoding another script. However, Google Ads' tag detection scanner often doesn't recognize tags loaded through GTM — it specifically looks for the `gtag.js` snippet in the page source.
-
-To satisfy the scanner **and** respect your existing Consent Mode setup, we'll add the Google Ads `gtag('config')` call directly in `index.html` alongside the existing consent defaults.
+### Root Cause
+There are two issues:
+1. **`public/favicon.ico` contains the Lovable icon** — browsers and crawlers fetch `/favicon.ico` automatically by default, ignoring the `<link>` tag pointing to `favicon.png`
+2. **Missing icon declarations** — Google Search prefers icons declared via `apple-touch-icon` and/or a web manifest with 192×192px+ icons. Without these, it may pick up the wrong icon.
 
 ### Changes
 
-#### `index.html`
-After the existing consent default script block and before the GTM script, add:
+#### 1. Replace `favicon.ico` with your actual logo
+- Delete the existing `public/favicon.ico` (which has the Lovable icon)
+- Generate a proper `.ico` from your `favicon.png` using an image conversion script
+- This ensures any browser or crawler requesting `/favicon.ico` gets your logo
 
+#### 2. Generate sized icon variants from `favicon.png`
+- Create `apple-touch-icon.png` (180×180)
+- Create `favicon-192.png` (192×192) — the minimum size Google requires
+- Create `favicon-32.png` and `favicon-16.png` for browser tabs
+
+#### 3. Update `index.html` with proper icon declarations
+Add these tags to `<head>`:
 ```html
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17977213592"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('config', 'AW-17977213592');
-</script>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
 ```
 
-This will:
-- Be detected by the Google Ads scanner immediately
-- Automatically respect the Consent Mode defaults (`denied`) already set above it
-- Start firing conversion data once consent is granted via the cookie banner
+Remove the old single `<link rel="icon" href="/favicon.png">` line (638KB is far too large for a favicon).
 
-No other files need changes — the existing `GoogleTagManager.tsx` consent update logic already calls `gtag('consent', 'update', ...)` which applies to all gtag-based tags on the page.
+#### 4. After publishing
+Google caches favicons aggressively. After deploying, it may take days to weeks for the updated icon to appear in search results. You can request re-indexing via Google Search Console to speed this up.
 
