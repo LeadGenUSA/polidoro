@@ -95,6 +95,17 @@ const WorkOrderForm = () => {
 
       if (error) throw error;
 
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'lead_submit', {
+          event_category: 'lead',
+          event_label: 'work_order',
+          value: 1,
+        });
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-17977213592',
+        });
+      }
+
       setIsSubmitted(true);
       toast({
         title: 'Work Order Submitted',

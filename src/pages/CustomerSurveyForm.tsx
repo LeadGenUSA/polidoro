@@ -86,6 +86,17 @@ const CustomerSurveyForm = () => {
 
       if (error) throw error;
 
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'lead_submit', {
+          event_category: 'lead',
+          event_label: 'customer_survey',
+          value: 1,
+        });
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-17977213592',
+        });
+      }
+
       setIsSubmitted(true);
       toast({
         title: 'Survey Submitted',
