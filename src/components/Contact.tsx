@@ -54,6 +54,17 @@ const Contact = () => {
 
       if (error) throw error;
 
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'lead_submit', {
+          event_category: 'lead',
+          event_label: 'contact_form',
+          value: 1,
+        });
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-17977213592',
+        });
+      }
+
       setShowThankYou(true);
       setFormData({ name: '', email: '', phone: '', message: '' });
       setTurnstileToken(null);
