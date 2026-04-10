@@ -1,35 +1,54 @@
 
 
-## Fix Favicon Showing Lovable Icon in Search Results
+## Track Real Lead Conversions After Confirmed Email Send
 
-### Root Cause
-There are two issues:
-1. **`public/favicon.ico` contains the Lovable icon** — browsers and crawlers fetch `/favicon.ico` automatically by default, ignoring the `<link>` tag pointing to `favicon.png`
-2. **Missing icon declarations** — Google Search prefers icons declared via `apple-touch-icon` and/or a web manifest with 192×192px+ icons. Without these, it may pick up the wrong icon.
+### Overview
+Fire GA4 `lead_submit` and Google Ads `conversion` events on the frontend **only** after the backend confirms the Resend email was successfully sent. The backend already returns `{ success: true }` only after `sendEmail()` succeeds, so no backend changes are needed.
 
-### Changes
+### What Changes
 
-#### 1. Replace `favicon.ico` with your actual logo
-- Delete the existing `public/favicon.ico` (which has the Lovable icon)
-- Generate a proper `.ico` from your `favicon.png` using an image conversion script
-- This ensures any browser or crawler requesting `/favicon.ico` gets your logo
+**5 frontend files** get `gtag()` calls added right before the success UI is shown:
 
-#### 2. Generate sized icon variants from `favicon.png`
-- Create `apple-touch-icon.png` (180×180)
-- Create `favicon-192.png` (192×192) — the minimum size Google requires
-- Create `favicon-32.png` and `favicon-16.png` for browser tabs
+1. **`src/components/Contact.tsx`** — Homepage contact form
+2. **`src/components/ContactForm.tsx`** — Contact Us page form
+3. **`src/pages/FreeEstimateForm.tsx`** — Free estimate form
+4. **`src/pages/WorkOrderForm.tsx`** — Work order form
+5. **`src/pages/CustomerSurveyForm.tsx`** — Customer survey form
 
-#### 3. Update `index.html` with proper icon declarations
-Add these tags to `<head>`:
-```html
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+### What Gets Added (same pattern in each file)
+
+After `if (error) throw error;` and before the success state update, add:
+
+```typescript
+// Fire GA4 lead event
+if (typeof window.gtag === 'function') {
+  window.gtag('event', 'lead_submit', {
+    event_category: 'lead',
+    event_label: 'contact_form', // varies per form
+    value: 1,
+  });
+}
+
+// Fire Google Ads conversion
+if (typeof window.gtag === 'function') {
+  window.gtag('event', 'conversion', {
+    send_to: 'AW-17977213592',
+  });
+}
 ```
 
-Remove the old single `<link rel="icon" href="/favicon.png">` line (638KB is far too large for a favicon).
+Each form gets a unique `event_label` so you can distinguish lead sources in GA4:
+- `contact_form` (Contact.tsx and ContactForm.tsx)
+- `free_estimate` (FreeEstimateForm.tsx)
+- `work_order` (WorkOrderForm.tsx)
+- `customer_survey` (CustomerSurveyForm.tsx)
 
-#### 4. After publishing
-Google caches favicons aggressively. After deploying, it may take days to weeks for the updated icon to appear in search results. You can request re-indexing via Google Search Console to speed this up.
+### TypeScript
+A `window.gtag` type declaration will be added to `src/vite-env.d.ts` to avoid TS errors.
+
+### Google Ads Conversion Label
+You provided `AW-17977213592` as the tag ID. Once you create a specific conversion action in Google Ads (Tools → Conversions → New), you'll get a label like `AW-17977213592/AbCdEfGh`. I'll use just the tag ID for now — you can update the `send_to` value later with the full label.
+
+### No Backend Changes Needed
+The edge functions already return `{ success: true }` only after `sendEmail()` completes successfully. If Resend fails, it throws an error which results in a 500 response, and `supabase.functions.invoke` returns that as an error — so the gtag calls never fire on failure.
 
