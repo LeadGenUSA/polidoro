@@ -3,12 +3,6 @@ import { useLocation } from 'react-router-dom';
 
 const CONSENT_KEY = 'cookie-consent';
 
-declare global {
-  interface Window {
-    dataLayer: Record<string, unknown>[];
-    gtag: (...args: unknown[]) => void;
-  }
-}
 
 const GoogleTagManager = () => {
   const location = useLocation();
