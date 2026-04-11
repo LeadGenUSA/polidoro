@@ -68,8 +68,8 @@ const Index = () => {
       <SEO
         title="Big City Plumbing and Heating - Licensed Plumbers, Long Island &amp; NYC"
         description="Licensed plumbing and heating services for Long Island and New York City. Boiler installation, oil to gas conversion, radiant heat, and 24-hour emergency service. Call 631-361-9500."
-        path="/"
-        jsonLd={localBusinessSchema}
+        canonical="/"
+        schemaJson={localBusinessSchema}
       />
       <Navbar />
       <Hero />

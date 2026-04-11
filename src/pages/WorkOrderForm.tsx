@@ -165,7 +165,7 @@ const WorkOrderForm = () => {
       <SEO
         title="Work Order - Big City Plumbing and Heating"
         description="Submit a work order for plumbing or heating service from Big City Plumbing and Heating. Fast, professional service across Long Island and NYC."
-        path="/work-order"
+        canonical="/work-order"
       />
       <Navbar />
       

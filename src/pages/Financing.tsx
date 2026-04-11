@@ -41,7 +41,7 @@ const Financing = () => {
       <SEO
         title="Financing Available | Big City Plumbing & Heating"
         description="Flexible home improvement financing through Regions Bank. Apply for a Traditional Installment Loan, 12-Month Same-As-Cash, or 5-Year fixed rate loan. Pre-qualify in minutes."
-        path="/financing"
+        canonical="/financing"
       />
       <Navbar />
 

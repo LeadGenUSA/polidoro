@@ -51,7 +51,7 @@ const AboutUs = () => {
       <SEO
         title="About Us - Big City Plumbing and Heating"
         description="Family-owned plumbing and heating company with 35+ years of experience serving Long Island and NYC. Meet owner Michael Polidoro, former NYC Plumbing Inspector."
-        path="/about-us"
+        canonical="/about-us"
       />
       <Navbar />
       

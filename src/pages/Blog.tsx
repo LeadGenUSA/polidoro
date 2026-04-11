@@ -13,7 +13,7 @@ const Blog = () => {
       <SEO
         title="Blog - Big City Plumbing and Heating"
         description="Expert plumbing and heating tips, advice, and industry news from Big City Plumbing and Heating. Stay informed about home comfort and maintenance."
-        path="/blog"
+        canonical="/blog"
       />
       <Navbar />
 

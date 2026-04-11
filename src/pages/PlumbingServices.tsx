@@ -94,8 +94,8 @@ const PlumbingServices = () => {
       <SEO
         title="Plumbing Services - Big City Plumbing and Heating"
         description="Expert residential and commercial plumbing services in Long Island and NYC. Repairs, installations, permits, backflow testing, and 24-hour emergency plumbing."
-        path="/plumbing-services"
-        jsonLd={plumbingServiceSchema} />
+        canonical="/plumbing-services"
+        schemaJson={plumbingServiceSchema} />
 
       <Navbar />
       

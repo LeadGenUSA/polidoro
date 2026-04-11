@@ -115,7 +115,7 @@ const Services = () => {
       <SEO
         title="Our Services - Big City Plumbing and Heating"
         description="Full range of plumbing and heating services for Long Island and NYC. Repairs, installations, oil to gas conversions, radiant heat, and emergency service."
-        path="/services"
+        canonical="/services"
       />
       <Navbar />
       

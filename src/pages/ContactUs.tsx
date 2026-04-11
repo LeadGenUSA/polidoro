@@ -10,7 +10,7 @@ const ContactUs = () => {
       <SEO
         title="Contact Us - Big City Plumbing and Heating"
         description="Get in touch for plumbing and heating services in Long Island and NYC. Call 631-361-9500 or 718-326-5833 for estimates, repairs, and emergency service."
-        path="/contact-us" />
+        canonical="/contact-us" />
 
       <Navbar />
       
