@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import SEO from '@/components/SEO';
 import { useReviews } from '@/hooks/useReviews';
 import { useAllSubmissionCounts } from '@/hooks/useSubmissions';
 import { ReviewCard } from '@/components/admin/ReviewCard';
