@@ -117,6 +117,7 @@ const AdminLogin = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <SEO title="Admin Login" description="Admin login." noIndex />
       <div className="w-full max-w-md">
         <Button 
           variant="ghost" 
