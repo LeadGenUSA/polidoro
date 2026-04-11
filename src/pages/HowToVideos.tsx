@@ -49,7 +49,7 @@ const HowToVideos = () => {
       <SEO
         title="How-To Videos - Big City Plumbing and Heating"
         description="Helpful plumbing and heating video guides from Big City Plumbing and Heating. Learn about Navien systems, boiler maintenance, and home plumbing tips."
-        path="/how-to-videos"
+        canonical="/how-to-videos"
       />
       <Navbar />
 

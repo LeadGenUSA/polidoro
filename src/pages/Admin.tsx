@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import SEO from '@/components/SEO';
 import { useReviews } from '@/hooks/useReviews';
 import { useAllSubmissionCounts } from '@/hooks/useSubmissions';
 import { ReviewCard } from '@/components/admin/ReviewCard';
@@ -71,6 +72,7 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Admin Dashboard" description="Admin dashboard." noIndex />
       {/* Header */}
       <header className="bg-card border-b sticky top-0 z-50">
         <div className="container mx-auto px-4 lg:px-8">

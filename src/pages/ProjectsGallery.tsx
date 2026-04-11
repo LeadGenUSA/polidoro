@@ -53,7 +53,7 @@ const ProjectsGallery = () => {
       <SEO
         title="Projects Gallery - Big City Plumbing and Heating"
         description="View our completed plumbing and heating projects including boiler installations, tankless water heaters, radiant heat systems, and commercial plumbing work."
-        path="/projects-gallery"
+        canonical="/projects-gallery"
       />
       <Navbar />
       

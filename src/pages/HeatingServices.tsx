@@ -91,8 +91,8 @@ const HeatingServices = () => {
       <SEO
         title="Heating Services - Big City Plumbing and Heating"
         description="Boiler repair, radiant heat installation, oil to gas conversions, and complete heating solutions for Long Island and NYC. Licensed and insured professionals."
-        path="/heating-services"
-        jsonLd={heatingServiceSchema}
+        canonical="/heating-services"
+        schemaJson={heatingServiceSchema}
       />
       <Navbar />
       

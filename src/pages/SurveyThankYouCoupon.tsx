@@ -1,23 +1,12 @@
-import { useEffect } from 'react';
 import { Printer, Scissors, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import logo from '@/assets/big-city-plumbing-and-heating-logo-2.png';
 
 const SurveyThankYouCoupon = () => {
-  // Prevent search engine indexing
-  useEffect(() => {
-    const metaRobots = document.createElement('meta');
-    metaRobots.name = 'robots';
-    metaRobots.content = 'noindex, nofollow';
-    document.head.appendChild(metaRobots);
-
-    return () => {
-      document.head.removeChild(metaRobots);
-    };
-  }, []);
 
   const handlePrint = () => {
     window.print();
@@ -25,6 +14,7 @@ const SurveyThankYouCoupon = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO title="Thank You - Big City Plumbing and Heating" description="Thank you for your feedback." noIndex />
       <Navbar />
       
       {/* Hero Section */}

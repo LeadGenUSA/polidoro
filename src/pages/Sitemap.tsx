@@ -78,7 +78,7 @@ const Sitemap = () => {
       <SEO
         title="Sitemap | Big City Plumbing & Heating"
         description="Browse all pages on Big City Plumbing & Heating. Find plumbing services, heating services, resources, and more."
-        path="/sitemap"
+        canonical="/sitemap"
       />
       <Navbar />
 

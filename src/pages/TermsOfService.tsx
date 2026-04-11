@@ -93,7 +93,7 @@ const TermsOfService = () => {
       <SEO
         title="Terms of Service - Big City Plumbing and Heating"
         description="Terms and conditions for Big City Plumbing and Heating services. Read our service agreements, warranties, and policies."
-        path="/terms-of-service"
+        canonical="/terms-of-service"
       />
       <Navbar />
       

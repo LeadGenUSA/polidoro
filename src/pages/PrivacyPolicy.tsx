@@ -85,7 +85,7 @@ const PrivacyPolicy = () => {
       <SEO
         title="Privacy Policy - Big City Plumbing and Heating"
         description="How Big City Plumbing and Heating collects, uses, and protects your personal information. Read our privacy policy for details on data security."
-        path="/privacy-policy"
+        canonical="/privacy-policy"
       />
       <Navbar />
       

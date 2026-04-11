@@ -155,7 +155,7 @@ const CustomerSurveyForm = () => {
       <SEO
         title="Customer Survey - Big City Plumbing and Heating"
         description="Share your feedback about our plumbing and heating services. Your opinion helps Big City Plumbing and Heating continue to improve."
-        path="/customer-survey"
+        canonical="/customer-survey"
       />
       <Navbar />
       

@@ -287,7 +287,7 @@ const FreeEstimateForm = () => {
       <SEO
         title="Free Estimate - Big City Plumbing and Heating"
         description="Request a free plumbing or heating estimate from Big City Plumbing and Heating. Serving Long Island and NYC with licensed, insured professionals."
-        path="/free-estimate"
+        canonical="/free-estimate"
       />
       <Navbar />
       
