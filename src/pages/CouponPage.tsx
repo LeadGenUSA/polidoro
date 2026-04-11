@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEO from '@/components/SEO';
 import logo from '@/assets/big-city-plumbing-and-heating-logo-2.png';
 
 const CouponPage = () => {
@@ -12,6 +13,7 @@ const CouponPage = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO title="Coupon - Big City Plumbing and Heating" description="Save on your next plumbing or heating service." noIndex />
       <Navbar />
       
       {/* Hero Section */}
