@@ -45,6 +45,39 @@ const stats = [
   { value: '100%', label: 'Satisfaction Rate' },
 ];
 
+const aboutSchema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "About Big City Plumbing & Heating",
+    "description": "Family-owned plumbing and heating company with 35+ years of experience serving Long Island and NYC.",
+    "url": "https://www.bigcityplumbing.com/about-us",
+    "mainEntity": {
+      "@type": "LocalBusiness",
+      "name": "Big City Plumbing & Heating Inc.",
+      "foundingDate": "1988",
+      "telephone": "631-361-9500",
+      "url": "https://www.bigcityplumbing.com"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Michael Polidoro",
+    "jobTitle": "Master Plumber & Owner",
+    "worksFor": {
+      "@type": "LocalBusiness",
+      "name": "Big City Plumbing & Heating Inc."
+    },
+    "knowsAbout": ["Plumbing", "Heating Systems", "Backflow Prevention", "Gas Conversion"],
+    "hasCredential": credentials.map(c => ({
+      "@type": "EducationalOccupationalCredential",
+      "credentialCategory": "Professional License",
+      "name": c
+    }))
+  }
+];
+
 const AboutUs = () => {
   return (
     <div className="min-h-screen">
@@ -52,6 +85,7 @@ const AboutUs = () => {
         title="About Us - Big City Plumbing and Heating"
         description="Family-owned plumbing and heating company with 35+ years of experience serving Long Island and NYC. Meet owner Michael Polidoro, former NYC Plumbing Inspector."
         canonical="/about-us"
+        schemaJson={aboutSchema}
       />
       <Navbar />
       

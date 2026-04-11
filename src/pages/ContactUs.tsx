@@ -4,13 +4,41 @@ import ContactForm from '@/components/ContactForm';
 import SEO from '@/components/SEO';
 import { Phone, MapPin } from 'lucide-react';
 
+const contactSchema = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "Contact Big City Plumbing & Heating",
+  "url": "https://www.bigcityplumbing.com/contact-us",
+  "mainEntity": {
+    "@type": "LocalBusiness",
+    "name": "Big City Plumbing & Heating Inc.",
+    "telephone": ["631-361-9500", "718-326-5833"],
+    "url": "https://www.bigcityplumbing.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "2639-2 Middle County Road",
+      "addressLocality": "Centereach",
+      "addressRegion": "NY",
+      "postalCode": "11720",
+      "addressCountry": "US"
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "00:00",
+      "closes": "23:59"
+    }
+  }
+};
+
 const ContactUs = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
         title="Contact Us - Big City Plumbing and Heating"
         description="Get in touch for plumbing and heating services in Long Island and NYC. Call 631-361-9500 or 718-326-5833 for estimates, repairs, and emergency service."
-        canonical="/contact-us" />
+        canonical="/contact-us"
+        schemaJson={contactSchema} />
 
       <Navbar />
       

@@ -98,6 +98,31 @@ const services = [
   }
 ];
 
+const servicesSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Plumbing & Heating Services",
+  "description": "Full range of plumbing and heating services for Long Island and NYC.",
+  "itemListElement": services.map((service, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "item": {
+      "@type": "Service",
+      "name": service.title,
+      "description": service.description,
+      "provider": {
+        "@type": "LocalBusiness",
+        "name": "Big City Plumbing & Heating Inc.",
+        "telephone": "631-361-9500",
+        "url": "https://www.bigcityplumbing.com"
+      },
+      "areaServed": [
+        { "@type": "State", "name": "New York" }
+      ]
+    }
+  }))
+};
+
 const Services = () => {
   const location = useLocation();
 
@@ -116,6 +141,7 @@ const Services = () => {
         title="Our Services - Big City Plumbing and Heating"
         description="Full range of plumbing and heating services for Long Island and NYC. Repairs, installations, oil to gas conversions, radiant heat, and emergency service."
         canonical="/services"
+        schemaJson={servicesSchema}
       />
       <Navbar />
       
