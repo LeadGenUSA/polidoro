@@ -40,6 +40,19 @@ const staticGalleryItems = [
   },
 ];
 
+const gallerySchema = {
+  "@context": "https://schema.org",
+  "@type": "ImageGallery",
+  "name": "Project Gallery - Big City Plumbing & Heating",
+  "description": "Browse our portfolio of completed plumbing and heating installations.",
+  "url": "https://www.bigcityplumbing.com/projects-gallery",
+  "creator": {
+    "@type": "LocalBusiness",
+    "name": "Big City Plumbing & Heating Inc.",
+    "url": "https://www.bigcityplumbing.com"
+  }
+};
+
 const ProjectsGallery = () => {
   const { items, isLoading } = useGallery();
   const [selectedItem, setSelectedItem] = useState<GalleryItem | typeof staticGalleryItems[0] | null>(null);
@@ -54,6 +67,7 @@ const ProjectsGallery = () => {
         title="Projects Gallery - Big City Plumbing and Heating"
         description="View our completed plumbing and heating projects including boiler installations, tankless water heaters, radiant heat systems, and commercial plumbing work."
         canonical="/projects-gallery"
+        schemaJson={gallerySchema}
       />
       <Navbar />
       

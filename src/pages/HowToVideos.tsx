@@ -14,6 +14,31 @@ const fallbackVideos = [
   { id: 'fallback-4', youtube_id: '0kwCdq1CKfI', title: 'Brownstone in East New York', duration: '1:01', view_count: '55', published_at: '2022-01-01', category: 'residential', thumbnail_url: 'https://i.ytimg.com/vi/0kwCdq1CKfI/hqdefault.jpg', is_active: true, description: null },
 ];
 
+const videosSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "How-To Plumbing & Heating Videos",
+  "description": "Helpful plumbing and heating video guides from Big City Plumbing and Heating.",
+  "url": "https://www.bigcityplumbing.com/how-to-videos",
+  "itemListElement": fallbackVideos.map((video, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "item": {
+      "@type": "VideoObject",
+      "name": video.title,
+      "thumbnailUrl": video.thumbnail_url,
+      "contentUrl": `https://www.youtube.com/watch?v=${video.youtube_id}`,
+      "embedUrl": `https://www.youtube.com/embed/${video.youtube_id}`,
+      "uploadDate": video.published_at,
+      "publisher": {
+        "@type": "Organization",
+        "name": "Big City Plumbing & Heating Inc.",
+        "url": "https://www.bigcityplumbing.com"
+      }
+    }
+  }))
+};
+
 const HowToVideos = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
@@ -50,6 +75,7 @@ const HowToVideos = () => {
         title="How-To Videos - Big City Plumbing and Heating"
         description="Helpful plumbing and heating video guides from Big City Plumbing and Heating. Learn about Navien systems, boiler maintenance, and home plumbing tips."
         canonical="/how-to-videos"
+        schemaJson={videosSchema}
       />
       <Navbar />
 

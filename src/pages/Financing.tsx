@@ -35,6 +35,30 @@ const loanPrograms = [
   },
 ];
 
+const financingSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Financing Options",
+  "url": "https://www.bigcityplumbing.com/financing",
+  "description": "Flexible home improvement financing through Regions Bank.",
+  "mainEntity": loanPrograms.map(program => ({
+    "@type": "FinancialProduct",
+    "name": program.title,
+    "description": program.description,
+    "provider": {
+      "@type": "BankOrCreditUnion",
+      "name": "Regions Bank",
+      "memberOf": { "@type": "Organization", "name": "FDIC" }
+    },
+    "broker": {
+      "@type": "LocalBusiness",
+      "name": "Big City Plumbing & Heating Inc.",
+      "url": "https://www.bigcityplumbing.com"
+    },
+    "url": program.link
+  }))
+};
+
 const Financing = () => {
   return (
     <>
@@ -42,6 +66,7 @@ const Financing = () => {
         title="Financing Available | Big City Plumbing & Heating"
         description="Flexible home improvement financing through Regions Bank. Apply for a Traditional Installment Loan, 12-Month Same-As-Cash, or 5-Year fixed rate loan. Pre-qualify in minutes."
         canonical="/financing"
+        schemaJson={financingSchema}
       />
       <Navbar />
 
