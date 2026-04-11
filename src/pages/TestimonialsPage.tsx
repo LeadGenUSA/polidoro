@@ -130,7 +130,7 @@ const TestimonialsPage = () => {
       <SEO
         title="Customer Reviews - Big City Plumbing and Heating"
         description="Read reviews from satisfied customers of Big City Plumbing and Heating. See why homeowners across Long Island and NYC trust us for plumbing and heating services."
-        path="/reviews"
+        canonical="/reviews"
       />
       <Navbar />
       
