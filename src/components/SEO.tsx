@@ -28,7 +28,7 @@ const SEOHead = ({ title, description, canonical, ogImage, noIndex, schemaJson }
       {title && <title>{title}</title>}
       {description && <meta name="description" content={description} />}
       {fullCanonical && <link rel="canonical" href={fullCanonical} />}
-      {noIndex && <meta name="robots" content="noindex, nofollow" />}
+      {effectiveNoIndex && <meta name="robots" content="noindex, nofollow" />}
 
       {title && <meta property="og:title" content={title} />}
       {description && <meta property="og:description" content={description} />}
