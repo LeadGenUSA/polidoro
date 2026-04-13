@@ -1,31 +1,40 @@
 
 
-## Add JSON-LD Schema Markup to 6 Pages
+## Fix "Duplicate without user-selected canonical" in Google Search Console
 
-Currently only Index, PlumbingServices, HeatingServices, and BlogPost have JSON-LD schema. The following pages should get schema for richer search results:
+### Problem
+Google is finding pages at multiple URLs (likely the `polidoro.lovable.app` domain and `www.bigcityplumbing.com`) without a clear canonical signal on some of them.
 
-### Pages & Schema Types
+### Changes
 
-| Page | Schema Type | Key Data |
-|------|------------|----------|
-| `Services.tsx` | `Service` (array) | 5 services with descriptions, wrapped in `ItemList` |
-| `AboutUs.tsx` | `AboutPage` + `Person` | Company info, Michael Polidoro credentials, 35+ years |
-| `ContactUs.tsx` | `ContactPage` + `LocalBusiness` | Two phone numbers, showroom address, hours |
-| `Financing.tsx` | `WebPage` with `FinancialProduct` offers | 3 loan programs from Regions Bank |
-| `ProjectsGallery.tsx` | `ImageGallery` | Collection of project images |
-| `HowToVideos.tsx` | `VideoGallery` / `ItemList` of `VideoObject` | YouTube how-to videos |
+#### 1. Add canonical to all noIndex pages (4 files)
+Even though these pages have `noIndex`, adding a canonical removes ambiguity for Google:
 
-### Implementation
+| File | Add canonical |
+|------|--------------|
+| `src/pages/CouponPage.tsx` | `canonical="/tenpercent-coupon"` |
+| `src/pages/SurveyThankYouCoupon.tsx` | `canonical="/survey-thank-you"` |
+| `src/pages/NotFound.tsx` | No canonical needed (dynamic URL) — already fine |
+| `src/pages/AdminLogin.tsx` | `canonical="/admin/login"` |
 
-Each page gets a `const schema = { ... }` object defined before the return statement, then passed as `schemaJson={schema}` to the existing `SEOHead` component. No new components or dependencies needed.
+#### 2. Add a `<meta name="robots" content="noindex">` to the Lovable subdomain
+Since the `polidoro.lovable.app` domain serves the same content as `www.bigcityplumbing.com`, the SEOHead component should detect when it's running on a non-canonical domain and automatically inject `noindex`. This prevents Google from indexing the Lovable URL entirely.
 
-All schema objects will use `"@context": "https://schema.org"` and reference `Big City Plumbing & Heating Inc.` as the provider/organization where applicable, consistent with the existing `localBusinessSchema` on the Index page.
+**Change in `src/components/SEO.tsx`:**
+- Add logic: if `window.location.hostname` does not match `www.bigcityplumbing.com`, force `noIndex = true` regardless of the prop value.
+- This way, even if Google crawls `polidoro.lovable.app/services`, it gets a `noindex` directive plus a canonical pointing to the real domain.
 
-### Files Changed (6)
-- `src/pages/Services.tsx`
-- `src/pages/AboutUs.tsx`
-- `src/pages/ContactUs.tsx`
-- `src/pages/Financing.tsx`
-- `src/pages/ProjectsGallery.tsx`
-- `src/pages/HowToVideos.tsx`
+#### 3. Ensure homepage canonical uses trailing-slash-free URL
+Already correct (`canonical="/"`), no change needed.
+
+### Files changed (4)
+- `src/components/SEO.tsx` — add non-canonical domain detection
+- `src/pages/CouponPage.tsx` — add canonical prop
+- `src/pages/SurveyThankYouCoupon.tsx` — add canonical prop
+- `src/pages/AdminLogin.tsx` — add canonical prop
+
+### What to do after deployment
+1. Wait for Google to re-crawl (or use "Request Indexing" in Search Console for key pages)
+2. The `polidoro.lovable.app` pages will drop out of the index as Google sees `noindex` on them
+3. The duplicate issue should resolve within 1-2 crawl cycles
 
