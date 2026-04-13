@@ -14,7 +14,7 @@ const SurveyThankYouCoupon = () => {
 
   return (
     <div className="min-h-screen">
-      <SEO title="Thank You - Big City Plumbing and Heating" description="Thank you for your feedback." noIndex />
+      <SEO title="Thank You - Big City Plumbing and Heating" description="Thank you for your feedback." canonical="/survey-thank-you" noIndex />
       <Navbar />
       
       {/* Hero Section */}

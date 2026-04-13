@@ -12,7 +12,12 @@ interface SEOHeadProps {
   schemaJson?: Record<string, unknown> | Record<string, unknown>[];
 }
 
+const CANONICAL_HOSTNAME = 'www.bigcityplumbing.com';
+
 const SEOHead = ({ title, description, canonical, ogImage, noIndex, schemaJson }: SEOHeadProps) => {
+  const isNonCanonicalDomain = typeof window !== 'undefined' && window.location.hostname !== CANONICAL_HOSTNAME;
+  const effectiveNoIndex = noIndex || isNonCanonicalDomain;
+
   const fullCanonical = canonical
     ? canonical.startsWith('http') ? canonical : `${BASE_URL}${canonical}`
     : undefined;
@@ -23,7 +28,7 @@ const SEOHead = ({ title, description, canonical, ogImage, noIndex, schemaJson }
       {title && <title>{title}</title>}
       {description && <meta name="description" content={description} />}
       {fullCanonical && <link rel="canonical" href={fullCanonical} />}
-      {noIndex && <meta name="robots" content="noindex, nofollow" />}
+      {effectiveNoIndex && <meta name="robots" content="noindex, nofollow" />}
 
       {title && <meta property="og:title" content={title} />}
       {description && <meta property="og:description" content={description} />}

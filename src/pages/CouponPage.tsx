@@ -13,7 +13,7 @@ const CouponPage = () => {
 
   return (
     <div className="min-h-screen">
-      <SEO title="Coupon - Big City Plumbing and Heating" description="Save on your next plumbing or heating service." noIndex />
+      <SEO title="Coupon - Big City Plumbing and Heating" description="Save on your next plumbing or heating service." canonical="/tenpercent-coupon" noIndex />
       <Navbar />
       
       {/* Hero Section */}
