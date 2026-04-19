@@ -7,12 +7,6 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useYouTubeVideos } from '@/hooks/useYouTubeVideos';
 
-const fallbackVideos = [
-  { id: 'fallback-1', youtube_id: '-4KY5CTyeZI', title: 'Navien Trip', duration: '0:47', view_count: '27', published_at: '2024-01-01T00:00:00Z', category: 'navien', thumbnail_url: 'https://i.ytimg.com/vi/-4KY5CTyeZI/hqdefault.jpg', is_active: true, description: null },
-  { id: 'fallback-2', youtube_id: 'g0jkuePC8-w', title: 'New Navien NFB Installation', duration: '0:55', view_count: '67', published_at: '2024-01-01T00:00:00Z', category: 'navien', thumbnail_url: 'https://i.ytimg.com/vi/g0jkuePC8-w/hqdefault.jpg', is_active: true, description: null },
-  { id: 'fallback-3', youtube_id: 'UmnFqPEHBNY', title: 'Old to New Navien Installation', duration: '0:11', view_count: '1.8K', published_at: '2022-01-01T00:00:00Z', category: 'installation', thumbnail_url: 'https://i.ytimg.com/vi/UmnFqPEHBNY/hqdefault.jpg', is_active: true, description: null },
-  { id: 'fallback-4', youtube_id: '0kwCdq1CKfI', title: 'Brownstone in East New York', duration: '1:01', view_count: '55', published_at: '2022-01-01T00:00:00Z', category: 'residential', thumbnail_url: 'https://i.ytimg.com/vi/0kwCdq1CKfI/hqdefault.jpg', is_active: true, description: null },
-];
 
 const toIsoUploadDate = (value: string | null): string | null => {
   if (!value) return null;
@@ -24,11 +18,9 @@ const toIsoUploadDate = (value: string | null): string | null => {
 const HowToVideos = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
-  const { videos: dbVideos, isLoading } = useYouTubeVideos();
+  const { videos, isLoading } = useYouTubeVideos();
 
-  const videos = dbVideos.length > 0 ? dbVideos : fallbackVideos;
-
-  const videosSchema = {
+  const videosSchema = videos.length > 0 ? {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "How-To Plumbing & Heating Videos",
@@ -56,7 +48,7 @@ const HowToVideos = () => {
         "item": item,
       };
     }),
-  };
+  } : null;
 
   // Derive categories dynamically
   const categorySet = new Set(videos.map(v => v.category).filter(Boolean) as string[]);
@@ -87,7 +79,7 @@ const HowToVideos = () => {
         title="How-To Videos - Big City Plumbing and Heating"
         description="Helpful plumbing and heating video guides from Big City Plumbing and Heating. Learn about Navien systems, boiler maintenance, and home plumbing tips."
         canonical="/how-to-videos"
-        schemaJson={videosSchema}
+        schemaJson={videosSchema ?? undefined}
       />
       <Navbar />
 
