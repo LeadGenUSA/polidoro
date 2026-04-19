@@ -1,40 +1,31 @@
 
+Google Search Console flagged 3 issues on the VideoObject schema in the How-To Videos page (`HowToVideos.tsx`):
 
-## Fix "Duplicate without user-selected canonical" in Google Search Console
+1. **Missing `description`** — schema doesn't include it
+2. **`uploadDate` missing timezone** — uses bare `2024-01-01` 
+3. **Invalid `uploadDate` value** — fallback dates are placeholders, not real upload dates
 
-### Problem
-Google is finding pages at multiple URLs (likely the `polidoro.lovable.app` domain and `www.bigcityplumbing.com`) without a clear canonical signal on some of them.
+## Root Cause
 
-### Changes
+In `src/pages/HowToVideos.tsx`, `videosSchema` is built from the static `fallbackVideos` array (placeholder dates like `'2024-01-01'`) and never includes `description`. It also never reflects real DB videos because schema is computed at module load, before the hook fetches data.
 
-#### 1. Add canonical to all noIndex pages (4 files)
-Even though these pages have `noIndex`, adding a canonical removes ambiguity for Google:
+## Fix
 
-| File | Add canonical |
-|------|--------------|
-| `src/pages/CouponPage.tsx` | `canonical="/tenpercent-coupon"` |
-| `src/pages/SurveyThankYouCoupon.tsx` | `canonical="/survey-thank-you"` |
-| `src/pages/NotFound.tsx` | No canonical needed (dynamic URL) — already fine |
-| `src/pages/AdminLogin.tsx` | `canonical="/admin/login"` |
+Rewrite the schema generation in `src/pages/HowToVideos.tsx`:
 
-#### 2. Add a `<meta name="robots" content="noindex">` to the Lovable subdomain
-Since the `polidoro.lovable.app` domain serves the same content as `www.bigcityplumbing.com`, the SEOHead component should detect when it's running on a non-canonical domain and automatically inject `noindex`. This prevents Google from indexing the Lovable URL entirely.
+1. **Move schema inside the component** so it uses live `videos` from the `useYouTubeVideos` hook (which has real `published_at` timestamps from YouTube API in proper ISO 8601 format with timezone, e.g. `2024-03-15T18:30:00Z`).
 
-**Change in `src/components/SEO.tsx`:**
-- Add logic: if `window.location.hostname` does not match `www.bigcityplumbing.com`, force `noIndex = true` regardless of the prop value.
-- This way, even if Google crawls `polidoro.lovable.app/services`, it gets a `noindex` directive plus a canonical pointing to the real domain.
+2. **Add `description` field** to each VideoObject — use `video.description` when available, otherwise fall back to a generated string like `` `${video.title} - Plumbing and heating video by Big City Plumbing & Heating Inc.` ``.
 
-#### 3. Ensure homepage canonical uses trailing-slash-free URL
-Already correct (`canonical="/"`), no change needed.
+3. **Fix `uploadDate`** with a safe helper:
+   - If `published_at` is a valid date → `new Date(published_at).toISOString()` (gives full ISO 8601 with `Z` UTC timezone)
+   - If invalid/missing → omit the field entirely (better than emitting bad data)
 
-### Files changed (4)
-- `src/components/SEO.tsx` — add non-canonical domain detection
-- `src/pages/CouponPage.tsx` — add canonical prop
-- `src/pages/SurveyThankYouCoupon.tsx` — add canonical prop
-- `src/pages/AdminLogin.tsx` — add canonical prop
+4. **Update fallback data** so the placeholder dates use full ISO format with timezone (`2024-01-01T00:00:00Z`) — this only matters until DB sync runs, but prevents bad data if fallback ever ships.
 
-### What to do after deployment
-1. Wait for Google to re-crawl (or use "Request Indexing" in Search Console for key pages)
-2. The `polidoro.lovable.app` pages will drop out of the index as Google sees `noindex` on them
-3. The duplicate issue should resolve within 1-2 crawl cycles
+5. Pass the dynamically-built schema to `<SEO schemaJson={videosSchema} />`.
 
+### File changed (1)
+- `src/pages/HowToVideos.tsx`
+
+After deploy, request re-validation in Search Console — the 4 video items should turn green.
