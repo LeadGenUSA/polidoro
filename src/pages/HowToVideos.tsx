@@ -28,6 +28,36 @@ const HowToVideos = () => {
 
   const videos = dbVideos.length > 0 ? dbVideos : fallbackVideos;
 
+  const videosSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "How-To Plumbing & Heating Videos",
+    "description": "Helpful plumbing and heating video guides from Big City Plumbing and Heating.",
+    "url": "https://www.bigcityplumbing.com/how-to-videos",
+    "itemListElement": videos.map((video, index) => {
+      const uploadDate = toIsoUploadDate(video.published_at);
+      const item: Record<string, unknown> = {
+        "@type": "VideoObject",
+        "name": video.title,
+        "description": video.description || `${video.title} - Plumbing and heating video by Big City Plumbing & Heating Inc.`,
+        "thumbnailUrl": video.thumbnail_url,
+        "contentUrl": `https://www.youtube.com/watch?v=${video.youtube_id}`,
+        "embedUrl": `https://www.youtube.com/embed/${video.youtube_id}`,
+        "publisher": {
+          "@type": "Organization",
+          "name": "Big City Plumbing & Heating Inc.",
+          "url": "https://www.bigcityplumbing.com",
+        },
+      };
+      if (uploadDate) item.uploadDate = uploadDate;
+      return {
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": item,
+      };
+    }),
+  };
+
   // Derive categories dynamically
   const categorySet = new Set(videos.map(v => v.category).filter(Boolean) as string[]);
   const categories = [
