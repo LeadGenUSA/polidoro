@@ -24,11 +24,9 @@ const toIsoUploadDate = (value: string | null): string | null => {
 const HowToVideos = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
-  const { videos: dbVideos, isLoading } = useYouTubeVideos();
+  const { videos, isLoading } = useYouTubeVideos();
 
-  const videos = dbVideos.length > 0 ? dbVideos : fallbackVideos;
-
-  const videosSchema = {
+  const videosSchema = videos.length > 0 ? {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "How-To Plumbing & Heating Videos",
@@ -56,7 +54,7 @@ const HowToVideos = () => {
         "item": item,
       };
     }),
-  };
+  } : null;
 
   // Derive categories dynamically
   const categorySet = new Set(videos.map(v => v.category).filter(Boolean) as string[]);
@@ -87,7 +85,7 @@ const HowToVideos = () => {
         title="How-To Videos - Big City Plumbing and Heating"
         description="Helpful plumbing and heating video guides from Big City Plumbing and Heating. Learn about Navien systems, boiler maintenance, and home plumbing tips."
         canonical="/how-to-videos"
-        schemaJson={videosSchema}
+        schemaJson={videosSchema ?? undefined}
       />
       <Navbar />
 
