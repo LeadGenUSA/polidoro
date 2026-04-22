@@ -1,30 +1,122 @@
 
+## Goal
 
-## Problem
+Add the provided Tawk.to live chat script so it loads on every public page, but not on:
 
-The HowToVideos schema fix is correct in code, but Google Search Console is still showing the OLD broken schema (e.g., `"uploadDate":"2022-01-01"` with no `description`, titles matching old fallback videos like "Brownstone in East New York"). Two things are happening:
+- `/blog`
+- `/blog/:slug`
+- `/admin`
+- `/admin/login`
 
-1. **Deployment lag** — Google has cached the pre-fix HTML. The fix exists in code but Google hasn't re-crawled.
-2. **SSR gap** — This is a client-side React SPA. The initial `index.html` Google receives has NO video schema at all. The schema only appears after JS executes and Supabase data loads. Google's renderer usually executes JS, but the validator tool sometimes captures the pre-render snapshot, which can leave stale fallback data showing.
+## Recommended implementation
 
-The fallback videos (`fallbackVideos` array in `HowToVideos.tsx`) are now redundant — the database has 27 real videos with proper ISO 8601 timestamps. The fallback only existed as a safety net but is the source of the bad data Google saw.
+### 1. Create a dedicated chat embed component
+Add a small reusable component, e.g. `src/components/LiveChatEmbed.tsx`, that:
 
-## Fix
+- uses `useLocation()` to read the current route
+- returns `null` on excluded routes:
+  - any path starting with `/blog`
+  - any path starting with `/admin`
+- injects the Tawk script with `react-helmet-async` so it ends up near the end of `<body>` rather than hardcoded in `index.html`
+- includes a cleanup effect to remove the injected script when navigating from a public page to an excluded page
 
-Make 2 changes to `src/pages/HowToVideos.tsx`:
+This keeps the integration route-aware and avoids putting the script on admin or blog pages.
 
-### 1. Remove the `fallbackVideos` array entirely
-The DB has 27 active videos with valid `published_at` timestamps in proper ISO format (e.g., `2023-10-10 01:37:38+00`). Remove the fallback so the schema is only ever built from real data. If the DB ever returns empty, the page renders no videos and no `VideoObject` schema — which is correct behavior (no false data emitted).
+### 2. Mount it once at the app shell level
+Update `src/App.tsx` to render the new embed component inside `<BrowserRouter>` so it applies globally across the site.
 
-### 2. Only emit the schema when videos are loaded AND non-empty
-Wrap the `<SEO schemaJson={...} />` so it only passes the schema when `videos.length > 0`. This prevents emitting an empty `ItemList` while loading.
+Best placement:
+- alongside other global components like `GoogleTagManager` and `CookieConsent`
+- outside `<Routes>` so it evaluates on every route change
 
-### After deploy
+### 3. Route behavior
+The component should load chat on all public pages except the excluded ones.
 
-1. **Publish the site** so the fix actually goes live.
-2. In Google Search Console, use **"Validate Fix"** on the video issues report. Google will re-crawl `/how-to-videos` and see the corrected schema with full ISO timestamps + descriptions on all 27 real videos.
-3. Optionally use the **URL Inspection Tool** → "Test Live URL" on `https://www.bigcityplumbing.com/how-to-videos` to confirm the new schema is detected before requesting validation.
+```text
+Load chat:
+/
+services
+plumbing-services
+heating-services
+how-to-videos
+reviews
+about-us
+work-order
+customer-survey
+free-estimate
+projects-gallery
+privacy-policy
+terms-of-service
+tenpercent-coupon
+survey-thank-you
+contact-us
+financing
+sitemap
+404/public unknown routes
 
-### File changed (1)
-- `src/pages/HowToVideos.tsx` — remove fallback array; only render schema when videos load
+Do not load chat:
+/blog
+/blog/:slug
+/admin
+/admin/login
+/admin/*
+```
 
+Using `startsWith('/blog')` and `startsWith('/admin')` will cover the current routes and future nested routes safely.
+
+### 4. Script handling details
+Use your exact Tawk snippet, but inject it in a React-safe way:
+
+- append the external script URL `https://embed.tawk.to/69e9175ecc1adc1c3390106b/1jmr86i45`
+- preserve:
+  - `async`
+  - `charset="UTF-8"`
+  - `crossorigin="*"`
+- initialize `Tawk_API` and `Tawk_LoadStart`
+
+To avoid duplicate embeds during client-side navigation:
+- check whether the Tawk script is already present before adding it
+- remove it and any Tawk widget container elements when leaving eligible routes
+
+### 5. Consent/privacy consideration
+The site memory says tracking/scripts follow a consent-first approach. Live chat is not analytics, but it is still a third-party embed.
+
+Recommended handling:
+- keep this chat separate from Google tracking logic
+- if you want strict consent gating, a follow-up enhancement can make chat load only after cookie acceptance
+- otherwise, load it immediately on eligible public pages as requested
+
+### 6. Files to change
+- `src/App.tsx` — mount the global live chat component
+- `src/components/LiveChatEmbed.tsx` — new route-aware Tawk embed
+
+## Technical details
+
+### Component shape
+The new component should roughly:
+
+- import `useEffect` and `useLocation`
+- compute:
+  - `const isExcluded = location.pathname.startsWith('/blog') || location.pathname.startsWith('/admin')`
+- if excluded:
+  - remove existing Tawk script/widget if present
+  - return `null`
+- if allowed:
+  - inject the script once
+  - set up cleanup for route changes/unmount
+
+### Why this approach
+This is better than editing `index.html` directly because:
+
+- `index.html` would load Tawk on every route with no route exceptions
+- the app is a SPA, so route-aware logic belongs in React
+- it matches the existing global-component pattern used for cookie consent and tag manager
+
+## Expected outcome
+
+After implementation:
+
+- Tawk chat appears site-wide on public pages
+- it does not appear on blog pages
+- it does not appear anywhere in admin
+- it survives normal SPA navigation without duplicate widget injection
