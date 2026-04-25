@@ -30,7 +30,6 @@ import Financing from "./pages/Financing";
 import Sitemap from "./pages/Sitemap";
 import GoogleTagManager from "./components/GoogleTagManager";
 import CookieConsent from "./components/CookieConsent";
-import LiveChatEmbed from "./components/LiveChatEmbed";
 
 const queryClient = new QueryClient();
 
@@ -44,7 +43,6 @@ const App = () => (
         <BrowserRouter>
           <GoogleTagManager />
           <CookieConsent />
-          <LiveChatEmbed />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/services" element={<Services />} />
