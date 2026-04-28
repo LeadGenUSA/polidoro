@@ -1,4 +1,4 @@
-import { Phone, MapPin, Facebook, Linkedin, Youtube, Lock } from 'lucide-react';
+import { Phone, MapPin, Facebook, Instagram, Linkedin, Youtube, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logo from '@/assets/big-city-plumbing-and-heating-logo-2.png';
 
@@ -112,6 +112,15 @@ const Footer = () => {
                 className="w-10 h-10 rounded-lg bg-primary-foreground/10 hover:bg-secondary flex items-center justify-center transition-colors"
               >
                 <Facebook className="w-5 h-5 text-primary-foreground" />
+              </a>
+              <a
+                href="https://www.instagram.com/bigcityplumbingandheating/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="w-10 h-10 rounded-lg bg-primary-foreground/10 hover:bg-secondary flex items-center justify-center transition-colors"
+              >
+                <Instagram className="w-5 h-5 text-primary-foreground" />
               </a>
               <a
                 href="https://x.com/bigcityplumbing"
