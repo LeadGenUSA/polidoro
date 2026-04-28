@@ -1,16 +1,13 @@
 ## Goal
 
-Completely remove the Tawk.to live chat integration from the site.
+Add an Instagram social link to the footer pointing to https://www.instagram.com/bigcityplumbingandheating/
 
-## Changes
+## Change
 
-1. **Delete** `src/components/LiveChatEmbed.tsx`
-2. **Edit** `src/App.tsx`:
-   - Remove the `import LiveChatEmbed from "./components/LiveChatEmbed";` line
-   - Remove the `<LiveChatEmbed />` element from the `<BrowserRouter>` block
+In `src/components/Footer.tsx`, add an Instagram icon link inside the social links group (alongside Facebook, X, LinkedIn, Yelp, YouTube). Use the `Instagram` icon from `lucide-react` (added to existing import) and match the existing styling pattern (`w-10 h-10 rounded-lg bg-primary-foreground/10 hover:bg-secondary ...`).
 
-## Outcome
+Order: place Instagram right after Facebook to keep Meta platforms grouped.
 
-- No Tawk.to script will be injected on any route
-- The chat widget will no longer appear anywhere on the site
-- No leftover references to Tawk in the codebase
+## Files
+
+- `src/components/Footer.tsx` (edit)
