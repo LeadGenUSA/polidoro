@@ -58,12 +58,8 @@ const ContactUs = () => {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Left - Contact Form + Showroom Address */}
+            {/* Left - Contact Form */}
             <div>
-              <div className="mb-4">
-                <h2 className="font-heading text-xl font-bold text-secondary mb-1">Showroom Address:</h2>
-                <p className="text-muted-foreground">2639-2 Middle County Road, Centereach, NY 11720.</p>
-              </div>
               <ContactForm />
             </div>
 
