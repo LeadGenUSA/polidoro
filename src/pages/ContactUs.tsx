@@ -58,7 +58,16 @@ const ContactUs = () => {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Left - Contact Info */}
+            {/* Left - Contact Form + Showroom Address */}
+            <div>
+              <div className="mb-4">
+                <h2 className="font-heading text-xl font-bold text-secondary mb-1">Showroom Address:</h2>
+                <p className="text-muted-foreground">2639-2 Middle County Road, Centereach, NY 11720.</p>
+              </div>
+              <ContactForm />
+            </div>
+
+            {/* Right - Contact Info */}
             <div className="space-y-8">
               {/* Long Island */}
               <div>
@@ -71,13 +80,9 @@ const ContactUs = () => {
               {/* NYC */}
               <div>
                 <h2 className="font-heading text-xl font-bold text-primary uppercase mb-1">New York City:</h2>
-                
                 <a href="tel:7183265833" className="text-lg font-bold text-foreground hover:text-primary transition-colors block">
                   718.326.5833
                 </a>
-                
-
-
               </div>
 
               <div className="space-y-4 text-muted-foreground leading-relaxed">
@@ -85,21 +90,12 @@ const ContactUs = () => {
                   Someone will pick up the phone to help you 24/7. We use <span className="underline font-medium text-foreground">real</span> people, not an answering machine.
                 </p>
                 <p>
-                  You can also contact us via the form below and indicate the type of service you are looking for. Just write a small description and the best time to contact you and one of our service technicians will set up an appointment and meet you at the job site.
+                  You can also contact us via the form and indicate the type of service you are looking for. Just write a small description and the best time to contact you and one of our service technicians will set up an appointment and meet you at the job site.
                 </p>
                 <p>
                   You can also visit our showroom to discuss your needs.
                 </p>
               </div>
-            </div>
-
-            {/* Right - Showroom Address + Contact Form */}
-            <div>
-              <div className="mb-4">
-                <h2 className="font-heading text-xl font-bold text-secondary mb-1">Showroom Address:</h2>
-                <p className="text-muted-foreground">2639-2 Middle County Road, Centereach, NY 11720.</p>
-              </div>
-              <ContactForm />
             </div>
           </div>
         </div>
