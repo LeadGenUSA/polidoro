@@ -100,6 +100,10 @@ const ContactUs = () => {
       {/* Map Section */}
       <section className="py-16 bg-muted/50">
         <div className="container mx-auto px-4 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="font-heading text-xl font-bold text-secondary mb-1">Showroom Address</h2>
+            <p className="text-muted-foreground">2639-2 Middle County Road, Centereach, NY 11720</p>
+          </div>
           <div className="rounded-2xl overflow-hidden shadow-card">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3020.5!2d-73.0843!3d40.8584!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e83775f2e34d95%3A0x6c0e2cb3c13e38d6!2s2639%20Middle%20Country%20Rd%2C%20Centereach%2C%20NY%2011720!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"
