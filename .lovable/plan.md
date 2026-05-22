@@ -1,10 +1,5 @@
-## Goal
-Replace the NYC skyline background image in the Hero section with the newly uploaded image.
-
-## Changes
-1. Copy `user-uploads://Gemini_Generated_Image_efvllpefvllpefvl.png` to `src/assets/nyc-skyline.png` (overwrite), so the existing import in `src/components/Hero.tsx` automatically picks up the new image.
-   - This keeps the same overlay gradients and layout intact.
-   - No code changes needed since `Hero.tsx` already imports `nycSkyline` from `@/assets/nyc-skyline.png`.
+## Plan
+Replace the logo image at `src/assets/big-city-plumbing-and-heating-logo-2.png` with the uploaded `new-logo.png`. Navbar already imports from this path, so no code changes needed.
 
 ## Files
-- `src/assets/nyc-skyline.png` (replace)
+- `src/assets/big-city-plumbing-and-heating-logo-2.png` (overwrite)
