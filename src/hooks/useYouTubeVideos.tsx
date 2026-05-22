@@ -23,7 +23,9 @@ export function useYouTubeVideos() {
     const { data, error } = await supabase
       .from('youtube_videos')
       .select('*')
+      .eq('is_active', true)
       .order('published_at', { ascending: false });
+
 
     if (!error && data) {
       setVideos(data as YouTubeVideo[]);
