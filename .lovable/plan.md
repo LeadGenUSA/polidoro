@@ -1,34 +1,23 @@
-## New Edge Function: `send-app-service-request`
+# Rotate `APP_FORM_SECRET` with a freshly generated random value
 
-Mobile-app-only endpoint that emails service requests to mike@bigcityplumbing.com via Resend (using the existing `_shared/send-email.ts` helper — same provider as the contact form). No Turnstile.
+## Steps
 
-### Files
-- **`supabase/functions/send-app-service-request/index.ts`** (new)
-  - POST handler, CORS, OPTIONS preflight.
-  - Parse `{ name, phone, email, address, serviceType, message, secret }`.
-  - Compare `secret` to `Deno.env.get("APP_FORM_SECRET")` using constant-time compare; mismatch → `401 { error: "unauthorized" }`.
-  - Basic validation (required fields, max lengths, valid email shape) → `400` on failure. `serviceType` optional.
-  - Build branded HTML email (navy/orange styling matching contact form), HTML-escape all user fields.
-    - Customer Information section: Name, Phone, Email, Address, **Service type** (own labeled line, shown when provided).
-    - Message section.
-  - Subject: `App Service Request (<serviceType>): <name>` when serviceType is present, else `App Service Request: <name>`.
-  - Send via `sendEmail({ to: ["mike@bigcityplumbing.com"], subject, html, replyTo: email })`.
-  - Return `{ ok: true }` on success, `{ ok: false, error }` on failure.
+1. **Delete** the existing `APP_FORM_SECRET` (required — `generate_secret` only creates new secrets, it won't overwrite an existing one).
+2. **Generate** a new `APP_FORM_SECRET` as a cryptographically random 48-character alphanumeric string, stored encrypted as a backend env var.
+3. The new value is immediately available to the `send-app-service-request` edge function — no code changes, no redeploy needed.
 
-### Rate limiting (please confirm)
-The backend has no standard rate-limiting primitive. I'll add an **ad-hoc in-memory limiter** inside the function: `Map<ip, timestamps[]>` keyed by `x-forwarded-for`, allowing **5 requests / minute / IP** (returns `429` when exceeded). Caveats: per-instance state, resets on cold start, IP can be spoofed. For durable cross-instance limiting we'd need a DB-backed counter — say the word.
+## How you get the value
 
-### Secrets
-- Auto-generate `APP_FORM_SECRET` (32-char random); I'll share the value back.
-- Reuses existing `RESEND_API_KEY`.
+Lovable Cloud secrets are write-only after creation, so I can't print the value in chat. After I generate it, open **Cloud → Secrets**, find `APP_FORM_SECRET`, and copy it from there. (Newly created secrets are revealable in the UI for a short window right after creation, which is the only way to retrieve a backend-generated value.)
 
-### Config
-- No `supabase/config.toml` change — Lovable-managed functions default to `verify_jwt = false`.
+If the reveal still doesn't work after generation, fallback is the manual route: I delete it again and you set your own value via the secure update form, where you keep the value as you type it.
 
-### Deliverables after build
-1. Function URL: `https://wjaulyvqzywcnkegnzoh.supabase.co/functions/v1/send-app-service-request`
-2. Anon key (already public)
-3. Generated `APP_FORM_SECRET` value
+## After rotation, you'll have
 
-### Open question
-You mentioned "two more things" but only one came through (serviceType). What's the second addition?
+1. **Function URL** — `https://wjaulyvqzywcnkegnzoh.supabase.co/functions/v1/send-app-service-request`
+2. **Anon key** — `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndqYXVseXZxenl3Y25rZWduem9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NTYzODUsImV4cCI6MjA4NTEzMjM4NX0.qlt8PJNz2KCp4d1-JyMP2eymvUy_hyBVpQDHfIZwfnI`
+3. **APP_FORM_SECRET** — copy from Cloud → Secrets after I generate it
+
+## Heads-up
+
+Any mobile app build hard-coded with the old secret will stop authenticating until you ship an update with the new value.
