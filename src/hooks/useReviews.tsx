@@ -174,3 +174,30 @@ export function useApprovedReviews() {
 
   return { reviews, isLoading };
 }
+
+export function useReviewCounts() {
+  const [counts, setCounts] = useState({ pending: 0, approved: 0, rejected: 0, total: 0 });
+
+  const fetchCounts = async () => {
+    try {
+      const { data, error } = await supabase.from('reviews').select('status');
+      if (error) throw error;
+      const rows = (data as { status: string }[]) || [];
+      setCounts({
+        pending: rows.filter(r => r.status === 'pending').length,
+        approved: rows.filter(r => r.status === 'approved').length,
+        rejected: rows.filter(r => r.status === 'rejected').length,
+        total: rows.length,
+      });
+    } catch (e) {
+      console.error('Error fetching review counts:', e);
+    }
+  };
+
+  useEffect(() => {
+    fetchCounts();
+  }, []);
+
+  return { counts, fetchCounts };
+}
+
