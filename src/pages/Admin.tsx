@@ -231,7 +231,7 @@ const Admin = () => {
                 <h2 className="font-heading text-2xl font-bold text-foreground">Review Management</h2>
                 <p className="text-muted-foreground">Approve or reject testimonials before they appear on the site.</p>
               </div>
-              <ImportReviewsButton onImportComplete={fetchReviews} />
+              <ImportReviewsButton onImportComplete={() => { fetchReviews(); fetchCounts(); }} />
             </div>
 
             {/* Stats Cards */}
