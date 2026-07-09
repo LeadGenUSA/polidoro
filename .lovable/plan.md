@@ -1,19 +1,23 @@
-# Update Favicon
+# Update Hero Background Image
 
 ## Goal
-Use the uploaded skyline/sun image as the site's favicon.
+Replace the hero section background image with the uploaded night skyline photo (`dock-ny.png`) while keeping the existing blue overlay.
+
+## Current State
+- `src/components/Hero.tsx` imports `nycSkyline` from `@/assets/nyc-skyline.png`.
+- The background image is wrapped by two blue gradient overlays (`from-primary/90`, `from-primary/95`, etc.) that give the hero its branded navy look.
+- The existing `src/assets/nyc-skyline.png` is a binary file in the repo.
 
 ## Steps
-
-1. **Generate favicon files** from `user-uploads://Layer_9-2.png` using Python/PIL:
-   - `public/favicon.ico` — multi-size (16, 32, 48)
-   - `public/favicon-16.png`, `public/favicon-32.png`, `public/favicon-192.png`
-   - `public/apple-touch-icon.png` (180×180)
-   - Preserve transparency; the image already has whitespace around it so it will render fine at small sizes.
-
-2. **Update `index.html`** `<head>` favicon link tags to reference the new files (replace the existing `<link rel="icon">` set).
-
-3. **Verify** with `bun run build` and confirm the new icon appears in the browser tab (hard refresh may be needed — browsers cache favicons aggressively).
+1. **Create Lovable Asset** from `/mnt/user-uploads/dock-ny.png` named `nyc-skyline.png` and write the pointer to `src/assets/nyc-skyline.png.asset.json`.
+2. **Delete** the old binary `src/assets/nyc-skyline.png` so the repo no longer carries the unused image.
+3. **Update `src/components/Hero.tsx`**:
+   - Remove the old `import nycSkyline from '@/assets/nyc-skyline.png';`.
+   - Import the new asset pointer: `import nycSkyline from '@/assets/nyc-skyline.png.asset.json';`.
+   - Use `nycSkyline.url` as the `src` for the background `<img>`.
+   - Leave all existing overlay gradients unchanged so the blue branded look is preserved.
+4. **Verify** with `bun run build` and a visual preview spot-check to ensure the new background covers the hero and the overlay still reads correctly.
 
 ## Notes
-- The logo on the site itself is not being changed by this plan — only the browser tab icon.
+- The uploaded image is already blue-toned, so it will blend naturally with the navy overlay.
+- No other pages or components are affected; this only changes the hero background on the home page.

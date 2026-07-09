@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import type { CarouselApi } from '@/components/ui/carousel';
 import { supabase } from '@/integrations/supabase/client';
 import heroImage from '@/assets/hero-plumbing.jpg';
-import nycSkyline from '@/assets/nyc-skyline.png';
+import nycSkyline from '@/assets/nyc-skyline.png.asset.json';
 import heroVideo from '@/assets/big-city-plumbing-and-heating.mp4';
 
 import couponBadge from '@/assets/coupons-badge.png';
@@ -141,7 +141,7 @@ const Hero = () => {
   return <section className="relative min-h-screen flex items-center hero-gradient overflow-hidden">
       {/* NYC Skyline Background */}
       <div className="absolute inset-0">
-        <img src={nycSkyline} alt="" className="w-full h-full object-cover object-center" />
+        <img src={nycSkyline.url} alt="" className="w-full h-full object-cover object-center" />
         {/* Overlay to blend with hero gradient */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/85 to-primary/80" />
         <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-transparent to-primary/70" />
