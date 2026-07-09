@@ -143,8 +143,8 @@ const Hero = () => {
       <div className="absolute inset-0">
         <img src={nycSkyline.url} alt="" className="w-full h-full object-cover object-center" />
         {/* Overlay to blend with hero gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/85 to-primary/80" />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-transparent to-primary/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/70 via-primary/60 to-primary/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-primary/40" />
       </div>
       
       {/* Background Pattern */}
