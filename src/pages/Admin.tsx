@@ -67,9 +67,9 @@ const Admin = () => {
     return null;
   }
 
-  const pendingCount = reviews.filter(r => r.status === 'pending').length;
-  const approvedCount = reviews.filter(r => r.status === 'approved').length;
-  const rejectedCount = reviews.filter(r => r.status === 'rejected').length;
+  const pendingCount = counts.pending;
+  const approvedCount = counts.approved;
+  const rejectedCount = counts.rejected;
 
   return (
     <div className="min-h-screen bg-background">
