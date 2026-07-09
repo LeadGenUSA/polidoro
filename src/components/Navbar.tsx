@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import logo from '@/assets/big-city-plumbing-and-heating-logo-2.png';
+import logo from '@/assets/big-city-plumbing-and-heating-logo-2.png.asset.json';
 
 const serviceLinks = [
   { name: 'All Services', href: '/services' },
@@ -80,7 +80,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <img src={logo} alt="Big City Plumbing & Heating" className="w-24 h-24 rounded-full object-cover" />
+            <img src={logo.url} alt="Big City Plumbing & Heating" className="w-24 h-24 rounded-full object-cover" />
             <div className={`transition-colors ${isScrolled ? 'text-foreground' : 'text-primary-foreground'}`}>
               <span className="font-heading font-bold text-lg">Big City</span>
               <span className="font-heading text-sm block -mt-1 opacity-80">Plumbing and Heating</span>

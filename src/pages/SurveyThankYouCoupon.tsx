@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
-import logo from '@/assets/big-city-plumbing-and-heating-logo-2.png';
+import logo from '@/assets/big-city-plumbing-and-heating-logo-2.png.asset.json';
 
 const SurveyThankYouCoupon = () => {
 
@@ -50,7 +50,7 @@ const SurveyThankYouCoupon = () => {
                 {/* Logo */}
                 <div className="flex justify-center mb-6">
                   <img 
-                    src={logo} 
+                    src={logo.url} 
                     alt="Big City Plumbing & Heating" 
                     className="w-24 h-24 rounded-full object-cover"
                   />
