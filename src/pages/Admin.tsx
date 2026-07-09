@@ -330,9 +330,9 @@ const Admin = () => {
                     <ReviewCard
                       key={review.id}
                       review={review}
-                      onApprove={approveReview}
-                      onReject={rejectReview}
-                      onDelete={deleteReview}
+                      onApprove={async (id) => { await approveReview(id); fetchCounts(); }}
+                      onReject={async (id, reason) => { await rejectReview(id, reason); fetchCounts(); }}
+                      onDelete={async (id) => { await deleteReview(id); fetchCounts(); }}
                     />
                   ))}
                 </div>
