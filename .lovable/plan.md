@@ -1,23 +1,19 @@
-# Rotate `APP_FORM_SECRET` with a freshly generated random value
+# Update Favicon
+
+## Goal
+Use the uploaded skyline/sun image as the site's favicon.
 
 ## Steps
 
-1. **Delete** the existing `APP_FORM_SECRET` (required — `generate_secret` only creates new secrets, it won't overwrite an existing one).
-2. **Generate** a new `APP_FORM_SECRET` as a cryptographically random 48-character alphanumeric string, stored encrypted as a backend env var.
-3. The new value is immediately available to the `send-app-service-request` edge function — no code changes, no redeploy needed.
+1. **Generate favicon files** from `user-uploads://Layer_9-2.png` using Python/PIL:
+   - `public/favicon.ico` — multi-size (16, 32, 48)
+   - `public/favicon-16.png`, `public/favicon-32.png`, `public/favicon-192.png`
+   - `public/apple-touch-icon.png` (180×180)
+   - Preserve transparency; the image already has whitespace around it so it will render fine at small sizes.
 
-## How you get the value
+2. **Update `index.html`** `<head>` favicon link tags to reference the new files (replace the existing `<link rel="icon">` set).
 
-Lovable Cloud secrets are write-only after creation, so I can't print the value in chat. After I generate it, open **Cloud → Secrets**, find `APP_FORM_SECRET`, and copy it from there. (Newly created secrets are revealable in the UI for a short window right after creation, which is the only way to retrieve a backend-generated value.)
+3. **Verify** with `bun run build` and confirm the new icon appears in the browser tab (hard refresh may be needed — browsers cache favicons aggressively).
 
-If the reveal still doesn't work after generation, fallback is the manual route: I delete it again and you set your own value via the secure update form, where you keep the value as you type it.
-
-## After rotation, you'll have
-
-1. **Function URL** — `https://wjaulyvqzywcnkegnzoh.supabase.co/functions/v1/send-app-service-request`
-2. **Anon key** — `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndqYXVseXZxenl3Y25rZWduem9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NTYzODUsImV4cCI6MjA4NTEzMjM4NX0.qlt8PJNz2KCp4d1-JyMP2eymvUy_hyBVpQDHfIZwfnI`
-3. **APP_FORM_SECRET** — copy from Cloud → Secrets after I generate it
-
-## Heads-up
-
-Any mobile app build hard-coded with the old secret will stop authenticating until you ship an update with the new value.
+## Notes
+- The logo on the site itself is not being changed by this plan — only the browser tab icon.
