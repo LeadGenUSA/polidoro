@@ -1,6 +1,6 @@
 import { Phone, MapPin, Facebook, Instagram, Linkedin, Youtube, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import logo from '@/assets/big-city-plumbing-and-heating-logo-2.png';
+import logo from '@/assets/big-city-plumbing-and-heating-logo-2.png.asset.json';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -12,7 +12,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <img src={logo} alt="Big City Plumbing & Heating" className="w-24 h-24 rounded-full object-cover" />
+              <img src={logo.url} alt="Big City Plumbing & Heating" className="w-24 h-24 rounded-full object-cover" />
               <div className="text-primary-foreground">
                 <span className="font-heading font-bold text-lg">Big City</span>
                 <span className="font-heading text-sm block -mt-1 opacity-80">Plumbing and Heating</span>
