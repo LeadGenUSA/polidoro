@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import SEO from '@/components/SEO';
-import { useReviews } from '@/hooks/useReviews';
+import { useReviews, useReviewCounts } from '@/hooks/useReviews';
 import { useAllSubmissionCounts } from '@/hooks/useSubmissions';
 import { ReviewCard } from '@/components/admin/ReviewCard';
 import { ImportReviewsButton } from '@/components/admin/ImportReviewsButton';
@@ -41,6 +41,7 @@ const Admin = () => {
   const { posts: blogDrafts } = useBlogPosts('draft');
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'all'>('pending');
   const { reviews, isLoading, fetchReviews, approveReview, rejectReview, deleteReview } = useReviews(activeTab);
+  const { counts, fetchCounts } = useReviewCounts();
   const submissionCounts = useAllSubmissionCounts();
 
   useEffect(() => {
@@ -66,9 +67,9 @@ const Admin = () => {
     return null;
   }
 
-  const pendingCount = reviews.filter(r => r.status === 'pending').length;
-  const approvedCount = reviews.filter(r => r.status === 'approved').length;
-  const rejectedCount = reviews.filter(r => r.status === 'rejected').length;
+  const pendingCount = counts.pending;
+  const approvedCount = counts.approved;
+  const rejectedCount = counts.rejected;
 
   return (
     <div className="min-h-screen bg-background">
@@ -230,7 +231,7 @@ const Admin = () => {
                 <h2 className="font-heading text-2xl font-bold text-foreground">Review Management</h2>
                 <p className="text-muted-foreground">Approve or reject testimonials before they appear on the site.</p>
               </div>
-              <ImportReviewsButton onImportComplete={fetchReviews} />
+              <ImportReviewsButton onImportComplete={() => { fetchReviews(); fetchCounts(); }} />
             </div>
 
             {/* Stats Cards */}
@@ -274,7 +275,7 @@ const Admin = () => {
                     <Star className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-foreground">{reviews.length}</p>
+                    <p className="text-2xl font-bold text-foreground">{counts.total}</p>
                     <p className="text-sm text-muted-foreground">Total</p>
                   </div>
                 </div>
@@ -329,9 +330,9 @@ const Admin = () => {
                     <ReviewCard
                       key={review.id}
                       review={review}
-                      onApprove={approveReview}
-                      onReject={rejectReview}
-                      onDelete={deleteReview}
+                      onApprove={async (id) => { await approveReview(id); fetchCounts(); }}
+                      onReject={async (id, reason) => { await rejectReview(id, reason); fetchCounts(); }}
+                      onDelete={async (id) => { await deleteReview(id); fetchCounts(); }}
                     />
                   ))}
                 </div>
