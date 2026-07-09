@@ -41,6 +41,7 @@ const Admin = () => {
   const { posts: blogDrafts } = useBlogPosts('draft');
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'all'>('pending');
   const { reviews, isLoading, fetchReviews, approveReview, rejectReview, deleteReview } = useReviews(activeTab);
+  const { counts, fetchCounts } = useReviewCounts();
   const submissionCounts = useAllSubmissionCounts();
 
   useEffect(() => {
