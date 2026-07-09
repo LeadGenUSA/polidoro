@@ -275,7 +275,7 @@ const Admin = () => {
                     <Star className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-foreground">{reviews.length}</p>
+                    <p className="text-2xl font-bold text-foreground">{counts.total}</p>
                     <p className="text-sm text-muted-foreground">Total</p>
                   </div>
                 </div>
