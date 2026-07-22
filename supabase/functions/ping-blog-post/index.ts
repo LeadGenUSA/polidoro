@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { requireAdminOrService } from "../_shared/auth-guard.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,10 +14,19 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const auth = await requireAdminOrService(req);
+  if (!auth.ok) {
+    return new Response(JSON.stringify({ error: auth.error }), {
+      status: auth.status, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
-    const { slug } = await req.json();
-    if (!slug) {
-      throw new Error("Missing slug parameter");
+    const { slug }: { slug?: string } = await req.json();
+    if (!slug || typeof slug !== "string" || !/^[a-z0-9-]{1,200}$/i.test(slug)) {
+      return new Response(JSON.stringify({ error: "Invalid slug" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const postUrl = `${SITE_URL}/blog/${slug}`;
@@ -64,7 +74,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("ping-blog-post error:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: "Failed to ping" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

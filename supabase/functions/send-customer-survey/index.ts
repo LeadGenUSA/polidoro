@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { verifyTurnstile } from "../_shared/verify-turnstile.ts";
 import { sendEmail } from "../_shared/send-email.ts";
+import { escapeHtml } from "../_shared/escape-html.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -33,6 +34,12 @@ interface SurveyData {
   additionalComments?: string;
 }
 
+const cap = (v: unknown, n: number) => String(v ?? "").trim().slice(0, n);
+const capOrNull = (v: unknown, n: number) => {
+  const s = cap(v, n);
+  return s.length === 0 ? null : s;
+};
+
 const formatRating = (value?: string): string => {
   if (!value) return 'Not rated';
   return value.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -42,6 +49,13 @@ const formatYesNoMaybe = (value?: string): string => {
   if (!value) return 'Not answered';
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
+
+// Only allow ratings from a fixed enum in CSS class names, otherwise blank.
+const RATING_CLASSES = new Set([
+  "excellent","very_satisfied","good","satisfied","average","neutral",
+  "below_average","dissatisfied","poor","very_dissatisfied",
+]);
+const safeRatingClass = (v?: string) => (v && RATING_CLASSES.has(v) ? v : "");
 
 const compactEmailHtml = (html: string) =>
   html
@@ -54,13 +68,51 @@ const compactEmailHtml = (html: string) =>
 
 const handler = async (req: Request): Promise<Response> => {
   console.log("Customer survey submission received");
-  
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { turnstileToken, ...data }: SurveyData & { turnstileToken?: string } = await req.json();
+    const { turnstileToken, ...raw }: SurveyData & { turnstileToken?: string } = await req.json();
+
+    const data: SurveyData = {
+      customerName: cap(raw.customerName, 100),
+      email: cap(raw.email, 255),
+      phone: capOrNull(raw.phone, 50) ?? undefined,
+      serviceDate: capOrNull(raw.serviceDate, 50) ?? undefined,
+      technicianName: capOrNull(raw.technicianName, 100) ?? undefined,
+      overallSatisfaction: capOrNull(raw.overallSatisfaction, 50) ?? undefined,
+      qualityOfWork: capOrNull(raw.qualityOfWork, 50) ?? undefined,
+      timeliness: capOrNull(raw.timeliness, 50) ?? undefined,
+      professionalism: capOrNull(raw.professionalism, 50) ?? undefined,
+      communication: capOrNull(raw.communication, 50) ?? undefined,
+      valueForMoney: capOrNull(raw.valueForMoney, 50) ?? undefined,
+      wouldRecommend: capOrNull(raw.wouldRecommend, 50) ?? undefined,
+      useAgain: capOrNull(raw.useAgain, 50) ?? undefined,
+      estimateOverpriced: capOrNull(raw.estimateOverpriced, 50) ?? undefined,
+      satisfiedWithRecommendation: capOrNull(raw.satisfiedWithRecommendation, 50) ?? undefined,
+      wereWeProfessional: capOrNull(raw.wereWeProfessional, 50) ?? undefined,
+      comfortableWithTech: capOrNull(raw.comfortableWithTech, 50) ?? undefined,
+      considerInstallation: capOrNull(raw.considerInstallation, 50) ?? undefined,
+      whatDidWell: capOrNull(raw.whatDidWell, 2000) ?? undefined,
+      areasToImprove: capOrNull(raw.areasToImprove, 2000) ?? undefined,
+      additionalComments: capOrNull(raw.additionalComments, 2000) ?? undefined,
+    };
+
+    if (!data.customerName || !data.email) {
+      return new Response(JSON.stringify({ error: "Missing required fields" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      return new Response(JSON.stringify({ error: "Invalid email" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
     console.log("Processing survey from:", data.customerName);
 
     const isValid = await verifyTurnstile(turnstileToken);
@@ -89,7 +141,7 @@ const handler = async (req: Request): Promise<Response> => {
           .rating-average, .rating-neutral { color: #eab308; }
           .rating-below_average, .rating-dissatisfied { color: #f97316; }
           .rating-poor, .rating-very_dissatisfied { color: #ef4444; font-weight: bold; }
-          .feedback { background: white; padding: 10px; border-left: 3px solid #f97316; margin: 5px 0; }
+          .feedback { background: white; padding: 10px; border-left: 3px solid #f97316; margin: 5px 0; white-space: pre-wrap; }
         </style>
       </head>
       <body>
@@ -97,108 +149,57 @@ const handler = async (req: Request): Promise<Response> => {
           <div class="header">
             <h1>Customer Survey Submission</h1>
           </div>
-          
+
           <div class="section">
             <div class="section-title">Customer Information</div>
-            <div class="field"><span class="label">Name:</span> <span class="value">${data.customerName}</span></div>
-            <div class="field"><span class="label">Email:</span> <span class="value">${data.email}</span></div>
-            ${data.phone ? `<div class="field"><span class="label">Phone:</span> <span class="value">${data.phone}</span></div>` : ''}
-            ${data.serviceDate ? `<div class="field"><span class="label">Service Date:</span> <span class="value">${data.serviceDate}</span></div>` : ''}
-            ${data.technicianName ? `<div class="field"><span class="label">Technician:</span> <span class="value">${data.technicianName}</span></div>` : ''}
+            <div class="field"><span class="label">Name:</span> <span class="value">${escapeHtml(data.customerName)}</span></div>
+            <div class="field"><span class="label">Email:</span> <span class="value">${escapeHtml(data.email)}</span></div>
+            ${data.phone ? `<div class="field"><span class="label">Phone:</span> <span class="value">${escapeHtml(data.phone)}</span></div>` : ''}
+            ${data.serviceDate ? `<div class="field"><span class="label">Service Date:</span> <span class="value">${escapeHtml(data.serviceDate)}</span></div>` : ''}
+            ${data.technicianName ? `<div class="field"><span class="label">Technician:</span> <span class="value">${escapeHtml(data.technicianName)}</span></div>` : ''}
           </div>
-          
+
           <div class="section">
             <div class="section-title">Overall Satisfaction</div>
             <div class="field">
-              <span class="label">Rating:</span> 
-              <span class="value rating-${data.overallSatisfaction || ''}">${formatRating(data.overallSatisfaction)}</span>
+              <span class="label">Rating:</span>
+              <span class="value rating-${safeRatingClass(data.overallSatisfaction)}">${escapeHtml(formatRating(data.overallSatisfaction))}</span>
             </div>
           </div>
-          
+
           <div class="section">
             <div class="section-title">Service Ratings</div>
-            <div class="field">
-              <span class="label">Quality of Work:</span> 
-              <span class="value rating-${data.qualityOfWork || ''}">${formatRating(data.qualityOfWork)}</span>
-            </div>
-            <div class="field">
-              <span class="label">Timeliness:</span> 
-              <span class="value rating-${data.timeliness || ''}">${formatRating(data.timeliness)}</span>
-            </div>
-            <div class="field">
-              <span class="label">Professionalism:</span> 
-              <span class="value rating-${data.professionalism || ''}">${formatRating(data.professionalism)}</span>
-            </div>
-            <div class="field">
-              <span class="label">Communication:</span> 
-              <span class="value rating-${data.communication || ''}">${formatRating(data.communication)}</span>
-            </div>
-            <div class="field">
-              <span class="label">Value for Money:</span> 
-              <span class="value rating-${data.valueForMoney || ''}">${formatRating(data.valueForMoney)}</span>
-            </div>
+            <div class="field"><span class="label">Quality of Work:</span> <span class="value rating-${safeRatingClass(data.qualityOfWork)}">${escapeHtml(formatRating(data.qualityOfWork))}</span></div>
+            <div class="field"><span class="label">Timeliness:</span> <span class="value rating-${safeRatingClass(data.timeliness)}">${escapeHtml(formatRating(data.timeliness))}</span></div>
+            <div class="field"><span class="label">Professionalism:</span> <span class="value rating-${safeRatingClass(data.professionalism)}">${escapeHtml(formatRating(data.professionalism))}</span></div>
+            <div class="field"><span class="label">Communication:</span> <span class="value rating-${safeRatingClass(data.communication)}">${escapeHtml(formatRating(data.communication))}</span></div>
+            <div class="field"><span class="label">Value for Money:</span> <span class="value rating-${safeRatingClass(data.valueForMoney)}">${escapeHtml(formatRating(data.valueForMoney))}</span></div>
           </div>
-          
+
           <div class="section">
             <div class="section-title">Recommendations</div>
-            <div class="field">
-              <span class="label">Would Recommend:</span> 
-              <span class="value">${formatYesNoMaybe(data.wouldRecommend)}</span>
-            </div>
-            <div class="field">
-              <span class="label">Would Use Again:</span> 
-              <span class="value">${formatYesNoMaybe(data.useAgain)}</span>
-            </div>
+            <div class="field"><span class="label">Would Recommend:</span> <span class="value">${escapeHtml(formatYesNoMaybe(data.wouldRecommend))}</span></div>
+            <div class="field"><span class="label">Would Use Again:</span> <span class="value">${escapeHtml(formatYesNoMaybe(data.useAgain))}</span></div>
           </div>
-          
+
           <div class="section">
             <div class="section-title">Sales Lead Questions</div>
-            <div class="field">
-              <span class="label">Was the estimate overpriced?</span> 
-              <span class="value">${data.estimateOverpriced === 'yes' ? 'Yes' : 'No'}</span>
-            </div>
-            <div class="field">
-              <span class="label">Satisfied with recommendation?</span> 
-              <span class="value">${data.satisfiedWithRecommendation === 'yes' ? 'Yes' : 'No'}</span>
-            </div>
-            <div class="field">
-              <span class="label">Were we professional?</span> 
-              <span class="value">${data.wereWeProfessional === 'yes' ? 'Yes' : 'No'}</span>
-            </div>
-            <div class="field">
-              <span class="label">Comfortable with service tech?</span> 
-              <span class="value">${data.comfortableWithTech === 'yes' ? 'Yes' : 'No'}</span>
-            </div>
-            <div class="field">
-              <span class="label">Consider installation with better price?</span> 
-              <span class="value">${data.considerInstallation === 'yes_call_me' ? 'Yes - Call Me' : data.considerInstallation === 'obtained_another' ? 'Obtained Another Plumber' : 'Not Doing Job Now'}</span>
-            </div>
+            <div class="field"><span class="label">Was the estimate overpriced?</span> <span class="value">${data.estimateOverpriced === 'yes' ? 'Yes' : 'No'}</span></div>
+            <div class="field"><span class="label">Satisfied with recommendation?</span> <span class="value">${data.satisfiedWithRecommendation === 'yes' ? 'Yes' : 'No'}</span></div>
+            <div class="field"><span class="label">Were we professional?</span> <span class="value">${data.wereWeProfessional === 'yes' ? 'Yes' : 'No'}</span></div>
+            <div class="field"><span class="label">Comfortable with service tech?</span> <span class="value">${data.comfortableWithTech === 'yes' ? 'Yes' : 'No'}</span></div>
+            <div class="field"><span class="label">Consider installation with better price?</span> <span class="value">${data.considerInstallation === 'yes_call_me' ? 'Yes - Call Me' : data.considerInstallation === 'obtained_another' ? 'Obtained Another Plumber' : 'Not Doing Job Now'}</span></div>
           </div>
-          
+
           ${data.whatDidWell || data.areasToImprove || data.additionalComments ? `
           <div class="section">
             <div class="section-title">Additional Feedback</div>
-            ${data.whatDidWell ? `
-              <div class="field">
-                <span class="label">What We Did Well:</span>
-                <div class="feedback">${data.whatDidWell}</div>
-              </div>
-            ` : ''}
-            ${data.areasToImprove ? `
-              <div class="field">
-                <span class="label">Areas to Improve:</span>
-                <div class="feedback">${data.areasToImprove}</div>
-              </div>
-            ` : ''}
-            ${data.additionalComments ? `
-              <div class="field">
-                <span class="label">Additional Comments:</span>
-                <div class="feedback">${data.additionalComments}</div>
-              </div>
-            ` : ''}
+            ${data.whatDidWell ? `<div class="field"><span class="label">What We Did Well:</span><div class="feedback">${escapeHtml(data.whatDidWell)}</div></div>` : ''}
+            ${data.areasToImprove ? `<div class="field"><span class="label">Areas to Improve:</span><div class="feedback">${escapeHtml(data.areasToImprove)}</div></div>` : ''}
+            ${data.additionalComments ? `<div class="field"><span class="label">Additional Comments:</span><div class="feedback">${escapeHtml(data.additionalComments)}</div></div>` : ''}
           </div>
           ` : ''}
-          
+
           <p style="text-align: center; color: #666; font-size: 12px; margin-top: 20px;">
             This survey was submitted via the Big City Plumbing & Heating website.
           </p>
@@ -216,7 +217,6 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Survey email sent successfully via Resend");
 
-    // Save submission to database
     try {
       const supabaseAdmin = createClient(
         Deno.env.get('SUPABASE_URL')!,
@@ -264,7 +264,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error processing customer survey:", error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: "Failed to submit survey" }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

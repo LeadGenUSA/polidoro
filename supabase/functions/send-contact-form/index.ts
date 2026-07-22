@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { verifyTurnstile } from "../_shared/verify-turnstile.ts";
 import { sendEmail } from "../_shared/send-email.ts";
+import { escapeHtml } from "../_shared/escape-html.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -34,7 +35,31 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { turnstileToken, ...data }: ContactFormData & { turnstileToken?: string } = await req.json();
+    const { turnstileToken, ...raw }: ContactFormData & { turnstileToken?: string } = await req.json();
+
+    // Basic validation
+    const data: ContactFormData = {
+      name: String(raw.name ?? "").trim().slice(0, 100),
+      email: String(raw.email ?? "").trim().slice(0, 255),
+      phone: String(raw.phone ?? "").trim().slice(0, 50),
+      message: String(raw.message ?? "").trim().slice(0, 2000),
+      service: raw.service ? String(raw.service).trim().slice(0, 100) : undefined,
+      city: raw.city ? String(raw.city).trim().slice(0, 100) : undefined,
+    };
+
+    if (!data.name || !data.email || !data.phone || !data.message) {
+      return new Response(JSON.stringify({ error: "Missing required fields" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      return new Response(JSON.stringify({ error: "Invalid email" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
     console.log("Processing contact form from:", data.name);
 
     const isValid = await verifyTurnstile(turnstileToken);
@@ -46,11 +71,11 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const serviceRow = data.service
-      ? `<div class="field"><span class="label">Service Needed:</span> <span class="value">${data.service}</span></div>`
+      ? `<div class="field"><span class="label">Service Needed:</span> <span class="value">${escapeHtml(data.service)}</span></div>`
       : "";
 
     const cityRow = data.city
-      ? `<div class="field"><span class="label">City:</span> <span class="value">${data.city}</span></div>`
+      ? `<div class="field"><span class="label">City:</span> <span class="value">${escapeHtml(data.city)}</span></div>`
       : "";
 
     const emailHtml = `
@@ -79,14 +104,14 @@ body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0;
 <div class="section">
 <div class="section-title">Customer Information</div>
 ${serviceRow}
-<div class="field"><span class="label">Name:</span> <span class="value">${data.name}</span></div>
+<div class="field"><span class="label">Name:</span> <span class="value">${escapeHtml(data.name)}</span></div>
 ${cityRow}
-<div class="field"><span class="label">Email:</span> <span class="value">${data.email}</span></div>
-<div class="field"><span class="label">Phone:</span> <span class="value">${data.phone}</span></div>
+<div class="field"><span class="label">Email:</span> <span class="value">${escapeHtml(data.email)}</span></div>
+<div class="field"><span class="label">Phone:</span> <span class="value">${escapeHtml(data.phone)}</span></div>
 </div>
 <div class="section">
 <div class="section-title">Message</div>
-<div class="message-box">${data.message}</div>
+<div class="message-box">${escapeHtml(data.message)}</div>
 </div>
 <div class="footer">
 This message was submitted via the Big City Plumbing & Heating website contact form.
@@ -116,7 +141,7 @@ This message was submitted via the Big City Plumbing & Heating website contact f
   } catch (error: any) {
     console.error("Error processing contact form:", error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: "Failed to send message" }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

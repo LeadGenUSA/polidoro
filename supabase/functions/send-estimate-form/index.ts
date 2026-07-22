@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { verifyTurnstile } from "../_shared/verify-turnstile.ts";
 import { sendEmail } from "../_shared/send-email.ts";
+import { escapeHtml, escapeUrl } from "../_shared/escape-html.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -44,8 +45,8 @@ interface EstimateFormData {
 
 const formatValue = (value: string | string[] | undefined): string => {
   if (!value || (Array.isArray(value) && value.length === 0)) return 'N/A';
-  if (Array.isArray(value)) return value.join(', ');
-  return value;
+  if (Array.isArray(value)) return escapeHtml(value.join(', '));
+  return escapeHtml(value);
 };
 
 // Compact HTML to prevent mail transport artifacts like "=20"
@@ -65,6 +66,27 @@ serve(async (req) => {
 
   try {
     const { turnstileToken, ...formData }: EstimateFormData & { turnstileToken?: string } = await req.json();
+
+    // Basic validation
+    if (!formData.customer || !formData.email) {
+      return new Response(JSON.stringify({ error: "Missing required fields" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      return new Response(JSON.stringify({ error: "Invalid email" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    // Sanitize photos to valid http(s) URLs only
+    if (Array.isArray(formData.photos)) {
+      formData.photos = formData.photos
+        .filter((u) => typeof u === "string" && /^https?:\/\//i.test(u))
+        .slice(0, 20);
+    } else {
+      formData.photos = [];
+    }
+
     console.log("Processing estimate form for:", formData.customer);
 
     const isValid = await verifyTurnstile(turnstileToken);
@@ -101,8 +123,8 @@ serve(async (req) => {
 
   <div class="section">
     <div class="section-title">CUSTOMER INFO</div>
-    <div class="field"><span class="label">Customer:</span> <span class="value">${formData.customer}</span></div>
-    <div class="field"><span class="label">Email:</span> <span class="value">${formData.email}</span></div>
+    <div class="field"><span class="label">Customer:</span> <span class="value">${escapeHtml(formData.customer)}</span></div>
+    <div class="field"><span class="label">Email:</span> <span class="value">${escapeHtml(formData.email)}</span></div>
     <div class="field"><span class="label">Cost of Job:</span> <span class="value">${formatValue(formData.costOfJob)}</span></div>
   </div>
 
@@ -161,11 +183,11 @@ serve(async (req) => {
   <div class="section">
     <div class="section-title">PHOTOS</div>
     <div class="photo-grid">
-      ${formData.photos.map((url, index) => `
-        <a href="${url}" target="_blank">
-          <img src="${url}" alt="Photo ${index + 1}" class="photo-thumb" />
-        </a>
-      `).join('')}
+      ${formData.photos.map((url, index) => {
+        const safe = escapeUrl(url);
+        if (!safe) return '';
+        return `<a href="${safe}" target="_blank"><img src="${safe}" alt="Photo ${index + 1}" class="photo-thumb" /></a>`;
+      }).join('')}
     </div>
   </div>
   ` : ''}
@@ -245,7 +267,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error sending estimate form:", error);
     return new Response(
-      JSON.stringify({ error: error.message || "Failed to send estimate request" }),
+      JSON.stringify({ error: "Failed to send estimate request" }),
       { 
         status: 500, 
         headers: { ...corsHeaders, "Content-Type": "application/json" } 

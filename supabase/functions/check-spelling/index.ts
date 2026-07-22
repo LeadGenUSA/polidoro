@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { rateLimit, clientIp } from "../_shared/rate-limit.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -6,9 +7,18 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const MAX_INPUT = 4000;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  const ip = clientIp(req);
+  if (!rateLimit(`check-spelling:${ip}`, 30, 60_000)) {
+    return new Response(JSON.stringify({ error: "Rate limit exceeded" }), {
+      status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 
   try {
@@ -17,6 +27,16 @@ serve(async (req) => {
     if (!text || typeof text !== "string" || text.trim().length === 0) {
       return new Response(JSON.stringify({ result: text || "" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (text.length > MAX_INPUT) {
+      return new Response(JSON.stringify({ error: "Input too long" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (mode && mode !== "improve" && mode !== "spelling") {
+      return new Response(JSON.stringify({ error: "Invalid mode" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -75,7 +95,7 @@ serve(async (req) => {
   } catch (e) {
     console.error("check-spelling error:", e);
     return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
+      JSON.stringify({ error: "AI request failed" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

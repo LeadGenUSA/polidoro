@@ -1,12 +1,6 @@
 export async function verifyTurnstile(token: string | undefined): Promise<boolean> {
   if (!token) return false;
 
-  // Allow bypass token for preview/dev environments
-  if (token === 'TURNSTILE_BYPASS') {
-    console.warn("Turnstile bypass token accepted — ensure this only happens in non-production");
-    return true;
-  }
-
   const secret = Deno.env.get("TURNSTILE_SECRET_KEY");
   if (!secret) {
     console.error("TURNSTILE_SECRET_KEY not configured");

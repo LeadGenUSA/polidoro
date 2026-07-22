@@ -35,7 +35,17 @@ const BlogPost = () => {
     );
   }
 
-  // Simple markdown-to-HTML rendering for headings, bold, bullets, paragraphs
+  // Render markdown-lite (headings, bold, bullets, paragraphs) as safe React nodes.
+  const renderInline = (text: string): (string | JSX.Element)[] => {
+    // Split by **bold** while escaping other content by relying on React's JSX escaping.
+    const parts = text.split(/(\*\*[^*]+\*\*)/g);
+    return parts.map((part, i) => {
+      const m = part.match(/^\*\*([^*]+)\*\*$/);
+      if (m) return <strong key={i}>{m[1]}</strong>;
+      return part;
+    });
+  };
+
   const renderContent = (md: string) => {
     const lines = md.split('\n');
     const elements: JSX.Element[] = [];
@@ -46,7 +56,7 @@ const BlogPost = () => {
         elements.push(
           <ul key={`ul-${elements.length}`} className="list-disc pl-6 mb-4 space-y-1 text-foreground/90">
             {listItems.map((item, i) => (
-              <li key={i} dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+              <li key={i}>{renderInline(item)}</li>
             ))}
           </ul>
         );
@@ -73,9 +83,9 @@ const BlogPost = () => {
       } else {
         flushList();
         elements.push(
-          <p key={i} className="text-foreground/90 leading-relaxed mb-4"
-            dangerouslySetInnerHTML={{ __html: trimmed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}
-          />
+          <p key={i} className="text-foreground/90 leading-relaxed mb-4">
+            {renderInline(trimmed)}
+          </p>
         );
       }
     });
