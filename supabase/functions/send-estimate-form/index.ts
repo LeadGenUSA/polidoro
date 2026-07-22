@@ -267,7 +267,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error sending estimate form:", error);
     return new Response(
-      JSON.stringify({ error: error.message || "Failed to send estimate request" }),
+      JSON.stringify({ error: "Failed to send estimate request" }),
       { 
         status: 500, 
         headers: { ...corsHeaders, "Content-Type": "application/json" } 
