@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireAdminOrService } from "../_shared/auth-guard.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,6 +18,14 @@ serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+
+  const auth = await requireAdminOrService(req);
+  if (!auth.ok) {
+    return new Response(JSON.stringify({ error: auth.error }), {
+      status: auth.status, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
 
   try {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
@@ -58,12 +67,12 @@ serve(async (req) => {
     if (daysSinceLastGeneration >= intervalDays) {
       console.log("Time to generate a new blog post!");
       
-      // Call the generate-blog-post function
+      // Call the generate-blog-post function with the service role so it authenticates as an internal caller.
       const generateResponse = await fetch(`${SUPABASE_URL}/functions/v1/generate-blog-post`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
         },
         body: JSON.stringify({}),
       });
@@ -89,7 +98,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("check-blog-schedule error:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: "Failed to run schedule check" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
