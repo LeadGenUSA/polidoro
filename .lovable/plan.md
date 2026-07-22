@@ -1,18 +1,6 @@
-# Replace Site Logo
+Update the Work Order photo upload limit from 5MB to 25MB per image (video limit stays at 20MB, max 5 files unchanged).
 
-## Goal
-Swap the current `big-city-plumbing-and-heating-logo-2.png` used across the site with the newly uploaded circular "Big City Plumbing 631-361-9500" logo.
+Files to edit:
+- `src/components/work-order/PhotoUpload.tsx` — change the `maxSize` for images from `5 * 1024 * 1024` to `25 * 1024 * 1024`, update the `maxLabel` for images to `'25MB'`, and update the helper text below the upload button to say "Max 25MB per image, 20MB per video."
 
-## Steps
-1. Upload the new file (`user-uploads://big-city-plumbing-logo-2.png`) as a Lovable Asset, writing the pointer to `src/assets/big-city-plumbing-and-heating-logo-2.png.asset.json`.
-2. Delete the existing binary `src/assets/big-city-plumbing-and-heating-logo-2.png`.
-3. Update the 4 files that import the logo to import the `.asset.json` pointer and use `logo.url` as the `<img>` src:
-   - `src/components/Navbar.tsx`
-   - `src/components/Footer.tsx`
-   - `src/pages/CouponPage.tsx`
-   - `src/pages/SurveyThankYouCoupon.tsx`
-4. Verify with `bun run build` and a visual spot-check.
-
-## Notes
-- Sizing/rounded styling stays the same (`rounded-full object-cover`) — the new logo is already circular so it will fit cleanly.
-- No favicon changes (favicon uses the separate Layer_9-2 asset).
+No backend changes needed — the edge function accepts image URLs after upload; Supabase Storage default per-file cap is well above 25MB.
