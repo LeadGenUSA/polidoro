@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { verifyTurnstile } from '../_shared/verify-turnstile.ts'
 import { sendEmail } from '../_shared/send-email.ts'
+import { escapeHtml } from '../_shared/escape-html.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -58,12 +59,12 @@ async function sendAdminNotification(review: ReviewSubmission) {
     </div>
     <div class="content">
       <p class="label">Customer</p>
-      <p class="value"><strong>${review.author_name}</strong><br>${review.email}${review.location ? `<br>${review.location}` : ''}</p>
+      <p class="value"><strong>${escapeHtml(review.author_name)}</strong><br>${escapeHtml(review.email)}${review.location ? `<br>${escapeHtml(review.location)}` : ''}</p>
       
       <div class="review-box">
         <p class="stars">${htmlStars}</p>
-        ${review.title ? `<p style="font-weight: bold; margin: 10px 0 5px 0;">"${review.title}"</p>` : ''}
-        <p style="margin: 0;">${review.text}</p>
+        ${review.title ? `<p style="font-weight: bold; margin: 10px 0 5px 0;">"${escapeHtml(review.title)}"</p>` : ''}
+        <p style="margin: 0; white-space: pre-wrap;">${escapeHtml(review.text)}</p>
       </div>
       
       <a href="https://polidoro.lovable.app/admin" class="cta">Review in Admin Dashboard</a>
@@ -164,17 +165,14 @@ Deno.serve(async (req) => {
       )
     }
 
-    const adminEmails = ['admin@bigcityph.com', 'admin@bigcityplumbing.com']
-    const isAdminSubmission = adminEmails.includes(body.email?.toLowerCase().trim() || '')
-    
-    console.log('Inserting review submission:', { 
-      author_name: body.author_name, 
+    console.log('Inserting review submission:', {
+      author_name: body.author_name,
       rating: body.rating,
       hasTitle: !!body.title,
       hasLocation: !!body.location,
-      isAdminSubmission
     })
 
+    // All public submissions are pending — admin approval required in dashboard.
     const { data, error } = await supabase
       .from('reviews')
       .insert({
@@ -183,9 +181,9 @@ Deno.serve(async (req) => {
         title: body.title?.trim() || null,
         location: body.location?.trim() || null,
         rating: body.rating,
-        source: isAdminSubmission ? 'manual' : 'website',
-        status: isAdminSubmission ? 'approved' : 'pending',
-        approved_at: isAdminSubmission ? new Date().toISOString() : null,
+        source: 'website',
+        status: 'pending',
+        approved_at: null,
         review_date: new Date().toISOString(),
       })
       .select()
@@ -199,11 +197,9 @@ Deno.serve(async (req) => {
       )
     }
 
-    console.log('Review submitted successfully:', data.id, isAdminSubmission ? '(auto-approved)' : '(pending)')
+    console.log('Review submitted successfully:', data.id, '(pending)')
 
-    if (!isAdminSubmission) {
-      sendAdminNotification(body).catch(err => console.error('Email notification failed:', err))
-    }
+    sendAdminNotification(body).catch(err => console.error('Email notification failed:', err))
 
     return new Response(
       JSON.stringify({ success: true, message: 'Review submitted for approval' }),
