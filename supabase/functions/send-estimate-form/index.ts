@@ -123,8 +123,8 @@ serve(async (req) => {
 
   <div class="section">
     <div class="section-title">CUSTOMER INFO</div>
-    <div class="field"><span class="label">Customer:</span> <span class="value">${formData.customer}</span></div>
-    <div class="field"><span class="label">Email:</span> <span class="value">${formData.email}</span></div>
+    <div class="field"><span class="label">Customer:</span> <span class="value">${escapeHtml(formData.customer)}</span></div>
+    <div class="field"><span class="label">Email:</span> <span class="value">${escapeHtml(formData.email)}</span></div>
     <div class="field"><span class="label">Cost of Job:</span> <span class="value">${formatValue(formData.costOfJob)}</span></div>
   </div>
 
@@ -183,11 +183,11 @@ serve(async (req) => {
   <div class="section">
     <div class="section-title">PHOTOS</div>
     <div class="photo-grid">
-      ${formData.photos.map((url, index) => `
-        <a href="${url}" target="_blank">
-          <img src="${url}" alt="Photo ${index + 1}" class="photo-thumb" />
-        </a>
-      `).join('')}
+      ${formData.photos.map((url, index) => {
+        const safe = escapeUrl(url);
+        if (!safe) return '';
+        return `<a href="${safe}" target="_blank"><img src="${safe}" alt="Photo ${index + 1}" class="photo-thumb" /></a>`;
+      }).join('')}
     </div>
   </div>
   ` : ''}
