@@ -498,29 +498,29 @@ export type Database = {
           boiler_type: string | null
           calendar_info: string | null
           created_at: string
-          customer_name: string
-          email: string
+          customer_name: string | null
+          email: string | null
           email_to: string | null
           error_code: string | null
           hours_on_job: string | null
           id: string
           job_completed: string | null
           job_date: string | null
-          job_description: string
+          job_description: string | null
           make_model: string | null
           parts_under_warranty: string | null
           payment_method: string | null
-          phone: string
+          phone: string | null
           photos: string[] | null
           recommendations: string | null
           rga_navien_tech: string | null
           serial_number: string | null
           status: Database["public"]["Enums"]["submission_status"]
-          street_address: string
+          street_address: string | null
           tech_on_job: string | null
           total_charges: string | null
           water_sampling_ph: string | null
-          zip_code: string
+          zip_code: string | null
         }
         Insert: {
           apt_number?: string | null
@@ -528,29 +528,29 @@ export type Database = {
           boiler_type?: string | null
           calendar_info?: string | null
           created_at?: string
-          customer_name: string
-          email: string
+          customer_name?: string | null
+          email?: string | null
           email_to?: string | null
           error_code?: string | null
           hours_on_job?: string | null
           id?: string
           job_completed?: string | null
           job_date?: string | null
-          job_description: string
+          job_description?: string | null
           make_model?: string | null
           parts_under_warranty?: string | null
           payment_method?: string | null
-          phone: string
+          phone?: string | null
           photos?: string[] | null
           recommendations?: string | null
           rga_navien_tech?: string | null
           serial_number?: string | null
           status?: Database["public"]["Enums"]["submission_status"]
-          street_address: string
+          street_address?: string | null
           tech_on_job?: string | null
           total_charges?: string | null
           water_sampling_ph?: string | null
-          zip_code: string
+          zip_code?: string | null
         }
         Update: {
           apt_number?: string | null
@@ -558,29 +558,29 @@ export type Database = {
           boiler_type?: string | null
           calendar_info?: string | null
           created_at?: string
-          customer_name?: string
-          email?: string
+          customer_name?: string | null
+          email?: string | null
           email_to?: string | null
           error_code?: string | null
           hours_on_job?: string | null
           id?: string
           job_completed?: string | null
           job_date?: string | null
-          job_description?: string
+          job_description?: string | null
           make_model?: string | null
           parts_under_warranty?: string | null
           payment_method?: string | null
-          phone?: string
+          phone?: string | null
           photos?: string[] | null
           recommendations?: string | null
           rga_navien_tech?: string | null
           serial_number?: string | null
           status?: Database["public"]["Enums"]["submission_status"]
-          street_address?: string
+          street_address?: string | null
           tech_on_job?: string | null
           total_charges?: string | null
           water_sampling_ph?: string | null
-          zip_code?: string
+          zip_code?: string | null
         }
         Relationships: []
       }

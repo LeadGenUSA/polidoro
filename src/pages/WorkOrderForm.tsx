@@ -107,11 +107,18 @@ const WorkOrderForm = () => {
       });
     } catch (error: any) {
       console.error('Error submitting work order:', error);
+      const detail =
+        (typeof error?.context?.body === 'string' ? error.context.body : '') ||
+        error?.message ||
+        '';
       toast({
         title: 'Submission Failed',
-        description: 'There was an error submitting your work order. Please try again.',
+        description: detail
+          ? `There was an error submitting your work order: ${detail}`
+          : 'There was an error submitting your work order. Please try again.',
         variant: 'destructive',
       });
+
     } finally {
       setIsSubmitting(false);
     }
