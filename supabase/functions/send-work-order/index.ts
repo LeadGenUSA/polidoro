@@ -38,7 +38,10 @@ interface WorkOrderData {
   photos?: string[];
 }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// A single mailbox only. This deliberately rejects whitespace, commas,
+// semicolons, and control characters so this value cannot become an email
+// header or recipient-list injection vector.
+const EMAIL_RE = /^[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?(?:\.[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?)+$/i;
 
 const formatPaymentMethod = (method?: string): string => {
   const methods: Record<string, string> = {
@@ -115,10 +118,9 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    // Strict allowlist for optional additional recipient — only Big City company mailboxes.
+    // Optional additional recipient. Accept one valid mailbox only.
     if (data.emailTo) {
-      const okDomain = /@bigcityplumbing\.com$/i.test(data.emailTo);
-      if (!EMAIL_RE.test(data.emailTo) || !okDomain) {
+      if (!EMAIL_RE.test(data.emailTo)) {
         return new Response(JSON.stringify({ error: "Invalid additional recipient" }), {
           status: 400, headers: { "Content-Type": "application/json", ...corsHeaders },
         });

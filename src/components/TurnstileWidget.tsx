@@ -7,9 +7,10 @@ const TURNSTILE_SITE_KEY = '0x4AAAAAACbaweBfl9FA-5wp';
 interface TurnstileWidgetProps {
   onVerify: (token: string) => void;
   onExpire?: () => void;
+  onError?: () => void;
 }
 
-const TurnstileWidget = ({ onVerify, onExpire }: TurnstileWidgetProps) => {
+const TurnstileWidget = ({ onVerify, onExpire, onError }: TurnstileWidgetProps) => {
   const [hasError, setHasError] = useState(false);
 
   // Patch window.turnstile.remove to prevent crash during unmount
@@ -25,15 +26,15 @@ const TurnstileWidget = ({ onVerify, onExpire }: TurnstileWidgetProps) => {
   }, []);
 
   const handleError = () => {
-    console.warn('Turnstile widget error — bypassing in non-production environment');
+    console.warn('Bot verification widget could not complete');
     setHasError(true);
-    onVerify('TURNSTILE_BYPASS');
+    onError?.();
   };
 
   if (hasError) {
     return (
       <p className="text-xs text-muted-foreground">
-        Bot verification unavailable in this environment.
+        Bot verification could not load. Please refresh the page and try again.
       </p>
     );
   }
