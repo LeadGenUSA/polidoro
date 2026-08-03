@@ -112,8 +112,8 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
 
   return (
     <div className="space-y-3">
-      <Label>Photos</Label>
-      <p className="text-destructive font-bold text-sm">Work orders will not upload without a picture or video attached.</p>
+      <Label>Photos (optional)</Label>
+
       
       {/* Photo grid */}
       {photos.length > 0 && (
@@ -169,7 +169,7 @@ const PhotoUpload = ({ photos, onPhotosChange, maxPhotos = 5 }: PhotoUploadProps
             )}
           </Button>
           <p className="text-xs text-muted-foreground mt-2">
-            Upload up to {maxPhotos} photos or videos. Max 25MB per image, 20MB per video. Supported formats: JPG, PNG, WEBP, HEIC, MP4.
+            Attachments are optional. Upload up to {maxPhotos} photos or videos. Max 25MB per image, 20MB per video. Supported formats: JPG, PNG, WEBP, HEIC, MP4.
           </p>
         </div>
       )}
