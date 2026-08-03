@@ -218,7 +218,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     await sendEmail({
       to: recipients,
-      subject: `Work Order - ${data.customerName} - ${data.streetAddress}`,
+      subject: [data.customerName, data.streetAddress].filter(Boolean).length
+        ? `Work Order - ${[data.customerName, data.streetAddress].filter(Boolean).join(' - ')}`
+        : 'Work Order Submission',
+
       html: compactEmailHtml(emailHtml),
     });
 
