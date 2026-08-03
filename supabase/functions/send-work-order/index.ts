@@ -109,16 +109,12 @@ const handler = async (req: Request): Promise<Response> => {
         : [],
     };
 
-    if (!data.customerName || !data.streetAddress || !data.phone || !data.email || !data.jobDescription) {
-      return new Response(JSON.stringify({ error: "Missing required fields" }), {
-        status: 400, headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
-    }
-    if (!EMAIL_RE.test(data.email)) {
+    if (data.email && !EMAIL_RE.test(data.email)) {
       return new Response(JSON.stringify({ error: "Invalid email" }), {
         status: 400, headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
+
     // Strict allowlist for optional additional recipient — only Big City company mailboxes.
     if (data.emailTo) {
       const okDomain = /@bigcityplumbing\.com$/i.test(data.emailTo);
