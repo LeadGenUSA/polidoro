@@ -24,16 +24,21 @@ export async function uploadFileWithConversion(
     const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
     const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData.session?.access_token;
+
     const response = await fetch(
       `https://${projectId}.supabase.co/functions/v1/convert-image`,
       {
         method: 'POST',
         headers: {
           apikey: anonKey,
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         },
         body: formData,
       }
     );
+
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({ error: 'Conversion failed' }));
