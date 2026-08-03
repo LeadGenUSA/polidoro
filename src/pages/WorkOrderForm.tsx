@@ -65,6 +65,7 @@ const WorkOrderForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileKey, setTurnstileKey] = useState(0);
   const { toast } = useToast();
   
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<WorkOrderFormData>({
@@ -87,7 +88,21 @@ const WorkOrderForm = () => {
         body: { ...data, photos, turnstileToken },
       });
 
-      if (error) throw error;
+      if (error) {
+        let backendMessage = '';
+        const responseContext = error.context;
+
+        if (responseContext instanceof Response) {
+          try {
+            const errorBody = await responseContext.clone().json();
+            backendMessage = typeof errorBody?.error === 'string' ? errorBody.error : '';
+          } catch {
+            backendMessage = '';
+          }
+        }
+
+        throw new Error(backendMessage || error.message);
+      }
 
       if (typeof window.gtag === 'function') {
         window.gtag('event', 'lead_submit', {
@@ -107,15 +122,18 @@ const WorkOrderForm = () => {
       });
     } catch (error: any) {
       console.error('Error submitting work order:', error);
-      const detail =
-        (typeof error?.context?.body === 'string' ? error.context.body : '') ||
-        error?.message ||
-        '';
+      const detail = error instanceof Error ? error.message : '';
+      const messages: Record<string, string> = {
+        'Invalid email': 'Please enter a valid customer email address.',
+        'Invalid additional recipient': 'Please enter one valid email address in the Email TO field.',
+        'Bot verification failed': 'Bot verification expired or failed. Please complete it again and resubmit.',
+      };
+
+      setTurnstileToken(null);
+      setTurnstileKey((current) => current + 1);
       toast({
         title: 'Submission Failed',
-        description: detail
-          ? `There was an error submitting your work order: ${detail}`
-          : 'There was an error submitting your work order. Please try again.',
+        description: messages[detail] || 'There was an error submitting your work order. Please try again.',
         variant: 'destructive',
       });
 
@@ -452,7 +470,12 @@ const WorkOrderForm = () => {
               <p className="text-muted-foreground">
                 Please make sure all required fields are filled in before submitting!
               </p>
-              <TurnstileWidget onVerify={setTurnstileToken} onExpire={() => setTurnstileToken(null)} />
+              <TurnstileWidget
+                key={turnstileKey}
+                onVerify={setTurnstileToken}
+                onExpire={() => setTurnstileToken(null)}
+                onError={() => setTurnstileToken(null)}
+              />
               <Button type="submit" size="lg" disabled={isSubmitting || !turnstileToken} className="min-w-[200px]">
                 {isSubmitting ? (
                   <>
