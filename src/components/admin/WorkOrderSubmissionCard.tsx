@@ -102,11 +102,6 @@ export const WorkOrderSubmissionCard = ({
                 )}
               </div>
             </div>
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm">
-                {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </Button>
-            </CollapsibleTrigger>
           </div>
         </CardHeader>
 
