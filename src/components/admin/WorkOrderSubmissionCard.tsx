@@ -70,6 +70,11 @@ export const WorkOrderSubmissionCard = ({
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between">
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm" className="mr-2 shrink-0">
+                {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </Button>
+            </CollapsibleTrigger>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <Badge className={statusColors[submission.status]}>
