@@ -206,6 +206,14 @@ export const WorkOrderSubmissionCard = ({
                 <Pencil className="w-4 h-4 mr-1" />
                 Edit
               </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handlePrint}
+              >
+                <Printer className="w-4 h-4 mr-1" />
+                Print
+              </Button>
               {submission.status !== 'reviewed' && (
                 <Button 
                   size="sm" 
