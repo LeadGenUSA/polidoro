@@ -112,6 +112,15 @@ export const WorkOrderSubmissionCard = ({
                 )}
               </div>
             </div>
+            <Button
+              size="sm"
+              variant="outline"
+              className="shrink-0 ml-2"
+              onClick={handlePrint}
+            >
+              <Printer className="w-4 h-4 mr-1" />
+              Print
+            </Button>
           </div>
         </CardHeader>
 
