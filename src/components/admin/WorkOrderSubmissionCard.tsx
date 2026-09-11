@@ -14,9 +14,12 @@ import {
   Phone,
   Wrench,
   Image,
-  Pencil
+  Pencil,
+  Printer
 } from 'lucide-react';
 import { WorkOrderEditDialog } from './WorkOrderEditDialog';
+import { printWorkOrder } from './workOrderPrint';
+import { toast } from 'sonner';
 import type { WorkOrderSubmission, SubmissionStatus } from '@/hooks/useSubmissions';
 
 interface WorkOrderSubmissionCardProps {
