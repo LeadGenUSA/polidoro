@@ -43,22 +43,25 @@ export const SubmissionsManager = () => {
     exportToICS
   } = useSubmissions(submissionType, statusFilter);
 
+  const EXCLUDED_SEARCH_KEYS = ['id', 'photos'];
+
+  const valueMatches = (value: unknown, q: string): boolean => {
+    if (value === null || value === undefined) return false;
+    if (Array.isArray(value)) return value.some((v) => valueMatches(v, q));
+    if (typeof value === 'object') {
+      return Object.values(value as Record<string, unknown>).some((v) => valueMatches(v, q));
+    }
+    return String(value).toLowerCase().includes(q);
+  };
+
   const filteredSubmissions = useMemo(() => {
     if (!searchQuery.trim()) return submissions;
     const q = searchQuery.toLowerCase();
-    return submissions.filter((s) => {
-      if (submissionType === 'work_orders') {
-        const wo = s as WorkOrderSubmission;
-        return [wo.customer_name, wo.email, wo.street_address, wo.phone, wo.job_description, wo.tech_on_job, wo.make_model]
-          .some(v => v?.toLowerCase().includes(q));
-      }
-      if (submissionType === 'estimates') {
-        const est = s as EstimateSubmission;
-        return [est.customer, est.email].some(v => v?.toLowerCase().includes(q));
-      }
-      const sur = s as SurveySubmission;
-      return [sur.customer_name, sur.email, sur.technician_name].some(v => v?.toLowerCase().includes(q));
-    });
+    return submissions.filter((s) =>
+      Object.entries(s as Record<string, unknown>).some(
+        ([key, value]) => !EXCLUDED_SEARCH_KEYS.includes(key) && valueMatches(value, q)
+      )
+    );
   }, [submissions, searchQuery, submissionType]);
 
   const typeLabels: Record<SubmissionType, { label: string; icon: React.ReactNode }> = {
