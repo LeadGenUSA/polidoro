@@ -68,6 +68,13 @@ export const WorkOrderSubmissionCard = ({
     archived: 'bg-gray-100 text-gray-600',
   };
 
+  const handlePrint = () => {
+    const ok = printWorkOrder(submission);
+    if (!ok) {
+      toast.error('Please allow pop-ups for this site to print work orders.');
+    }
+  };
+
   return (
     <Card className={`${submission.status === 'archived' ? 'opacity-60' : ''}`}>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
