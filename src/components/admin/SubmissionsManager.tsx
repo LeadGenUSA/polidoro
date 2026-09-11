@@ -58,7 +58,7 @@ export const SubmissionsManager = () => {
     if (!searchQuery.trim()) return submissions;
     const q = searchQuery.toLowerCase();
     return submissions.filter((s) =>
-      Object.entries(s as Record<string, unknown>).some(
+      Object.entries(s as unknown as Record<string, unknown>).some(
         ([key, value]) => !EXCLUDED_SEARCH_KEYS.includes(key) && valueMatches(value, q)
       )
     );
