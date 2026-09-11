@@ -14,9 +14,12 @@ import {
   Phone,
   Wrench,
   Image,
-  Pencil
+  Pencil,
+  Printer
 } from 'lucide-react';
 import { WorkOrderEditDialog } from './WorkOrderEditDialog';
+import { printWorkOrder } from './workOrderPrint';
+import { toast } from 'sonner';
 import type { WorkOrderSubmission, SubmissionStatus } from '@/hooks/useSubmissions';
 
 interface WorkOrderSubmissionCardProps {
@@ -65,6 +68,13 @@ export const WorkOrderSubmissionCard = ({
     archived: 'bg-gray-100 text-gray-600',
   };
 
+  const handlePrint = () => {
+    const ok = printWorkOrder(submission);
+    if (!ok) {
+      toast.error('Please allow pop-ups for this site to print work orders.');
+    }
+  };
+
   return (
     <Card className={`${submission.status === 'archived' ? 'opacity-60' : ''}`}>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -102,6 +112,15 @@ export const WorkOrderSubmissionCard = ({
                 )}
               </div>
             </div>
+            <Button
+              size="sm"
+              variant="outline"
+              className="shrink-0 ml-2"
+              onClick={handlePrint}
+            >
+              <Printer className="w-4 h-4 mr-1" />
+              Print
+            </Button>
           </div>
         </CardHeader>
 
@@ -202,6 +221,14 @@ export const WorkOrderSubmissionCard = ({
               >
                 <Pencil className="w-4 h-4 mr-1" />
                 Edit
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handlePrint}
+              >
+                <Printer className="w-4 h-4 mr-1" />
+                Print
               </Button>
               {submission.status !== 'reviewed' && (
                 <Button 
