@@ -2,105 +2,165 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.bigcityplumbing.com/</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/services</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/plumbing-services</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/heating-services</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/about-us</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/contact-us</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/free-estimate</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/work-order</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/customer-survey</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/reviews</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/projects-gallery</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/how-to-videos</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/blog</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/financing</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/sitemap</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/privacy-policy</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/terms-of-service</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://www.bigcityplumbing.com/blog/why-does-my-water-pressure-drop-in-summer-on-long-island</loc>
+    <lastmod>2026-08-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.bigcityplumbing.com/blog/heat-pumps-in-centereach-high-efficiency-hvac-guide</loc>
+    <lastmod>2026-07-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.bigcityplumbing.com/blog/furnace-replacement-centereach-costs-local-guide</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.bigcityplumbing.com/blog/home-heating-repair-in-centereach-local-expert-guide</loc>
+    <lastmod>2026-09-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.bigcityplumbing.com/blog/fall-heating-tune-up-checklist-for-long-island-homes</loc>
+    <lastmod>2026-09-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.bigcityplumbing.com/blog/when-to-schedule-a-boiler-inspection-on-long-island</loc>
+    <lastmod>2026-09-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.bigcityplumbing.com/blog/water-heater-maintenance-services-in-centereach-ny</loc>
+    <lastmod>2026-07-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.bigcityplumbing.com/blog/expert-furnace-repairs-in-centereach-local-guide</loc>
+    <lastmod>2026-06-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.bigcityplumbing.com/blog/gas-water-heater-installation-in-selden-ny</loc>
+    <lastmod>2026-05-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.bigcityplumbing.com/blog/gas-water-heater-installation-in-east-setauket-ny</loc>
+    <lastmod>2026-05-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/blog/best-plumber-heating-in-centereach-big-city-plumbing</loc>
@@ -170,7 +230,7 @@
   </url>
   <url>
     <loc>https://www.bigcityplumbing.com/blog/authorized-navien-nss-dealer-installer-on-long-island</loc>
-    <lastmod>2026-02-12</lastmod>
+    <lastmod>2026-05-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
