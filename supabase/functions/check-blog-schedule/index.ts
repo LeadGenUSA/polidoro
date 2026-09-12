@@ -19,11 +19,18 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const auth = await requireAdminOrService(req);
-  if (!auth.ok) {
-    return new Response(JSON.stringify({ error: auth.error }), {
-      status: auth.status, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+  // Allow the scheduled cron job to call this with a shared secret header.
+  const cronSecret = Deno.env.get("CRON_SECRET");
+  const providedCronSecret = req.headers.get("x-cron-secret");
+  const isCron = !!cronSecret && providedCronSecret === cronSecret;
+
+  if (!isCron) {
+    const auth = await requireAdminOrService(req);
+    if (!auth.ok) {
+      return new Response(JSON.stringify({ error: auth.error }), {
+        status: auth.status, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
   }
 
 
