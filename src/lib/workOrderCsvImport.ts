@@ -208,15 +208,62 @@ export function buildHeaderMapping(headers: string[]): HeaderMapping {
 
 export type WorkOrderInsert = Partial<Record<WorkOrderField, string>>;
 
-/** Converts CSV rows into work order records using the header mapping. */
-export function rowsToWorkOrders(rows: CsvRow[], mapping: HeaderMapping): WorkOrderInsert[] {
+/** Human friendly label for a work order field. */
+export function fieldLabel(field: WorkOrderField): string {
+  return field
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .replace('Rga', 'RGA')
+    .replace('Ph\b', 'pH');
+}
+
+/** header -> field, or null when the column should not be mapped. */
+export type ColumnMapping = Record<string, WorkOrderField | null>;
+
+/** Builds the initial mapping selections from automatic header matching. */
+export function initialColumnMapping(headers: string[]): ColumnMapping {
+  const auto = buildHeaderMapping(headers);
+  const mapping: ColumnMapping = {};
+  headers.forEach((h) => {
+    mapping[h] = null;
+  });
+  auto.matched.forEach(({ header, field }) => {
+    mapping[header] = field;
+  });
+  return mapping;
+}
+
+/**
+ * Converts CSV rows into work order records using an explicit column mapping.
+ * Unmapped columns with a value are appended to job_description as "Heading: value".
+ */
+export function rowsToWorkOrders(
+  rows: CsvRow[],
+  headers: string[],
+  mapping: ColumnMapping
+): WorkOrderInsert[] {
   return rows
     .map((row) => {
       const record: WorkOrderInsert = {};
-      mapping.matched.forEach(({ header, field }) => {
+      const extras: string[] = [];
+
+      headers.forEach((header) => {
         const value = (row[header] ?? '').trim();
-        if (value) record[field] = value;
+        if (!value) return;
+        const field = mapping[header] ?? null;
+        if (field) {
+          record[field] = value;
+        } else if (header.trim()) {
+          extras.push(`${header.trim()}: ${value}`);
+        }
       });
+
+      if (extras.length > 0) {
+        record.job_description = [record.job_description, ...extras]
+          .filter(Boolean)
+          .join('\n');
+      }
+
       return record;
     })
     .filter((r) => Object.keys(r).length > 0);
