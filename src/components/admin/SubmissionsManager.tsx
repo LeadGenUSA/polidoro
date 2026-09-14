@@ -213,6 +213,17 @@ export const SubmissionsManager = () => {
             <ArchiveIcon className="w-4 h-4" />
             Archived
           </TabsTrigger>
+          {submissionType === 'work_orders' && (
+            <TabsTrigger value="imported" className="gap-2">
+              <FileInput className="w-4 h-4" />
+              Imported
+              {counts.imported > 0 && (
+                <span className="ml-1 px-2 py-0.5 text-xs bg-blue-100 text-blue-800 rounded-full">
+                  {counts.imported}
+                </span>
+              )}
+            </TabsTrigger>
+          )}
           <TabsTrigger value="all" className="gap-2">
             <Star className="w-4 h-4" />
             All
@@ -267,6 +278,15 @@ export const SubmissionsManager = () => {
           </div>
         )}
       </Tabs>
+
+      <WorkOrderImportDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        onImported={() => {
+          setStatusFilter('imported');
+          fetchSubmissions();
+        }}
+      />
     </div>
   );
 };
