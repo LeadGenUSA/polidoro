@@ -105,7 +105,7 @@ export type Submission = EstimateSubmission | WorkOrderSubmission | SurveySubmis
 export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionStatus | 'all' = 'all') => {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [counts, setCounts] = useState({ new: 0, reviewed: 0, archived: 0, total: 0 });
+  const [counts, setCounts] = useState({ new: 0, reviewed: 0, archived: 0, imported: 0, total: 0 });
   const { toast } = useToast();
 
   const fetchSubmissions = useCallback(async () => {
@@ -121,6 +121,8 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
         
         if (statusFilter !== 'all') {
           query = query.eq('status', statusFilter);
+        } else {
+          query = query.neq('status', 'imported');
         }
         
         const result = await query;
