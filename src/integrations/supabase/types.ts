@@ -502,6 +502,7 @@ export type Database = {
           email: string | null
           email_to: string | null
           error_code: string | null
+          extra_fields: Json | null
           hours_on_job: string | null
           id: string
           job_completed: string | null
@@ -532,6 +533,7 @@ export type Database = {
           email?: string | null
           email_to?: string | null
           error_code?: string | null
+          extra_fields?: Json | null
           hours_on_job?: string | null
           id?: string
           job_completed?: string | null
@@ -562,6 +564,7 @@ export type Database = {
           email?: string | null
           email_to?: string | null
           error_code?: string | null
+          extra_fields?: Json | null
           hours_on_job?: string | null
           id?: string
           job_completed?: string | null
