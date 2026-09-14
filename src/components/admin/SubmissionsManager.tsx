@@ -43,7 +43,19 @@ export const SubmissionsManager = () => {
     exportToICS
   } = useSubmissions(submissionType, statusFilter);
 
-  const EXCLUDED_SEARCH_KEYS = ['id', 'photos'];
+  const EXCLUDED_SEARCH_KEYS = [
+    'id',
+    'photos',
+    'created_at',
+    'updated_at',
+    'status',
+    'user_id',
+    'submission_id',
+    'reviewed_by',
+  ];
+
+  const isExcludedKey = (key: string) =>
+    EXCLUDED_SEARCH_KEYS.includes(key) || key.endsWith('_id') || key.endsWith('_at');
 
   const valueMatches = (value: unknown, q: string): boolean => {
     if (value === null || value === undefined) return false;
@@ -59,7 +71,7 @@ export const SubmissionsManager = () => {
     const q = searchQuery.toLowerCase();
     return submissions.filter((s) =>
       Object.entries(s as unknown as Record<string, unknown>).some(
-        ([key, value]) => !EXCLUDED_SEARCH_KEYS.includes(key) && valueMatches(value, q)
+        ([key, value]) => !isExcludedKey(key) && valueMatches(value, q)
       )
     );
   }, [submissions, searchQuery, submissionType]);
