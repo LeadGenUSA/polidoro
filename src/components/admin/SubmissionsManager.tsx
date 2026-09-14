@@ -66,7 +66,9 @@ export const SubmissionsManager = () => {
     if (value === null || value === undefined) return false;
     if (Array.isArray(value)) return value.some((v) => valueMatches(v, q));
     if (typeof value === 'object') {
-      return Object.values(value as Record<string, unknown>).some((v) => valueMatches(v, q));
+      return Object.entries(value as Record<string, unknown>).some(
+        ([k, v]) => k.toLowerCase().includes(q) || valueMatches(v, q)
+      );
     }
     return String(value).toLowerCase().includes(q);
   };

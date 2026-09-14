@@ -71,6 +71,7 @@ export interface WorkOrderSubmission {
   photos: string[] | null;
   calendar_info: string | null;
   boiler_type: string | null;
+  extra_fields?: Record<string, string> | null;
 }
 
 export interface SurveySubmission {

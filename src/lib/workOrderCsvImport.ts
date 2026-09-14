@@ -206,65 +206,52 @@ export function buildHeaderMapping(headers: string[]): HeaderMapping {
   return { matched, ignored };
 }
 
-export type WorkOrderInsert = Partial<Record<WorkOrderField, string>>;
+export type WorkOrderInsert = Partial<Record<WorkOrderField, string>> & {
+  extra_fields?: Record<string, string>;
+};
 
 /** Human friendly label for a work order field. */
 export function fieldLabel(field: WorkOrderField): string {
   return field
     .replace(/_/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase())
-    .replace('Rga', 'RGA')
-    .replace('Ph\b', 'pH');
-}
-
-/** header -> field, or null when the column should not be mapped. */
-export type ColumnMapping = Record<string, WorkOrderField | null>;
-
-/** Builds the initial mapping selections from automatic header matching. */
-export function initialColumnMapping(headers: string[]): ColumnMapping {
-  const auto = buildHeaderMapping(headers);
-  const mapping: ColumnMapping = {};
-  headers.forEach((h) => {
-    mapping[h] = null;
-  });
-  auto.matched.forEach(({ header, field }) => {
-    mapping[header] = field;
-  });
-  return mapping;
+    .replace('Rga', 'RGA');
 }
 
 /**
- * Converts CSV rows into work order records using an explicit column mapping.
- * Unmapped columns with a value are appended to job_description as "Heading: value".
+ * Converts CSV rows into work order records.
+ * Headings matching a work order field fill it; every other column is kept
+ * verbatim in extra_fields under its own heading.
  */
-export function rowsToWorkOrders(
-  rows: CsvRow[],
-  headers: string[],
-  mapping: ColumnMapping
-): WorkOrderInsert[] {
+export function rowsToWorkOrders(rows: CsvRow[], headers: string[]): WorkOrderInsert[] {
+  const auto = buildHeaderMapping(headers);
+  const mapping: Record<string, WorkOrderField> = {};
+  auto.matched.forEach(({ header, field }) => {
+    mapping[header] = field;
+  });
+
   return rows
     .map((row) => {
       const record: WorkOrderInsert = {};
-      const extras: string[] = [];
+      const extras: Record<string, string> = {};
 
       headers.forEach((header) => {
         const value = (row[header] ?? '').trim();
         if (!value) return;
-        const field = mapping[header] ?? null;
+        const field = mapping[header];
         if (field) {
           record[field] = value;
         } else if (header.trim()) {
-          extras.push(`${header.trim()}: ${value}`);
+          extras[header.trim()] = value;
         }
       });
 
-      if (extras.length > 0) {
-        record.job_description = [record.job_description, ...extras]
-          .filter(Boolean)
-          .join('\n');
+      if (Object.keys(extras).length > 0) {
+        record.extra_fields = extras;
       }
 
       return record;
     })
     .filter((r) => Object.keys(r).length > 0);
 }
+
