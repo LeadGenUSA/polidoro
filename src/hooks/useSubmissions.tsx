@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-export type SubmissionStatus = 'new' | 'reviewed' | 'archived';
+export type SubmissionStatus = 'new' | 'reviewed' | 'archived' | 'imported';
 export type SubmissionType = 'estimates' | 'work_orders' | 'surveys';
 
 export interface EstimateSubmission {
