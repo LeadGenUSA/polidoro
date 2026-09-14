@@ -648,7 +648,7 @@ export type Database = {
       blog_post_status: "draft" | "published" | "rejected"
       review_source: "google" | "manual" | "imported" | "website"
       review_status: "pending" | "approved" | "rejected"
-      submission_status: "new" | "reviewed" | "archived"
+      submission_status: "new" | "reviewed" | "archived" | "imported"
       topic_queue_status: "pending" | "used"
     }
     CompositeTypes: {
@@ -782,7 +782,7 @@ export const Constants = {
       blog_post_status: ["draft", "published", "rejected"],
       review_source: ["google", "manual", "imported", "website"],
       review_status: ["pending", "approved", "rejected"],
-      submission_status: ["new", "reviewed", "archived"],
+      submission_status: ["new", "reviewed", "archived", "imported"],
       topic_queue_status: ["pending", "used"],
     },
   },
