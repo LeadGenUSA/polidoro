@@ -231,7 +231,7 @@ export const WorkOrderSubmissionCard = ({
                 <Printer className="w-4 h-4 mr-1" />
                 Print
               </Button>
-              {submission.status !== 'reviewed' && (
+              {submission.status !== 'reviewed' && submission.status !== 'imported' && (
                 <Button 
                   size="sm" 
                   variant="outline"
@@ -242,7 +242,7 @@ export const WorkOrderSubmissionCard = ({
                   Mark Reviewed
                 </Button>
               )}
-              {submission.status !== 'archived' && (
+              {submission.status !== 'archived' && submission.status !== 'imported' && (
                 <Button 
                   size="sm" 
                   variant="outline"
