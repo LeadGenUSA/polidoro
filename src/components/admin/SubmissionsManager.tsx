@@ -24,18 +24,23 @@ import {
   Star,
   Loader2,
   Search,
-  Calendar
+  Calendar,
+  Upload,
+  FileInput
 } from 'lucide-react';
+import { WorkOrderImportDialog } from './WorkOrderImportDialog';
 
 export const SubmissionsManager = () => {
   const [submissionType, setSubmissionType] = useState<SubmissionType>('estimates');
   const [statusFilter, setStatusFilter] = useState<SubmissionStatus | 'all'>('new');
   const [searchQuery, setSearchQuery] = useState('');
+  const [importOpen, setImportOpen] = useState(false);
 
   const { 
     submissions, 
     isLoading, 
     counts, 
+    fetchSubmissions,
     updateStatus, 
     updateWorkOrder,
     deleteSubmission, 
@@ -111,10 +116,16 @@ export const SubmissionsManager = () => {
 
         <div className="flex gap-2">
           {submissionType === 'work_orders' && (
-            <Button onClick={exportToICS} variant="outline" className="gap-2">
-              <Calendar className="w-4 h-4" />
-              Export to Outlook
-            </Button>
+            <>
+              <Button onClick={() => setImportOpen(true)} variant="outline" className="gap-2">
+                <Upload className="w-4 h-4" />
+                Import CSV
+              </Button>
+              <Button onClick={exportToICS} variant="outline" className="gap-2">
+                <Calendar className="w-4 h-4" />
+                Export to Outlook
+              </Button>
+            </>
           )}
           <Button onClick={exportToCSV} variant="outline" className="gap-2">
             <Download className="w-4 h-4" />
