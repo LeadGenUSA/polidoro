@@ -192,6 +192,20 @@ export const WorkOrderSubmissionCard = ({
               </div>
             </div>
 
+            {/* Additional Details from import */}
+            {submission.extra_fields && Object.keys(submission.extra_fields).length > 0 && (
+              <div className="mt-4">
+                <h4 className="font-semibold text-sm text-primary border-b pb-1 mb-2">Additional Details</h4>
+                <div className="grid md:grid-cols-2 gap-x-6 gap-y-1 text-sm">
+                  {Object.entries(submission.extra_fields).map(([key, value]) => (
+                    <p key={key}>
+                      <span className="font-medium">{key}:</span> {String(value)}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Photos */}
             {submission.photos && submission.photos.length > 0 && (
               <div className="mt-4">
