@@ -136,6 +136,8 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
         
         if (statusFilter !== 'all') {
           query = query.eq('status', statusFilter);
+        } else {
+          query = query.neq('status', 'imported');
         }
         
         const result = await query;
@@ -149,6 +151,8 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
         
         if (statusFilter !== 'all') {
           query = query.eq('status', statusFilter);
+        } else {
+          query = query.neq('status', 'imported');
         }
         
         const result = await query;
@@ -171,7 +175,7 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
 
   const fetchCounts = useCallback(async () => {
     try {
-      let newCount = 0, reviewedCount = 0, archivedCount = 0;
+      let newCount = 0, reviewedCount = 0, archivedCount = 0, importedCount = 0;
       
       if (type === 'estimates') {
         const [n, r, a] = await Promise.all([
@@ -183,14 +187,16 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
         reviewedCount = r.count || 0;
         archivedCount = a.count || 0;
       } else if (type === 'work_orders') {
-        const [n, r, a] = await Promise.all([
+        const [n, r, a, i] = await Promise.all([
           supabase.from('work_order_submissions').select('id', { count: 'exact', head: true }).eq('status', 'new'),
           supabase.from('work_order_submissions').select('id', { count: 'exact', head: true }).eq('status', 'reviewed'),
           supabase.from('work_order_submissions').select('id', { count: 'exact', head: true }).eq('status', 'archived'),
+          supabase.from('work_order_submissions').select('id', { count: 'exact', head: true }).eq('status', 'imported'),
         ]);
         newCount = n.count || 0;
         reviewedCount = r.count || 0;
         archivedCount = a.count || 0;
+        importedCount = i.count || 0;
       } else if (type === 'surveys') {
         const [n, r, a] = await Promise.all([
           supabase.from('survey_submissions').select('id', { count: 'exact', head: true }).eq('status', 'new'),
@@ -206,6 +212,7 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
         new: newCount,
         reviewed: reviewedCount,
         archived: archivedCount,
+        imported: importedCount,
         total: newCount + reviewedCount + archivedCount,
       });
     } catch (error) {
