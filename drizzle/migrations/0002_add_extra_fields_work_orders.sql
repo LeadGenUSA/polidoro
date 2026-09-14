@@ -1,0 +1,1 @@
+ALTER TABLE public.work_order_submissions ADD COLUMN IF NOT EXISTS extra_fields jsonb;

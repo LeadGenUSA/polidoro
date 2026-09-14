@@ -15,6 +15,13 @@
       "when": 1789407998724,
       "tag": "0001_add_imported_submission_status",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789419275361,
+      "tag": "0002_add_extra_fields_work_orders",
+      "breakpoints": true
     }
   ]
 }

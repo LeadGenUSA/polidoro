@@ -8,25 +8,15 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Loader2, Upload } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
   parseCsv,
-  initialColumnMapping,
   rowsToWorkOrders,
+  buildHeaderMapping,
   fieldLabel,
-  WORK_ORDER_FIELDS,
-  type ColumnMapping,
   type CsvRow,
-  type WorkOrderField,
   type WorkOrderInsert,
 } from '@/lib/workOrderCsvImport';
 
@@ -36,37 +26,25 @@ interface WorkOrderImportDialogProps {
   onImported: () => void;
 }
 
-const NONE = '__none__';
-
 export const WorkOrderImportDialog = ({ open, onOpenChange, onImported }: WorkOrderImportDialogProps) => {
   const { toast } = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState('');
   const [headers, setHeaders] = useState<string[]>([]);
   const [rows, setRows] = useState<CsvRow[]>([]);
-  const [mapping, setMapping] = useState<ColumnMapping>({});
   const [isImporting, setIsImporting] = useState(false);
 
   const records: WorkOrderInsert[] = useMemo(
-    () => (headers.length ? rowsToWorkOrders(rows, headers, mapping) : []),
-    [rows, headers, mapping]
+    () => (headers.length ? rowsToWorkOrders(rows, headers) : []),
+    [rows, headers]
   );
 
-  const usedFields = useMemo(
-    () => new Set(Object.values(mapping).filter(Boolean) as WorkOrderField[]),
-    [mapping]
-  );
-
-  const previewFields = useMemo(
-    () => WORK_ORDER_FIELDS.filter((f) => usedFields.has(f) || f === 'job_description'),
-    [usedFields]
-  );
+  const summary = useMemo(() => (headers.length ? buildHeaderMapping(headers) : null), [headers]);
 
   const reset = () => {
     setFileName('');
     setHeaders([]);
     setRows([]);
-    setMapping({});
     if (fileRef.current) fileRef.current.value = '';
   };
 
@@ -81,15 +59,10 @@ export const WorkOrderImportDialog = ({ open, onOpenChange, onImported }: WorkOr
       setFileName(file.name);
       setHeaders(parsed.headers);
       setRows(parsed.rows);
-      setMapping(initialColumnMapping(parsed.headers));
     } catch (error) {
       console.error('CSV parse error:', error);
       toast({ title: 'Could not read file', description: 'Please check the file and try again.', variant: 'destructive' });
     }
-  };
-
-  const setColumn = (header: string, value: string) => {
-    setMapping((prev) => ({ ...prev, [header]: value === NONE ? null : (value as WorkOrderField) }));
   };
 
   const handleImport = async () => {
@@ -130,8 +103,8 @@ export const WorkOrderImportDialog = ({ open, onOpenChange, onImported }: WorkOr
         <DialogHeader>
           <DialogTitle>Import Work Orders from CSV</DialogTitle>
           <DialogDescription>
-            Choose which work order field each column fills. Anything left unmapped is added to the job
-            description. Imported records go to the Imported tab only.
+            Every column in your file is imported. Columns named like a work order field fill that field;
+            all others are kept under their own heading. Imported records go to the Imported tab only.
           </DialogDescription>
         </DialogHeader>
 
@@ -147,86 +120,56 @@ export const WorkOrderImportDialog = ({ open, onOpenChange, onImported }: WorkOr
             }}
           />
 
-          {headers.length > 0 && (
+          {headers.length > 0 && summary && (
             <div className="space-y-4 text-sm">
               <p className="text-muted-foreground">
                 <span className="font-medium text-foreground">{fileName}</span> &mdash; {records.length} row
                 {records.length === 1 ? '' : 's'} ready to import.
               </p>
 
-              <div className="border rounded-md overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead className="bg-muted">
-                    <tr>
-                      <th className="text-left p-2">Column in your file</th>
-                      <th className="text-left p-2">Example value</th>
-                      <th className="text-left p-2">Work order field</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {headers.map((header) => (
-                      <tr key={header} className="border-t">
-                        <td className="p-2 font-medium whitespace-nowrap">{header}</td>
-                        <td className="p-2 text-muted-foreground max-w-[220px] truncate">
-                          {rows[0]?.[header] || '—'}
-                        </td>
-                        <td className="p-2">
-                          <Select
-                            value={mapping[header] ?? NONE}
-                            onValueChange={(v) => setColumn(header, v)}
-                          >
-                            <SelectTrigger className="h-8 w-[240px]">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="bg-popover z-50">
-                              <SelectItem value={NONE}>Don't import (add to job notes)</SelectItem>
-                              {WORK_ORDER_FIELDS.map((field) => (
-                                <SelectItem
-                                  key={field}
-                                  value={field}
-                                  disabled={usedFields.has(field) && mapping[header] !== field}
-                                >
-                                  {fieldLabel(field)}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              {summary.matched.length > 0 && (
+                <p>
+                  <span className="font-medium">Matched to work order fields:</span>{' '}
+                  <span className="text-muted-foreground">
+                    {summary.matched.map((m) => `${m.header} → ${fieldLabel(m.field)}`).join(', ')}
+                  </span>
+                </p>
+              )}
 
-              {records.length > 0 && (
-                <div>
-                  <p className="font-medium mb-1">Preview (first 5 rows)</p>
-                  <div className="overflow-x-auto border rounded-md">
-                    <table className="w-full text-xs">
-                      <thead className="bg-muted">
-                        <tr>
-                          {previewFields.map((field) => (
-                            <th key={field} className="text-left p-2 whitespace-nowrap">
-                              {fieldLabel(field)}
-                            </th>
+              {summary.ignored.length > 0 && (
+                <p>
+                  <span className="font-medium">Kept as additional details:</span>{' '}
+                  <span className="text-muted-foreground">{summary.ignored.join(', ')}</span>
+                </p>
+              )}
+
+              <div>
+                <p className="font-medium mb-1">Preview (first 5 rows)</p>
+                <div className="overflow-x-auto border rounded-md">
+                  <table className="w-full text-xs">
+                    <thead className="bg-muted">
+                      <tr>
+                        {headers.map((header) => (
+                          <th key={header} className="text-left p-2 whitespace-nowrap">
+                            {header}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.slice(0, 5).map((row, idx) => (
+                        <tr key={idx} className="border-t">
+                          {headers.map((header) => (
+                            <td key={header} className="p-2 max-w-[200px] truncate">
+                              {row[header] ?? ''}
+                            </td>
                           ))}
                         </tr>
-                      </thead>
-                      <tbody>
-                        {records.slice(0, 5).map((record, idx) => (
-                          <tr key={idx} className="border-t">
-                            {previewFields.map((field) => (
-                              <td key={field} className="p-2 whitespace-pre-line max-w-[200px] truncate">
-                                {record[field] ?? ''}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-              )}
+              </div>
             </div>
           )}
         </div>
