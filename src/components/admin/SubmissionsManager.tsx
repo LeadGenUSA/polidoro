@@ -118,7 +118,7 @@ export const SubmissionsManager = () => {
           {submissionType === 'work_orders' && (
             <>
               <Button onClick={() => setImportOpen(true)} variant="outline" className="gap-2">
-                <Upload className="w-4 h-4" />
+                <Download className="w-4 h-4" />
                 Import CSV
               </Button>
               <Button onClick={exportToICS} variant="outline" className="gap-2">
@@ -128,7 +128,7 @@ export const SubmissionsManager = () => {
             </>
           )}
           <Button onClick={exportToCSV} variant="outline" className="gap-2">
-            <Download className="w-4 h-4" />
+            <Upload className="w-4 h-4" />
             Export CSV
           </Button>
         </div>
