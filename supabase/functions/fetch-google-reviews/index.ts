@@ -88,12 +88,31 @@ Deno.serve(async (req) => {
 
     if (!placesResponse.ok) {
       console.error('Google Places API error:', JSON.stringify(placesData));
+
+      const details: Array<{ reason?: string; metadata?: Record<string, string> }> =
+        placesData?.error?.details ?? [];
+      const reason = details.find((d) => d.reason)?.reason;
+
+      let message = placesData?.error?.message || 'Unknown error';
+      if (placesResponse.status === 403) {
+        if (reason === 'API_KEY_HTTP_REFERRER_BLOCKED') {
+          message =
+            'The Google API key is website-restricted, so it cannot be used from the server. In Google Cloud Console, set this key\'s application restrictions to "None" or "IP addresses".';
+        } else if (reason === 'API_KEY_SERVICE_BLOCKED') {
+          message =
+            'The Google API key does not allow the Places API (New). In Google Cloud Console, enable "Places API (New)" and add it to this key\'s allowed APIs.';
+        } else {
+          message =
+            'Google refused the request (permission denied). Check that the Places API (New) is enabled, billing is active, and the key has no restrictions blocking server use.';
+        }
+      }
+
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           error: `Google Places API error: ${placesResponse.status}`,
-          message: placesData.error?.message || 'Unknown error'
+          message,
         }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: placesResponse.status === 403 ? 502 : 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
