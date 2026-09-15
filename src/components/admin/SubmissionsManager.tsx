@@ -174,7 +174,7 @@ export const SubmissionsManager = () => {
               </Button>
             </>
           )}
-          <Button onClick={exportToCSV} variant="outline" className="gap-2">
+          <Button onClick={() => exportToCSV(filteredSubmissions)} variant="outline" className="gap-2">
             <Upload className="w-4 h-4" />
             Export CSV
           </Button>
@@ -182,14 +182,22 @@ export const SubmissionsManager = () => {
       </div>
 
       {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          placeholder={`Search ${typeLabels[submissionType].label.toLowerCase()}...`}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9"
-        />
+      <div className="space-y-2">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            placeholder={`Search ${typeLabels[submissionType].label.toLowerCase()}... e.g. Boiler Type: NCB240 and Date Installed: 6/24/2021`}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9"
+          />
+        </div>
+        {searchTerms.length > 0 && (
+          <p className="text-sm text-muted-foreground">
+            {filteredSubmissions.length} matching {filteredSubmissions.length === 1 ? 'record' : 'records'}
+            {searchTerms.length > 1 ? ` for ${searchTerms.length} conditions` : ''} — Export CSV exports these results.
+          </p>
+        )}
       </div>
 
       {/* Stats Cards */}
