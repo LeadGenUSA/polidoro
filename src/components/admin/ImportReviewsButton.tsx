@@ -38,9 +38,22 @@ export function ImportReviewsButton({ onImportComplete }: ImportReviewsButtonPro
       }
     } catch (error) {
       console.error('Error importing reviews:', error);
+
+      let description =
+        'Failed to import reviews from Google. Please check your API key configuration.';
+      if (error instanceof FunctionsHttpError) {
+        try {
+          const body = await error.context.json();
+          if (body?.message) description = body.message;
+          else if (body?.error) description = body.error;
+        } catch {
+          /* keep the default message */
+        }
+      }
+
       toast({
         title: 'Import Failed',
-        description: 'Failed to import reviews from Google. Please check your API key configuration.',
+        description,
         variant: 'destructive',
       });
     } finally {
