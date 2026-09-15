@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { RefreshCw, Loader2, ExternalLink } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { FunctionsHttpError } from '@supabase/supabase-js';
 
 interface ImportReviewsButtonProps {
   onImportComplete: () => void;
