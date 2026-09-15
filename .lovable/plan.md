@@ -1,10 +1,10 @@
 # Combined search + export of search results
 
-Search work order records (including Imported) with two or more conditions at once, then export exactly what the search found.
+Search work order records (including Imported) with one or more conditions at once, then export exactly what the search found.
 
 ## How it works
 
-1. In the search box you can type several conditions separated by `and`, for example:
+1. In the search box you can type a single condition, for example `Boiler Type: NCB240`, or several joined by `and`, for example:
    `Boiler Type: NCB240 and Date Installed: 6/24/2021`
 2. Each condition can be written as `Heading: value` (matches that column heading and its value) or as plain text (matches anywhere in the record).
 3. Only records matching **all** conditions are shown. Matching stays case-insensitive and partial, so `6/24/2021` also matches a longer date text.
