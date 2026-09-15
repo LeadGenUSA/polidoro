@@ -312,25 +312,49 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
     }
   };
 
-  const exportToCSV = () => {
-    if (submissions.length === 0) {
+  const exportToCSV = (rows?: Submission[]) => {
+    const data = rows ?? submissions;
+    if (data.length === 0) {
       toast({ title: 'No data', description: 'No submissions to export', variant: 'destructive' });
       return;
     }
 
-    const headers = Object.keys(submissions[0]);
+    // Build header set: union of all top-level keys (except extra_fields)
+    // plus one column per extra_fields heading.
+    const baseHeaders: string[] = [];
+    const extraHeaders: string[] = [];
+    data.forEach((row) => {
+      Object.entries(row as unknown as Record<string, unknown>).forEach(([key, value]) => {
+        if (key === 'extra_fields') {
+          if (value && typeof value === 'object') {
+            Object.keys(value as Record<string, unknown>).forEach((k) => {
+              if (!extraHeaders.includes(k)) extraHeaders.push(k);
+            });
+          }
+          return;
+        }
+        if (!baseHeaders.includes(key)) baseHeaders.push(key);
+      });
+    });
+    const headers = [...baseHeaders, ...extraHeaders];
+
+    const cell = (value: unknown) => {
+      if (value === null || value === undefined) return '""';
+      if (Array.isArray(value)) return `"${value.join('; ')}"`;
+      return `"${String(value).replace(/"/g, '""')}"`;
+    };
+
     const csvRows = [
-      headers.join(','),
-      ...submissions.map((row) =>
-        headers
-          .map((header) => {
-            const value = (row as unknown as Record<string, unknown>)[header];
-            if (value === null || value === undefined) return '""';
-            if (Array.isArray(value)) return `"${value.join('; ')}"`;
-            return `"${String(value).replace(/"/g, '""')}"`;
-          })
-          .join(',')
-      ),
+      headers.map((h) => `"${h.replace(/"/g, '""')}"`).join(','),
+      ...data.map((row) => {
+        const record = row as unknown as Record<string, unknown>;
+        const extras = (record.extra_fields as Record<string, unknown> | null) ?? {};
+        return headers
+          .map((header) =>
+            baseHeaders.includes(header) ? cell(record[header]) : cell(extras[header])
+          )
+          .join(',');
+      }),
     ];
 
     const csvContent = csvRows.join('\n');
@@ -344,8 +368,9 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
-    toast({ title: 'Export Complete', description: `Exported ${submissions.length} submissions to CSV` });
+    toast({ title: 'Export Complete', description: `Exported ${data.length} submissions to CSV` });
   };
+
 
   const exportToICS = () => {
     if (type !== 'work_orders' || submissions.length === 0) {
