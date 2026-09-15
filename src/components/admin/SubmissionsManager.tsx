@@ -73,15 +73,60 @@ export const SubmissionsManager = () => {
     return String(value).toLowerCase().includes(q);
   };
 
+  const normalizeName = (name: string) => name.toLowerCase().replace(/[\s_\-./#]+/g, '');
+
+  /** Flattens a record into [fieldName, value] pairs, including extra_fields headings. */
+  const fieldPairs = (record: Record<string, unknown>): [string, unknown][] => {
+    const pairs: [string, unknown][] = [];
+    Object.entries(record).forEach(([key, value]) => {
+      if (isExcludedKey(key)) return;
+      if (key === 'extra_fields' && value && typeof value === 'object' && !Array.isArray(value)) {
+        Object.entries(value as Record<string, unknown>).forEach(([k, v]) => pairs.push([k, v]));
+        return;
+      }
+      pairs.push([key, value]);
+    });
+    return pairs;
+  };
+
+  const keyValueMatches = (record: Record<string, unknown>, key: string, value: string) => {
+    const nKey = normalizeName(key);
+    if (!nKey) return false;
+    return fieldPairs(record).some(([name, v]) => {
+      const nName = normalizeName(name);
+      if (!(nName === nKey || nName.includes(nKey))) return false;
+      if (!value) return true;
+      return valueMatches(v, value);
+    });
+  };
+
+  const searchTerms = useMemo(
+    () =>
+      searchQuery
+        .split(/\s+and\s+|&&|\n/i)
+        .map((t) => t.trim())
+        .filter(Boolean),
+    [searchQuery]
+  );
+
   const filteredSubmissions = useMemo(() => {
-    if (!searchQuery.trim()) return submissions;
-    const q = searchQuery.toLowerCase();
-    return submissions.filter((s) =>
-      Object.entries(s as unknown as Record<string, unknown>).some(
-        ([key, value]) => !isExcludedKey(key) && valueMatches(value, q)
-      )
-    );
-  }, [submissions, searchQuery, submissionType]);
+    if (searchTerms.length === 0) return submissions;
+    return submissions.filter((s) => {
+      const record = s as unknown as Record<string, unknown>;
+      return searchTerms.every((term) => {
+        const colon = term.indexOf(':');
+        if (colon > 0) {
+          const key = term.slice(0, colon).trim();
+          const value = term.slice(colon + 1).trim().toLowerCase();
+          if (key) return keyValueMatches(record, key, value);
+        }
+        const q = term.toLowerCase();
+        return Object.entries(record).some(
+          ([key, value]) => !isExcludedKey(key) && valueMatches(value, q)
+        );
+      });
+    });
+  }, [submissions, searchTerms, submissionType]);
 
   const typeLabels: Record<SubmissionType, { label: string; icon: React.ReactNode }> = {
     estimates: { label: 'Estimates', icon: <FileText className="w-4 h-4" /> },
