@@ -258,11 +258,48 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
               </p>
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="email-pdf">PDF flyer (optional)</Label>
+              {pdfName ? (
+                <div className="flex items-center gap-2 rounded-md border p-2 text-sm">
+                  <FileText className="w-4 h-4 shrink-0" />
+                  <span className="truncate">{pdfName}</span>
+                  <Badge variant="secondary">
+                    {pdfPages.length} {pdfPages.length === 1 ? 'page' : 'pages'}
+                  </Badge>
+                  <Button variant="ghost" size="icon" className="ml-auto" onClick={clearPdf}>
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              ) : (
+                <Input
+                  id="email-pdf"
+                  type="file"
+                  accept="application/pdf"
+                  disabled={processingPdf}
+                  onChange={(e) => handlePdf(e.target.files?.[0])}
+                />
+              )}
+              <p className="text-xs text-muted-foreground flex items-center gap-2">
+                {processingPdf && <Loader2 className="w-3 h-3 animate-spin" />}
+                {processingPdf
+                  ? 'Preparing the PDF...'
+                  : 'Each page is shown as a picture inside the email, and the PDF is attached too.'}
+              </p>
+            </div>
+
             {recipients[0] && (subject || body) && (
               <div className="rounded-md border bg-muted/40 p-3 text-xs">
                 <p className="font-medium mb-1">Preview for {recipients[0].email}</p>
                 <p className="font-medium">{preview(subject)}</p>
                 <p className="whitespace-pre-wrap text-muted-foreground">{preview(body)}</p>
+                {pdfPages[0] && (
+                  <img
+                    src={`data:image/jpeg;base64,${pdfPages[0]}`}
+                    alt="First page of the attached PDF"
+                    className="mt-2 max-h-48 rounded border"
+                  />
+                )}
               </div>
             )}
           </div>
