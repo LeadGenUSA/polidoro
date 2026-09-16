@@ -58,6 +58,62 @@ Deno.serve(async (req) => {
     const subjectRaw = String((payload as Record<string, unknown>).subject ?? "").trim();
     const bodyRaw = String((payload as Record<string, unknown>).body ?? "").trim();
     const recipientsRaw = (payload as Record<string, unknown>).recipients;
+    const inlineImagesRaw = (payload as Record<string, unknown>).inlineImages;
+    const attachmentRaw = (payload as Record<string, unknown>).attachment as
+      | { name?: string; contentBytes?: string }
+      | undefined;
+
+    const inlineImages: string[] = Array.isArray(inlineImagesRaw)
+      ? inlineImagesRaw.filter((i): i is string => typeof i === "string" && i.length > 0)
+      : [];
+    if (inlineImages.length > 30) {
+      return json({ error: "A maximum of 30 PDF pages can be embedded." }, 400);
+    }
+
+    const attachment =
+      attachmentRaw && typeof attachmentRaw.contentBytes === "string" && attachmentRaw.contentBytes
+        ? {
+            name: String(attachmentRaw.name ?? "attachment.pdf").slice(0, 120).replace(/[\r\n"]/g, ""),
+            contentBytes: attachmentRaw.contentBytes,
+          }
+        : null;
+
+    const totalBytes =
+      inlineImages.reduce((sum, i) => sum + i.length, 0) + (attachment?.contentBytes.length ?? 0);
+    if (totalBytes > 3_500_000) {
+      return json(
+        { error: "The attached PDF is too large to email. Please use a smaller file (about 2.5 MB max)." },
+        400,
+      );
+    }
+
+    const graphAttachments = [
+      ...inlineImages.map((contentBytes, i) => ({
+        "@odata.type": "#microsoft.graph.fileAttachment",
+        name: `page-${i + 1}.jpg`,
+        contentType: "image/jpeg",
+        contentBytes,
+        contentId: `pdfpage${i + 1}`,
+        isInline: true,
+      })),
+      ...(attachment
+        ? [
+            {
+              "@odata.type": "#microsoft.graph.fileAttachment",
+              name: attachment.name,
+              contentType: "application/pdf",
+              contentBytes: attachment.contentBytes,
+            },
+          ]
+        : []),
+    ];
+
+    const inlineHtml = inlineImages
+      .map(
+        (_, i) =>
+          `<div style="margin-top:16px"><img src="cid:pdfpage${i + 1}" alt="Page ${i + 1}" style="max-width:100%;border:1px solid #ddd"></div>`,
+      )
+      .join("");
 
     if (!subjectRaw || subjectRaw.length > 255) {
       return json({ error: "Subject is required and must be under 255 characters." }, 400);
