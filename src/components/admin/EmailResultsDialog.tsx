@@ -210,7 +210,7 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
         </DialogHeader>
 
         {step === 'compose' && (
-          <div className="space-y-4">
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <Badge variant="secondary">
                 {recipients.length} {recipients.length === 1 ? 'recipient' : 'recipients'}
