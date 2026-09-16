@@ -131,6 +131,14 @@ export const SubmissionsManager = () => {
     });
   }, [submissions, searchTerms, submissionType]);
 
+  const emailRecipientCount = useMemo(
+    () =>
+      extractRecipients(filteredSubmissions as unknown as Record<string, unknown>[]).recipients
+        .length,
+    [filteredSubmissions]
+  );
+
+
   const typeLabels: Record<SubmissionType, { label: string; icon: React.ReactNode }> = {
     estimates: { label: 'Estimates', icon: <FileText className="w-4 h-4" /> },
     work_orders: { label: 'Work Orders', icon: <Wrench className="w-4 h-4" /> },
