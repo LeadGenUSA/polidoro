@@ -147,16 +147,29 @@ export const WorkOrderImportDialog = ({ open, onOpenChange, onImported }: WorkOr
   };
 
   const handleImport = async () => {
-    if (records.length === 0) return;
+    if (totalToProcess === 0) return;
     setIsImporting(true);
     try {
       const chunkSize = 100;
-      for (let i = 0; i < records.length; i += chunkSize) {
-        const chunk = records.slice(i, i + chunkSize).map((r) => ({ ...r, status: 'imported' as const }));
+      for (let i = 0; i < split.fresh.length; i += chunkSize) {
+        const chunk = split.fresh.slice(i, i + chunkSize).map((r) => ({ ...r, status: 'imported' as const }));
         const { error } = await supabase.from('work_order_submissions').insert(chunk);
         if (error) throw error;
       }
-      toast({ title: 'Import complete', description: `${records.length} work orders added to the Imported tab.` });
+
+      for (const { id, record } of split.updates) {
+        const { error } = await supabase
+          .from('work_order_submissions')
+          .update({ ...record })
+          .eq('id', id);
+        if (error) throw error;
+      }
+
+      const parts = [`${split.fresh.length} added`];
+      if (split.updates.length > 0) parts.push(`${split.updates.length} updated`);
+      const skipped = records.length - totalToProcess;
+      if (skipped > 0) parts.push(`${skipped} duplicate${skipped === 1 ? '' : 's'} skipped`);
+      toast({ title: 'Import complete', description: parts.join(', ') + '.' });
       reset();
       onOpenChange(false);
       onImported();
