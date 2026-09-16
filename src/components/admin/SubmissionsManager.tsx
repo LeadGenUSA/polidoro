@@ -26,9 +26,11 @@ import {
   Search,
   Calendar,
   Upload,
-  FileInput
+  FileInput,
+  Mail
 } from 'lucide-react';
 import { WorkOrderImportDialog } from './WorkOrderImportDialog';
+import { EmailResultsDialog, extractRecipients } from './EmailResultsDialog';
 
 export const SubmissionsManager = () => {
   const [submissionType, setSubmissionType] = useState<SubmissionType>('estimates');
