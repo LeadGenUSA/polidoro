@@ -237,6 +237,37 @@ export const WorkOrderImportDialog = ({ open, onOpenChange, onImported }: WorkOr
                 </p>
               )}
 
+              <div className="rounded-md border p-3 space-y-3">
+                <p className="font-medium">
+                  {duplicateCount > 0
+                    ? `${duplicateCount} row${duplicateCount === 1 ? '' : 's'} match a customer already on file`
+                    : 'No duplicate customers found in this file'}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Matched by email address, or by name and street address when there is no email.
+                </p>
+                <RadioGroup
+                  value={duplicateMode}
+                  onValueChange={(v) => setDuplicateMode(v as 'skip' | 'update' | 'all')}
+                  className="space-y-1"
+                >
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="skip" id="dup-skip" />
+                    <Label htmlFor="dup-skip" className="font-normal">Skip duplicates</Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="update" id="dup-update" />
+                    <Label htmlFor="dup-update" className="font-normal">
+                      Update the existing record with the new details
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="all" id="dup-all" />
+                    <Label htmlFor="dup-all" className="font-normal">Import everything, duplicates included</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
               <div>
                 <p className="font-medium mb-1">Preview (first 5 rows)</p>
                 <div className="overflow-x-auto border rounded-md">
