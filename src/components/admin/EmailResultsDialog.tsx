@@ -136,6 +136,7 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
     setStep('compose');
     setResults([]);
     setSending(false);
+    clearPdf();
   };
 
   const close = (next: boolean) => {
@@ -155,7 +156,13 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
     setSending(true);
     try {
       const { data, error } = await supabase.functions.invoke('send-outlook-bulk', {
-        body: { subject, body, recipients },
+        body: {
+          subject,
+          body,
+          recipients,
+          inlineImages: pdfPages,
+          attachment: pdfBytes ? { name: pdfName, contentBytes: pdfBytes } : undefined,
+        },
       });
 
       if (error) {
