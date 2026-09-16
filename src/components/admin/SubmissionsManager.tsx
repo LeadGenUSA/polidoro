@@ -37,6 +37,7 @@ export const SubmissionsManager = () => {
   const [statusFilter, setStatusFilter] = useState<SubmissionStatus | 'all'>('new');
   const [searchQuery, setSearchQuery] = useState('');
   const [importOpen, setImportOpen] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
 
   const { 
     submissions, 
