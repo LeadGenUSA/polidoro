@@ -13,10 +13,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Mail, CheckCircle2, XCircle } from 'lucide-react';
+import { Loader2, Mail, CheckCircle2, XCircle, FileText, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { FunctionsHttpError } from '@supabase/supabase-js';
 import { toast } from 'sonner';
+import { pdfToImages, fileToBase64 } from '@/lib/pdfToImages';
 
 export interface Recipient {
   email: string;
@@ -92,6 +93,42 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
   const [step, setStep] = useState<'compose' | 'confirm' | 'done'>('compose');
   const [sending, setSending] = useState(false);
   const [results, setResults] = useState<SendResult[]>([]);
+  const [pdfName, setPdfName] = useState('');
+  const [pdfPages, setPdfPages] = useState<string[]>([]);
+  const [pdfBytes, setPdfBytes] = useState('');
+  const [processingPdf, setProcessingPdf] = useState(false);
+
+  const clearPdf = () => {
+    setPdfName('');
+    setPdfPages([]);
+    setPdfBytes('');
+  };
+
+  const handlePdf = async (file: File | undefined) => {
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      toast.error('Please choose a PDF file.');
+      return;
+    }
+    setProcessingPdf(true);
+    try {
+      const [pages, bytes] = await Promise.all([pdfToImages(file), fileToBase64(file)]);
+      const total = pages.reduce((s, p) => s + p.length, 0) + bytes.length;
+      if (total > 3_400_000) {
+        toast.error('That PDF is too large to email. Please use a smaller file (about 2.5 MB max).');
+        clearPdf();
+        return;
+      }
+      setPdfName(file.name);
+      setPdfPages(pages);
+      setPdfBytes(bytes);
+    } catch (e) {
+      toast.error((e as Error).message || 'Could not read that PDF.');
+      clearPdf();
+    } finally {
+      setProcessingPdf(false);
+    }
+  };
 
   const { recipients, skipped } = useMemo(() => extractRecipients(records), [records]);
 
@@ -99,6 +136,7 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
     setStep('compose');
     setResults([]);
     setSending(false);
+    clearPdf();
   };
 
   const close = (next: boolean) => {
@@ -118,7 +156,13 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
     setSending(true);
     try {
       const { data, error } = await supabase.functions.invoke('send-outlook-bulk', {
-        body: { subject, body, recipients },
+        body: {
+          subject,
+          body,
+          recipients,
+          inlineImages: pdfPages,
+          attachment: pdfBytes ? { name: pdfName, contentBytes: pdfBytes } : undefined,
+        },
       });
 
       if (error) {
@@ -166,7 +210,7 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
         </DialogHeader>
 
         {step === 'compose' && (
-          <div className="space-y-4">
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <Badge variant="secondary">
                 {recipients.length} {recipients.length === 1 ? 'recipient' : 'recipients'}
@@ -214,11 +258,48 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
               </p>
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="email-pdf">PDF flyer (optional)</Label>
+              {pdfName ? (
+                <div className="flex items-center gap-2 rounded-md border p-2 text-sm">
+                  <FileText className="w-4 h-4 shrink-0" />
+                  <span className="truncate">{pdfName}</span>
+                  <Badge variant="secondary">
+                    {pdfPages.length} {pdfPages.length === 1 ? 'page' : 'pages'}
+                  </Badge>
+                  <Button variant="ghost" size="icon" className="ml-auto" onClick={clearPdf}>
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              ) : (
+                <Input
+                  id="email-pdf"
+                  type="file"
+                  accept="application/pdf"
+                  disabled={processingPdf}
+                  onChange={(e) => handlePdf(e.target.files?.[0])}
+                />
+              )}
+              <p className="text-xs text-muted-foreground flex items-center gap-2">
+                {processingPdf && <Loader2 className="w-3 h-3 animate-spin" />}
+                {processingPdf
+                  ? 'Preparing the PDF...'
+                  : 'Each page is shown as a picture inside the email, and the PDF is attached too.'}
+              </p>
+            </div>
+
             {recipients[0] && (subject || body) && (
               <div className="rounded-md border bg-muted/40 p-3 text-xs">
                 <p className="font-medium mb-1">Preview for {recipients[0].email}</p>
                 <p className="font-medium">{preview(subject)}</p>
                 <p className="whitespace-pre-wrap text-muted-foreground">{preview(body)}</p>
+                {pdfPages[0] && (
+                  <img
+                    src={`data:image/jpeg;base64,${pdfPages[0]}`}
+                    alt="First page of the attached PDF"
+                    className="mt-2 max-h-48 rounded border"
+                  />
+                )}
               </div>
             )}
           </div>
