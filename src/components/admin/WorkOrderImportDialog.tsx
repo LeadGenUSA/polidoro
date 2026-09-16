@@ -36,6 +36,9 @@ export const WorkOrderImportDialog = ({ open, onOpenChange, onImported }: WorkOr
   const [rows, setRows] = useState<CsvRow[]>([]);
   const [isImporting, setIsImporting] = useState(false);
 
+  const [duplicateMode, setDuplicateMode] = useState<'skip' | 'update' | 'all'>('skip');
+  const [existingKeys, setExistingKeys] = useState<Map<string, string>>(new Map());
+
   const records: WorkOrderInsert[] = useMemo(
     () => (headers.length ? rowsToWorkOrders(rows, headers) : []),
     [rows, headers]
@@ -43,12 +46,75 @@ export const WorkOrderImportDialog = ({ open, onOpenChange, onImported }: WorkOr
 
   const summary = useMemo(() => (headers.length ? buildHeaderMapping(headers) : null), [headers]);
 
+  // Load existing work orders so repeat customers can be detected.
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from('work_order_submissions')
+        .select('id, email, customer_name, street_address');
+      if (error || cancelled || !data) return;
+      const map = new Map<string, string>();
+      data.forEach((r) => {
+        const key = duplicateKey(r);
+        if (key && !map.has(key)) map.set(key, r.id);
+      });
+      setExistingKeys(map);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [open]);
+
+  // New rows, duplicates already in the database, and repeats inside the file itself.
+  const split = useMemo(() => {
+    const fresh: WorkOrderInsert[] = [];
+    const updates: { id: string; record: WorkOrderInsert }[] = [];
+    const seen = new Set<string>();
+    let withinFile = 0;
+
+    records.forEach((record) => {
+      const key = duplicateKey(record as Record<string, unknown>);
+      if (key && seen.has(key)) {
+        withinFile += 1;
+        if (duplicateMode === 'all') fresh.push(record);
+        return;
+      }
+      if (key) seen.add(key);
+
+      const existingId = key ? existingKeys.get(key) : undefined;
+      if (existingId && duplicateMode !== 'all') {
+        if (duplicateMode === 'update') updates.push({ id: existingId, record });
+        return;
+      }
+      fresh.push(record);
+    });
+
+    return { fresh, updates, withinFile, existingMatches: updates.length };
+  }, [records, existingKeys, duplicateMode]);
+
+  const duplicateCount = useMemo(() => {
+    const seen = new Set<string>();
+    let count = 0;
+    records.forEach((record) => {
+      const key = duplicateKey(record as Record<string, unknown>);
+      if (!key) return;
+      if (seen.has(key) || existingKeys.has(key)) count += 1;
+      seen.add(key);
+    });
+    return count;
+  }, [records, existingKeys]);
+
+  const totalToProcess = split.fresh.length + split.updates.length;
+
   const reset = () => {
     setFileName('');
     setHeaders([]);
     setRows([]);
     if (fileRef.current) fileRef.current.value = '';
   };
+
 
   const handleFile = async (file: File) => {
     try {
