@@ -38,7 +38,7 @@ export async function pdfToImages(
     images.push(dataUrl.split(',')[1]);
   }
 
-  await pdf.destroy();
+  await pdf.cleanup();
   return images;
 }
 
