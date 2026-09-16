@@ -169,6 +169,7 @@ Deno.serve(async (req) => {
               subject,
               body: { contentType: "HTML", content: htmlBody },
               toRecipients: [{ emailAddress: { address: r.email } }],
+              ...(graphAttachments.length ? { attachments: graphAttachments } : {}),
             },
             saveToSentItems: true,
           }),
