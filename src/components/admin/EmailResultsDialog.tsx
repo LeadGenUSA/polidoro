@@ -13,10 +13,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Mail, CheckCircle2, XCircle } from 'lucide-react';
+import { Loader2, Mail, CheckCircle2, XCircle, FileText, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { FunctionsHttpError } from '@supabase/supabase-js';
 import { toast } from 'sonner';
+import { pdfToImages, fileToBase64 } from '@/lib/pdfToImages';
 
 export interface Recipient {
   email: string;
