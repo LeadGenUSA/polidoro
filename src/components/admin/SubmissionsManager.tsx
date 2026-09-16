@@ -189,8 +189,23 @@ export const SubmissionsManager = () => {
             <Upload className="w-4 h-4" />
             Export CSV
           </Button>
+          <Button
+            onClick={() => setEmailOpen(true)}
+            variant="outline"
+            className="gap-2"
+            disabled={emailRecipientCount === 0}
+          >
+            <Mail className="w-4 h-4" />
+            Email Results{emailRecipientCount > 0 ? ` (${emailRecipientCount})` : ''}
+          </Button>
         </div>
       </div>
+
+      <EmailResultsDialog
+        open={emailOpen}
+        onOpenChange={setEmailOpen}
+        records={filteredSubmissions as unknown as Record<string, unknown>[]}
+      />
 
       {/* Search */}
       <div className="space-y-2">
