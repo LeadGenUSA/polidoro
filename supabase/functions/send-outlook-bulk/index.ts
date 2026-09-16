@@ -153,6 +153,7 @@ Deno.serve(async (req) => {
       const htmlBody =
         `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111;line-height:1.5">` +
         escapeHtml(sanitize(fill(bodyRaw))).replace(/\r?\n/g, "<br>") +
+        inlineHtml +
         `</div>`;
 
       try {
