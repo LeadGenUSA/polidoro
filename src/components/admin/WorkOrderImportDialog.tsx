@@ -22,6 +22,19 @@ import {
   type WorkOrderInsert,
 } from '@/lib/workOrderCsvImport';
 
+const norm = (v: unknown) =>
+  typeof v === 'string' ? v.trim().toLowerCase().replace(/\s+/g, ' ') : '';
+
+/** Identifies the same customer across imports: email, else name + address. */
+const duplicateKey = (record: Record<string, unknown>): string => {
+  const email = norm(record.email);
+  if (email) return `e:${email}`;
+  const name = norm(record.customer_name);
+  const address = norm(record.street_address);
+  if (name && address) return `n:${name}|${address}`;
+  return '';
+};
+
 interface WorkOrderImportDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
