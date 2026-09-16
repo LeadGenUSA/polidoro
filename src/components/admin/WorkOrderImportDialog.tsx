@@ -303,9 +303,9 @@ export const WorkOrderImportDialog = ({ open, onOpenChange, onImported }: WorkOr
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isImporting}>
             Cancel
           </Button>
-          <Button onClick={handleImport} disabled={records.length === 0 || isImporting} className="gap-2">
+          <Button onClick={handleImport} disabled={totalToProcess === 0 || isImporting} className="gap-2">
             {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-            Import {records.length > 0 ? `${records.length} ` : ''}Work Orders
+            Import {totalToProcess > 0 ? `${totalToProcess} ` : ''}Work Orders
           </Button>
         </DialogFooter>
       </DialogContent>
