@@ -26,15 +26,18 @@ import {
   Search,
   Calendar,
   Upload,
-  FileInput
+  FileInput,
+  Mail
 } from 'lucide-react';
 import { WorkOrderImportDialog } from './WorkOrderImportDialog';
+import { EmailResultsDialog, extractRecipients } from './EmailResultsDialog';
 
 export const SubmissionsManager = () => {
   const [submissionType, setSubmissionType] = useState<SubmissionType>('estimates');
   const [statusFilter, setStatusFilter] = useState<SubmissionStatus | 'all'>('new');
   const [searchQuery, setSearchQuery] = useState('');
   const [importOpen, setImportOpen] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
 
   const { 
     submissions, 
@@ -128,6 +131,14 @@ export const SubmissionsManager = () => {
     });
   }, [submissions, searchTerms, submissionType]);
 
+  const emailRecipientCount = useMemo(
+    () =>
+      extractRecipients(filteredSubmissions as unknown as Record<string, unknown>[]).recipients
+        .length,
+    [filteredSubmissions]
+  );
+
+
   const typeLabels: Record<SubmissionType, { label: string; icon: React.ReactNode }> = {
     estimates: { label: 'Estimates', icon: <FileText className="w-4 h-4" /> },
     work_orders: { label: 'Work Orders', icon: <Wrench className="w-4 h-4" /> },
@@ -178,8 +189,23 @@ export const SubmissionsManager = () => {
             <Upload className="w-4 h-4" />
             Export CSV
           </Button>
+          <Button
+            onClick={() => setEmailOpen(true)}
+            variant="outline"
+            className="gap-2"
+            disabled={emailRecipientCount === 0}
+          >
+            <Mail className="w-4 h-4" />
+            Email Results{emailRecipientCount > 0 ? ` (${emailRecipientCount})` : ''}
+          </Button>
         </div>
       </div>
+
+      <EmailResultsDialog
+        open={emailOpen}
+        onOpenChange={setEmailOpen}
+        records={filteredSubmissions as unknown as Record<string, unknown>[]}
+      />
 
       {/* Search */}
       <div className="space-y-2">
