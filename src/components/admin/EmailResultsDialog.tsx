@@ -93,6 +93,42 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
   const [step, setStep] = useState<'compose' | 'confirm' | 'done'>('compose');
   const [sending, setSending] = useState(false);
   const [results, setResults] = useState<SendResult[]>([]);
+  const [pdfName, setPdfName] = useState('');
+  const [pdfPages, setPdfPages] = useState<string[]>([]);
+  const [pdfBytes, setPdfBytes] = useState('');
+  const [processingPdf, setProcessingPdf] = useState(false);
+
+  const clearPdf = () => {
+    setPdfName('');
+    setPdfPages([]);
+    setPdfBytes('');
+  };
+
+  const handlePdf = async (file: File | undefined) => {
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      toast.error('Please choose a PDF file.');
+      return;
+    }
+    setProcessingPdf(true);
+    try {
+      const [pages, bytes] = await Promise.all([pdfToImages(file), fileToBase64(file)]);
+      const total = pages.reduce((s, p) => s + p.length, 0) + bytes.length;
+      if (total > 3_400_000) {
+        toast.error('That PDF is too large to email. Please use a smaller file (about 2.5 MB max).');
+        clearPdf();
+        return;
+      }
+      setPdfName(file.name);
+      setPdfPages(pages);
+      setPdfBytes(bytes);
+    } catch (e) {
+      toast.error((e as Error).message || 'Could not read that PDF.');
+      clearPdf();
+    } finally {
+      setProcessingPdf(false);
+    }
+  };
 
   const { recipients, skipped } = useMemo(() => extractRecipients(records), [records]);
 
