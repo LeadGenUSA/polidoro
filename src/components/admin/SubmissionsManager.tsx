@@ -27,7 +27,8 @@ import {
   Calendar,
   Upload,
   FileInput,
-  Mail
+  Mail,
+  HelpCircle
 } from 'lucide-react';
 import { WorkOrderImportDialog } from './WorkOrderImportDialog';
 import { EmailResultsDialog, extractRecipients } from './EmailResultsDialog';
@@ -233,6 +234,42 @@ export const SubmissionsManager = () => {
             {searchTerms.length > 1 ? ` for ${searchTerms.length} conditions` : ''} — Export CSV exports these results.
           </p>
         )}
+
+        <details className="rounded-lg border bg-muted/40 p-3 text-sm">
+          <summary className="cursor-pointer font-medium flex items-center gap-2">
+            <HelpCircle className="w-4 h-4" />
+            How to search and email results
+          </summary>
+          <ol className="mt-3 space-y-2 list-decimal pl-5 text-muted-foreground">
+            <li>
+              <span className="font-medium text-foreground">Search anything.</span> You never have to type a
+              column name. Type any word or number and every field is searched at once, including columns
+              from imported files. Example: <code>NCB240</code>
+            </li>
+            <li>
+              <span className="font-medium text-foreground">Narrow to one field (optional).</span> Use a
+              column name, a colon, then the value, when you only want matches in that field. Example:{' '}
+              <code>Boiler Type: NCB240</code>
+            </li>
+            <li>
+              <span className="font-medium text-foreground">Combine conditions.</span> Join them with{' '}
+              <code>and</code>. Only records matching all conditions are shown. Example:{' '}
+              <code>Boiler Type: NCB240 and Date Installed: 6/24/2021</code>
+            </li>
+            <li>
+              <span className="font-medium text-foreground">Export CSV.</span> Downloads exactly the records
+              currently listed, with every imported column as its own column.
+            </li>
+            <li>
+              <span className="font-medium text-foreground">Email Results.</span> Sends your message to every
+              customer in the current list who has an email address. Write a subject and message, optionally
+              using <code>{'{{customer_name}}'}</code> and <code>{'{{address}}'}</code> to personalize each
+              copy. You can attach a PDF — each page also appears as a picture inside the email. A
+              confirmation shows the recipient count before anything sends, and each person receives their
+              own copy, so nobody sees the other addresses.
+            </li>
+          </ol>
+        </details>
       </div>
 
       {/* Stats Cards */}
