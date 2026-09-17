@@ -64,16 +64,31 @@ export const WorkOrderImportDialog = ({ open, onOpenChange, onImported }: WorkOr
     if (!open) return;
     let cancelled = false;
     (async () => {
-      const { data, error } = await supabase
-        .from('work_order_submissions')
-        .select('id, email, customer_name, street_address');
-      if (error || cancelled || !data) return;
       const map = new Map<string, string>();
-      data.forEach((r) => {
-        const key = duplicateKey(r);
-        if (key && !map.has(key)) map.set(key, r.id);
-      });
-      setExistingKeys(map);
+      const PAGE = 1000;
+      for (let from = 0; ; from += PAGE) {
+        const { data, error } = await supabase
+          .from('work_order_submissions')
+          .select('id, email, customer_name, street_address')
+          .order('created_at', { ascending: true })
+          .range(from, from + PAGE - 1);
+        if (cancelled) return;
+        if (error) {
+          console.error('Failed to load existing work orders:', error);
+          toast({
+            title: 'Could not check for duplicates',
+            description: 'Existing work orders could not be loaded, so repeat customers may not be detected.',
+            variant: 'destructive',
+          });
+          return;
+        }
+        (data ?? []).forEach((r) => {
+          const key = duplicateKey(r);
+          if (key && !map.has(key)) map.set(key, r.id);
+        });
+        if (!data || data.length < PAGE) break;
+      }
+      if (!cancelled) setExistingKeys(map);
     })();
     return () => {
       cancelled = true;
