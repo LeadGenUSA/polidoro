@@ -17,7 +17,7 @@ import { Loader2, Mail, CheckCircle2, XCircle, FileText, X } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client';
 import { FunctionsHttpError } from '@supabase/supabase-js';
 import { toast } from 'sonner';
-import { pdfToImages, fileToBase64 } from '@/lib/pdfToImages';
+import { pdfToImages } from '@/lib/pdfToImages';
 
 export interface Recipient {
   email: string;
@@ -95,13 +95,11 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
   const [results, setResults] = useState<SendResult[]>([]);
   const [pdfName, setPdfName] = useState('');
   const [pdfPages, setPdfPages] = useState<string[]>([]);
-  const [pdfBytes, setPdfBytes] = useState('');
   const [processingPdf, setProcessingPdf] = useState(false);
 
   const clearPdf = () => {
     setPdfName('');
     setPdfPages([]);
-    setPdfBytes('');
   };
 
   const handlePdf = async (file: File | undefined) => {
@@ -112,8 +110,8 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
     }
     setProcessingPdf(true);
     try {
-      const [pages, bytes] = await Promise.all([pdfToImages(file), fileToBase64(file)]);
-      const total = pages.reduce((s, p) => s + p.length, 0) + bytes.length;
+      const pages = await pdfToImages(file);
+      const total = pages.reduce((s, p) => s + p.length, 0);
       if (total > 3_400_000) {
         toast.error('That PDF is too large to email. Please use a smaller file (about 2.5 MB max).');
         clearPdf();
@@ -121,7 +119,6 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
       }
       setPdfName(file.name);
       setPdfPages(pages);
-      setPdfBytes(bytes);
     } catch (e) {
       toast.error((e as Error).message || 'Could not read that PDF.');
       clearPdf();
@@ -161,7 +158,6 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
           body,
           recipients,
           inlineImages: pdfPages,
-          attachment: pdfBytes ? { name: pdfName, contentBytes: pdfBytes } : undefined,
         },
       });
 
@@ -284,7 +280,7 @@ export const EmailResultsDialog = ({ open, onOpenChange, records }: EmailResults
                 {processingPdf && <Loader2 className="w-3 h-3 animate-spin" />}
                 {processingPdf
                   ? 'Preparing the PDF...'
-                  : 'Each page is shown as a picture inside the email, and the PDF is attached too.'}
+                  : 'Each page is shown as a picture inside the email. No file is attached.'}
               </p>
             </div>
 
