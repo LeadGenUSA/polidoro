@@ -242,9 +242,9 @@ export const SubmissionsManager = () => {
           </summary>
           <ol className="mt-3 space-y-2 list-decimal pl-5 text-muted-foreground">
             <li>
-              <span className="font-medium text-foreground">Search anything.</span> You never have to type a
-              column name. Type any word or number and every field is searched at once, including columns
-              from imported files. Example: <code>NCB240</code>
+              <span className="font-medium text-foreground">Go under Imported tab. Search anything.</span> You
+              never have to type a column name. Type any word or number and every field is searched at once,
+              including columns from imported files. Example: <code>NCB240</code>
             </li>
             <li>
               <span className="font-medium text-foreground">Narrow to one field (optional).</span> Use a
@@ -257,7 +257,7 @@ export const SubmissionsManager = () => {
               <code>Boiler Type: NCB240 and Date Installed: 6/24/2021</code>
             </li>
             <li>
-              <span className="font-medium text-foreground">Export CSV.</span> Downloads exactly the records
+              <span className="font-medium text-foreground">Export CSV.</span> Exports exactly the records
               currently listed, with every imported column as its own column.
             </li>
             <li>
