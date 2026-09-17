@@ -27,7 +27,8 @@ import {
   Calendar,
   Upload,
   FileInput,
-  Mail
+  Mail,
+  HelpCircle
 } from 'lucide-react';
 import { WorkOrderImportDialog } from './WorkOrderImportDialog';
 import { EmailResultsDialog, extractRecipients } from './EmailResultsDialog';
