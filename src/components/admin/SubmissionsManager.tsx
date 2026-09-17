@@ -69,9 +69,7 @@ export const SubmissionsManager = () => {
     if (value === null || value === undefined) return false;
     if (Array.isArray(value)) return value.some((v) => valueMatches(v, q));
     if (typeof value === 'object') {
-      return Object.entries(value as Record<string, unknown>).some(
-        ([k, v]) => k.toLowerCase().includes(q) || valueMatches(v, q)
-      );
+      return Object.values(value as Record<string, unknown>).some((v) => valueMatches(v, q));
     }
     return String(value).toLowerCase().includes(q);
   };
@@ -117,16 +115,27 @@ export const SubmissionsManager = () => {
     return submissions.filter((s) => {
       const record = s as unknown as Record<string, unknown>;
       return searchTerms.every((term) => {
+        const freeText = (t: string) => {
+          const q = t.toLowerCase();
+          return Object.entries(record).some(
+            ([key, value]) => !isExcludedKey(key) && valueMatches(value, q)
+          );
+        };
         const colon = term.indexOf(':');
         if (colon > 0) {
           const key = term.slice(0, colon).trim();
           const value = term.slice(colon + 1).trim().toLowerCase();
-          if (key) return keyValueMatches(record, key, value);
+          // Only treat as key:value when the record actually has such a field;
+          // otherwise fall back to plain text search (times, "Re:", URLs...).
+          if (key && fieldPairs(record).some(([name]) => {
+            const n = normalizeName(name);
+            const k = normalizeName(key);
+            return !!k && (n === k || n.includes(k));
+          })) {
+            return keyValueMatches(record, key, value);
+          }
         }
-        const q = term.toLowerCase();
-        return Object.entries(record).some(
-          ([key, value]) => !isExcludedKey(key) && valueMatches(value, q)
-        );
+        return freeText(term);
       });
     });
   }, [submissions, searchTerms, submissionType]);
