@@ -15,7 +15,8 @@ import {
   Wrench,
   Image,
   Pencil,
-  Printer
+  Printer,
+  Clock
 } from 'lucide-react';
 import { WorkOrderEditDialog } from './WorkOrderEditDialog';
 import { printWorkOrder } from './workOrderPrint';
