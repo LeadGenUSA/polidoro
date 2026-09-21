@@ -336,6 +336,17 @@ export const SubmissionsManager = () => {
             <CheckCircle className="w-4 h-4" />
             Reviewed
           </TabsTrigger>
+          {submissionType === 'work_orders' && (
+            <TabsTrigger value="pending" className="gap-2">
+              <Clock className="w-4 h-4" />
+              Pending
+              {counts.pending > 0 && (
+                <span className="ml-1 px-2 py-0.5 text-xs bg-orange-100 text-orange-800 rounded-full">
+                  {counts.pending}
+                </span>
+              )}
+            </TabsTrigger>
+          )}
           <TabsTrigger value="archived" className="gap-2">
             <ArchiveIcon className="w-4 h-4" />
             Archived

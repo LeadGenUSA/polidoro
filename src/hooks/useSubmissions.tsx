@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-export type SubmissionStatus = 'new' | 'reviewed' | 'archived' | 'imported';
+export type SubmissionStatus = 'new' | 'reviewed' | 'pending' | 'archived' | 'imported';
 export type SubmissionType = 'estimates' | 'work_orders' | 'surveys';
 
 export interface EstimateSubmission {
@@ -106,7 +106,7 @@ export type Submission = EstimateSubmission | WorkOrderSubmission | SurveySubmis
 export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionStatus | 'all' = 'all') => {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [counts, setCounts] = useState({ new: 0, reviewed: 0, archived: 0, imported: 0, total: 0 });
+  const [counts, setCounts] = useState({ new: 0, reviewed: 0, pending: 0, archived: 0, imported: 0, total: 0 });
   const { toast } = useToast();
 
   const fetchSubmissions = useCallback(async () => {
@@ -176,7 +176,7 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
 
   const fetchCounts = useCallback(async () => {
     try {
-      let newCount = 0, reviewedCount = 0, archivedCount = 0, importedCount = 0;
+      let newCount = 0, reviewedCount = 0, pendingCount = 0, archivedCount = 0, importedCount = 0;
       
       if (type === 'estimates') {
         const [n, r, a] = await Promise.all([
@@ -188,14 +188,16 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
         reviewedCount = r.count || 0;
         archivedCount = a.count || 0;
       } else if (type === 'work_orders') {
-        const [n, r, a, i] = await Promise.all([
+        const [n, r, p, a, i] = await Promise.all([
           supabase.from('work_order_submissions').select('id', { count: 'exact', head: true }).eq('status', 'new'),
           supabase.from('work_order_submissions').select('id', { count: 'exact', head: true }).eq('status', 'reviewed'),
+          supabase.from('work_order_submissions').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
           supabase.from('work_order_submissions').select('id', { count: 'exact', head: true }).eq('status', 'archived'),
           supabase.from('work_order_submissions').select('id', { count: 'exact', head: true }).eq('status', 'imported'),
         ]);
         newCount = n.count || 0;
         reviewedCount = r.count || 0;
+        pendingCount = p.count || 0;
         archivedCount = a.count || 0;
         importedCount = i.count || 0;
       } else if (type === 'surveys') {
@@ -212,9 +214,10 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
       setCounts({
         new: newCount,
         reviewed: reviewedCount,
+        pending: pendingCount,
         archived: archivedCount,
         imported: importedCount,
-        total: newCount + reviewedCount + archivedCount,
+        total: newCount + reviewedCount + pendingCount + archivedCount,
       });
     } catch (error) {
       console.error('Error fetching counts:', error);
