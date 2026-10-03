@@ -136,7 +136,7 @@ const ProjectsGallery = () => {
             {!isLoading && displayItems.length === 0 && (
               <div className="text-center py-20">
                 <Camera className="w-16 h-16 mx-auto text-muted-foreground/30 mb-4" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">No projects yet</h3>
+                <h2 className="text-xl font-semibold text-foreground mb-2">No projects yet</h2>
                 <p className="text-muted-foreground">Check back soon for our latest work!</p>
               </div>
             )}
