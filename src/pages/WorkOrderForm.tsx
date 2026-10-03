@@ -12,7 +12,7 @@ import SmartTextarea from '@/components/SmartTextarea';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -215,7 +215,7 @@ const WorkOrderForm = () => {
             {/* Customer Info */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-primary">Customer Info</CardTitle>
+                <h2 className="text-2xl font-semibold leading-none text-primary">Customer Info</h2>
               </CardHeader>
               <CardContent className="grid md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
@@ -262,7 +262,7 @@ const WorkOrderForm = () => {
             {/* Job Detail */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-primary">Job Detail</CardTitle>
+                <h2 className="text-2xl font-semibold leading-none text-primary">Job Detail</h2>
               </CardHeader>
               <CardContent className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -348,7 +348,7 @@ const WorkOrderForm = () => {
             {/* Technician Info */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-primary">Technician Info</CardTitle>
+                <h2 className="text-2xl font-semibold leading-none text-primary">Technician Info</h2>
               </CardHeader>
               <CardContent className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -385,7 +385,7 @@ const WorkOrderForm = () => {
             {/* Billing Info */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-primary">Billing Info</CardTitle>
+                <h2 className="text-2xl font-semibold leading-none text-primary">Billing Info</h2>
               </CardHeader>
               <CardContent className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -446,7 +446,7 @@ const WorkOrderForm = () => {
             {/* Authorization */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-primary">Customer Authorization</CardTitle>
+                <h2 className="text-2xl font-semibold leading-none text-primary">Customer Authorization</h2>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="bg-muted p-4 rounded-lg text-sm text-muted-foreground space-y-2">
