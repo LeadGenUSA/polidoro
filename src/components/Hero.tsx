@@ -31,7 +31,7 @@ const defaultSlides: SlideItem[] = [{
 }, {
   type: 'image',
   src: heroImage,
-  alt: 'Professional plumbing and heating services',
+  alt: 'Plumbing technician assembling equipment beside wall-mounted boilers and exposed heating pipes',
   duration_seconds: 15
 }];
 const Hero = () => {
@@ -141,7 +141,7 @@ const Hero = () => {
   return <section className="relative min-h-screen flex items-center hero-gradient overflow-hidden">
       {/* NYC Skyline Background */}
       <div className="absolute inset-0">
-        <img src={nycSkyline.url} alt="New York City waterfront skyline" className="w-full h-full object-cover object-center" />
+        <img src={nycSkyline.url} alt="New York City skyline and waterfront viewed from Dock NYC" className="w-full h-full object-cover object-center" />
         {/* Overlay to blend with hero gradient */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/70 via-primary/60 to-primary/50" />
         <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-primary/40" />
@@ -221,7 +221,7 @@ const Hero = () => {
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-white/90 flex items-center justify-center p-1">
-                  <img src={navienNSS} alt="Navien NSS Certified" className="w-full h-full object-contain" />
+                  <img src={navienNSS} alt="Navien Service Specialist certification badge" className="w-full h-full object-contain" />
                 </div>
                 <div>
                   <span className="font-bold text-lg">NSS Certified</span>
@@ -240,7 +240,7 @@ const Hero = () => {
                 <CarouselContent>
                   {slides.map((slide, index) => <CarouselItem key={index}>
                       {slide.link_url ? <a href={slide.link_url} target="_blank" rel="noopener noreferrer" className="block relative cursor-pointer group">
-{slide.type === 'video' ? <video ref={(el) => { if (el) { videoRefs.current.set(index, el); if (index === current) { el.currentTime = 0; el.play().catch(() => {}); } } else { videoRefs.current.delete(index); } }} src={slide.src} muted={!slide.show_volume_controls} playsInline controls={slide.show_volume_controls} onEnded={() => api?.scrollNext()} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt || "Big City Plumbing and Heating project"} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
+{slide.type === 'video' ? <video ref={(el) => { if (el) { videoRefs.current.set(index, el); if (index === current) { el.currentTime = 0; el.play().catch(() => {}); } } else { videoRefs.current.delete(index); } }} src={slide.src} muted={!slide.show_volume_controls} playsInline controls={slide.show_volume_controls} onEnded={() => api?.scrollNext()} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt || "Contractors attending a Navien boiler training roundtable and presentation"} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
                           {/* Overlay Text */}
                           {(slide.overlay_title || slide.overlay_text) && <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
                               {slide.overlay_title && <h2 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
@@ -253,7 +253,7 @@ const Hero = () => {
                           {/* Click indicator on hover */}
                           <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors pointer-events-none" />
                         </a> : <div className="relative">
-                          {slide.type === 'video' ? <video ref={(el) => { if (el) { videoRefs.current.set(index, el); if (index === current) { el.currentTime = 0; el.play().catch(() => {}); } } else { videoRefs.current.delete(index); } }} src={slide.src} muted={!slide.show_volume_controls} playsInline controls={slide.show_volume_controls} onEnded={() => api?.scrollNext()} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt || "Big City Plumbing and Heating project"} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
+                          {slide.type === 'video' ? <video ref={(el) => { if (el) { videoRefs.current.set(index, el); if (index === current) { el.currentTime = 0; el.play().catch(() => {}); } } else { videoRefs.current.delete(index); } }} src={slide.src} muted={!slide.show_volume_controls} playsInline controls={slide.show_volume_controls} onEnded={() => api?.scrollNext()} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt || "Contractors attending a Navien boiler training roundtable and presentation"} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
                           {/* Overlay Text */}
                           {(slide.overlay_title || slide.overlay_text) && <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
                               {slide.overlay_title && <h2 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
@@ -301,7 +301,7 @@ const Hero = () => {
                 </div>
               </div>
               <Link to="/tenpercent-coupon">
-                <img src={couponBadge} alt="Click here for coupons" className="h-20 w-auto animate-float animation-delay-200 hover:scale-105 transition-transform drop-shadow-lg" />
+                <img src={couponBadge} alt="Big City Plumbing and Heating discount coupons badge" className="h-20 w-auto animate-float animation-delay-200 hover:scale-105 transition-transform drop-shadow-lg" />
               </Link>
               <Link to="/financing" className="bg-card px-4 py-3 rounded-2xl shadow-large animate-float animation-delay-400 hover:scale-105 transition-transform inline-flex items-center gap-2">
                 <DollarSign className="w-5 h-5 text-secondary flex-shrink-0" />
