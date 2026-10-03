@@ -108,7 +108,7 @@ const Contact = () => {
                     <item.icon className="w-5 h-5 text-secondary-foreground" />
                   </div>
                   <div>
-                    <h4 className="font-heading font-bold text-foreground mb-1">{item.title}</h4>
+                    <h3 className="font-heading font-bold text-foreground mb-1">{item.title}</h3>
                     {item.details.map((detail) => (
                       <p key={detail} className="text-sm text-muted-foreground">{detail}</p>
                     ))}

@@ -243,9 +243,9 @@ const Hero = () => {
 {slide.type === 'video' ? <video ref={(el) => { if (el) { videoRefs.current.set(index, el); if (index === current) { el.currentTime = 0; el.play().catch(() => {}); } } else { videoRefs.current.delete(index); } }} src={slide.src} muted={!slide.show_volume_controls} playsInline controls={slide.show_volume_controls} onEnded={() => api?.scrollNext()} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt || "Big City Plumbing and Heating project"} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
                           {/* Overlay Text */}
                           {(slide.overlay_title || slide.overlay_text) && <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
-                              {slide.overlay_title && <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
+                              {slide.overlay_title && <h2 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
                                   {slide.overlay_title}
-                                </h3>}
+                                </h2>}
                               {slide.overlay_text && <p className="text-primary-foreground text-xs md:text-sm lg:text-base font-heading font-medium text-left drop-shadow-lg leading-tight mt-0.5">
                                   {slide.overlay_text}
                                 </p>}
@@ -256,9 +256,9 @@ const Hero = () => {
                           {slide.type === 'video' ? <video ref={(el) => { if (el) { videoRefs.current.set(index, el); if (index === current) { el.currentTime = 0; el.play().catch(() => {}); } } else { videoRefs.current.delete(index); } }} src={slide.src} muted={!slide.show_volume_controls} playsInline controls={slide.show_volume_controls} onEnded={() => api?.scrollNext()} className="w-full h-auto object-contain aspect-video bg-primary/20" /> : <img src={slide.src} alt={slide.alt || "Big City Plumbing and Heating project"} className="w-full h-auto object-contain aspect-video bg-primary/20" />}
                           {/* Overlay Text */}
                           {(slide.overlay_title || slide.overlay_text) && <div className="absolute inset-x-0 bottom-0 flex flex-col items-start justify-end bg-gradient-to-t from-primary/90 via-primary/70 to-transparent pb-6 px-6">
-                              {slide.overlay_title && <h3 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
+                              {slide.overlay_title && <h2 className="text-primary-foreground text-lg md:text-xl lg:text-2xl font-heading font-bold text-left drop-shadow-lg leading-tight">
                                   {slide.overlay_title}
-                                </h3>}
+                                </h2>}
                               {slide.overlay_text && <p className="text-primary-foreground text-xs md:text-sm lg:text-base font-heading font-medium text-left drop-shadow-lg leading-tight mt-0.5">
                                   {slide.overlay_text}
                                 </p>}
