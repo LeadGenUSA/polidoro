@@ -181,7 +181,7 @@ const TestimonialsPage = () => {
                   <Star className="w-12 h-12 mx-auto text-muted-foreground/30 mb-4" />
                   <h2 className="font-heading font-semibold text-lg text-foreground mb-2">
                     No reviews yet
-                  </h3>
+                  </h2>
                   <p className="text-muted-foreground">
                     Be the first to leave a review!
                   </p>
@@ -198,7 +198,7 @@ const TestimonialsPage = () => {
                               </span>
                             </div>}
                           <div>
-                            <h2 className="font-heading font-bold text-foreground">{testimonial.author_name}</h3>
+                            <h2 className="font-heading font-bold text-foreground">{testimonial.author_name}</h2>
                             <div className="flex items-center gap-3 text-sm text-muted-foreground">
                               {testimonial.location && <span className="flex items-center gap-1">
                                   <MapPin className="w-3 h-3" />
@@ -234,7 +234,7 @@ const TestimonialsPage = () => {
                       {/* Title */}
                       {testimonial.title && <h3 className="font-heading font-semibold text-lg text-foreground mb-3">
                           "{testimonial.title}"
-                        </h4>}
+                        </h3>}
 
                       {/* Content */}
                       <p className={`text-muted-foreground leading-relaxed ${expandedId === testimonial.id ? '' : 'line-clamp-3'}`}>
@@ -256,7 +256,7 @@ const TestimonialsPage = () => {
                     <div className="w-10 h-10 rounded-xl cta-gradient flex items-center justify-center">
                       <MessageSquarePlus className="w-5 h-5 text-secondary-foreground" />
                     </div>
-                    <h2 className="font-heading text-xl font-bold text-foreground">Add a Review</h3>
+                    <h2 className="font-heading text-xl font-bold text-foreground">Add a Review</h2>
                   </div>
                   
                   <p className="text-muted-foreground text-sm mb-6">

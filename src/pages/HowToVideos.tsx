@@ -171,7 +171,7 @@ const HowToVideos = () => {
                     <div className="p-4">
                       <h2 className="font-heading font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-secondary transition-colors">
                         {video.title}
-                      </h3>
+                      </h2>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         {video.view_count && (
                           <span className="flex items-center gap-1">
@@ -197,7 +197,7 @@ const HowToVideos = () => {
                   <Youtube className="w-12 h-12 text-secondary" />
                   <h2 className="font-heading text-xl font-bold text-foreground">
                     Want to see more?
-                  </h3>
+                  </h2>
                   <p className="text-muted-foreground max-w-md">
                     Subscribe to our YouTube channel for the latest plumbing tips,
                     installation guides, and behind-the-scenes content.
