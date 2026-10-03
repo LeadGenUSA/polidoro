@@ -12,10 +12,10 @@ interface SEOHeadProps {
   schemaJson?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const CANONICAL_HOSTNAME = 'www.bigcityplumbing.com';
+const INDEXABLE_HOSTNAMES = ['www.bigcityplumbing.com', 'bigcityplumbing.com'];
 
 const SEOHead = ({ title, description, canonical, ogImage, noIndex, schemaJson }: SEOHeadProps) => {
-  const isNonCanonicalDomain = typeof window !== 'undefined' && window.location.hostname !== CANONICAL_HOSTNAME;
+  const isNonCanonicalDomain = typeof window !== 'undefined' && !INDEXABLE_HOSTNAMES.includes(window.location.hostname);
   const effectiveNoIndex = noIndex || isNonCanonicalDomain;
 
   const fullCanonical = canonical
