@@ -203,6 +203,14 @@ const WorkOrderForm = () => {
       <main className="flex-1 py-12 bg-muted/30">
         <div className="container mx-auto px-4 max-w-4xl">
 
+          <div className="mb-8 space-y-3 text-muted-foreground">
+            <p>
+              Use this form to request service from Big City Plumbing and Heating. Our licensed plumbers and heating technicians serve homes and businesses throughout Long Island and New York City, handling repairs, boiler and furnace service, water heaters, leaks, and fixture installations.
+            </p>
+            <p>
+              Include your contact information, the service address, and a description of the problem. Photos are optional but help our team arrive prepared with the right parts. We offer a 24-Hour Response, and someone from our office will reach out to confirm your appointment.
+            </p>
+          </div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             {/* Customer Info */}
             <Card>

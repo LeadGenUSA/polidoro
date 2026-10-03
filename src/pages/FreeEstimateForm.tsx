@@ -319,6 +319,14 @@ const FreeEstimateForm = () => {
       {/* Form Section */}
       <section className="py-16">
         <div className="container mx-auto px-4 max-w-4xl">
+          <div className="mb-8 space-y-3 text-muted-foreground">
+            <p>
+              Big City Plumbing and Heating provides free, no-obligation estimates for plumbing and heating projects across Long Island and New York City. We handle boiler and furnace replacements, water heaters, bathroom and kitchen plumbing, gas piping, and full-home renovations.
+            </p>
+            <p>
+              Tell us about your home and the work you have in mind. Adding photos and a simple sketch of the space helps our licensed team give you an accurate price faster. We offer a 24-Hour Response and will contact you to confirm details and schedule a visit if needed.
+            </p>
+          </div>
           <form onSubmit={handleSubmit} className="space-y-8">
             
             {/* Customer Info */}
