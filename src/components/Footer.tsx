@@ -62,6 +62,16 @@ const Footer = () => {
                   Financing
                 </Link>
               </li>
+              <li>
+                <Link to="/work-order" className="text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
+                  Work Order
+                </Link>
+              </li>
+              <li>
+                <Link to="/customer-survey" className="text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
+                  Customer Survey
+                </Link>
+              </li>
             </ul>
           </div>
           
