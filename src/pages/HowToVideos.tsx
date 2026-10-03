@@ -169,7 +169,7 @@ const HowToVideos = () => {
 
                     {/* Content */}
                     <div className="p-4">
-                      <h3 className="font-heading font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-secondary transition-colors">
+                      <h2 className="font-heading font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-secondary transition-colors">
                         {video.title}
                       </h3>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -195,7 +195,7 @@ const HowToVideos = () => {
               <div className="mt-16 text-center">
                 <div className="inline-flex flex-col items-center gap-4 p-8 bg-card rounded-2xl shadow-card">
                   <Youtube className="w-12 h-12 text-secondary" />
-                  <h3 className="font-heading text-xl font-bold text-foreground">
+                  <h2 className="font-heading text-xl font-bold text-foreground">
                     Want to see more?
                   </h3>
                   <p className="text-muted-foreground max-w-md">

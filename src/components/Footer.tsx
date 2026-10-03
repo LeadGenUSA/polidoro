@@ -25,7 +25,7 @@ const Footer = () => {
           
           {/* Quick Links */}
           <div>
-            <h4 className="font-heading font-bold text-primary-foreground mb-4">Quick Links</h4>
+            <h2 className="font-heading font-bold text-base text-primary-foreground mb-4">Quick Links</h2>
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
@@ -77,7 +77,7 @@ const Footer = () => {
           
           {/* Services */}
           <div>
-            <h4 className="font-heading font-bold text-primary-foreground mb-4">Services</h4>
+            <h2 className="font-heading font-bold text-base text-primary-foreground mb-4">Services</h2>
             <ul className="space-y-2">
               {[
                 { name: 'Plumbing Repair', slug: 'plumbing-repair' },
@@ -97,7 +97,7 @@ const Footer = () => {
           
           {/* Contact */}
           <div>
-            <h4 className="font-heading font-bold text-primary-foreground mb-4">Contact</h4>
+            <h2 className="font-heading font-bold text-base text-primary-foreground mb-4">Contact</h2>
             <ul className="space-y-3">
               <li className="flex items-center gap-3 text-primary-foreground/80 text-sm">
                 <Phone className="w-4 h-4 text-secondary" />
