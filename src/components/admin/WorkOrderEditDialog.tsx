@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,10 +20,18 @@ const NONE_VALUE = '__none__';
 export const WorkOrderEditDialog = ({ submission, open, onOpenChange, onSave }: WorkOrderEditDialogProps) => {
   const [form, setForm] = useState<Partial<WorkOrderSubmission>>({});
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
+  const editingId = useRef<string | null>(null);
+  const original = useRef<Partial<WorkOrderSubmission>>({});
 
   useEffect(() => {
-    if (open) {
+    if (!open) {
+      editingId.current = null;
+    } else if (editingId.current !== submission.id) {
+      editingId.current = submission.id;
+      original.current = { ...submission };
       setForm({ ...submission });
+      setSaveError('');
     }
   }, [open, submission]);
 
@@ -33,10 +41,16 @@ export const WorkOrderEditDialog = ({ submission, open, onOpenChange, onSave }: 
 
   const handleSave = async () => {
     setSaving(true);
+    setSaveError('');
     try {
-      const { id, status, created_at, photos, ...editable } = form as WorkOrderSubmission;
+      const { id, status, created_at, photos, ...fields } = form as WorkOrderSubmission;
+      const editable = Object.fromEntries(
+        Object.entries(fields).filter(([key, value]) => value !== original.current[key as keyof WorkOrderSubmission])
+      );
       await onSave(submission.id, editable);
       onOpenChange(false);
+    } catch {
+      setSaveError('Changes could not be saved. Your edits are still here. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -44,15 +58,17 @@ export const WorkOrderEditDialog = ({ submission, open, onOpenChange, onSave }: 
 
   const field = (label: string, key: keyof WorkOrderSubmission, opts?: { textarea?: boolean }) => (
     <div className="space-y-1">
-      <Label className="text-xs">{label}</Label>
+      <Label htmlFor={`work-order-edit-${key}`} className="text-xs">{label}</Label>
       {opts?.textarea ? (
         <Textarea
+          id={`work-order-edit-${key}`}
           value={(form[key] as string) || ''}
           onChange={e => update(key, e.target.value)}
           rows={3}
         />
       ) : (
         <Input
+          id={`work-order-edit-${key}`}
           value={(form[key] as string) || ''}
           onChange={e => update(key, e.target.value)}
         />
@@ -82,7 +98,7 @@ export const WorkOrderEditDialog = ({ submission, open, onOpenChange, onSave }: 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto bg-card text-card-foreground">
         <DialogHeader>
           <DialogTitle>Edit Work Order</DialogTitle>
         </DialogHeader>
@@ -163,8 +179,9 @@ export const WorkOrderEditDialog = ({ submission, open, onOpenChange, onSave }: 
           </div>
         </div>
 
+        {saveError && <p role="alert" className="text-sm text-destructive">{saveError}</p>}
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button variant="outline" disabled={saving} onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button onClick={handleSave} disabled={saving}>
             {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             Save Changes

@@ -264,20 +264,24 @@ export const useSubmissions = (type: SubmissionType, statusFilter: SubmissionSta
   };
 
   const updateWorkOrder = async (id: string, data: Partial<WorkOrderSubmission>) => {
+    if (Object.keys(data).length === 0) return;
     try {
-      const { error } = await supabase
+      const { data: updated, error } = await supabase
         .from('work_order_submissions')
         .update(data as never)
-        .eq('id', id);
+        .eq('id', id)
+        .select('id')
+        .single();
 
       if (error) throw error;
+      if (!updated) throw new Error('Work order was not updated');
 
       toast({ title: 'Success', description: 'Work order updated' });
-      fetchSubmissions();
-      fetchCounts();
+      await Promise.all([fetchSubmissions(), fetchCounts()]);
     } catch (error) {
       console.error('Error updating work order:', error);
       toast({ title: 'Error', description: 'Failed to update work order', variant: 'destructive' });
+      throw error;
     }
   };
 
