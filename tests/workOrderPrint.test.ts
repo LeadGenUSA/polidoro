@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildWorkOrderPrintHtml } from './workOrderPrint';
+import { buildWorkOrderPrintHtml } from '../src/components/admin/workOrderPrint';
 import type { WorkOrderSubmission } from '@/hooks/useSubmissions';
 
 test('work order printing excludes all uploaded pictures', () => {
