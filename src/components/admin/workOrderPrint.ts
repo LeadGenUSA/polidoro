@@ -33,13 +33,6 @@ export const buildWorkOrderPrintHtml = (s: WorkOrderSubmission): string => {
     ? format(new Date(s.created_at), 'MMM d, yyyy h:mm a')
     : 'N/A';
 
-  const photos =
-    s.photos && s.photos.length > 0
-      ? `<div class="section"><h2>Photos (${s.photos.length})</h2><div class="photos">${s.photos
-          .map((url) => `<img src="${esc(url)}" alt="Work order photo" />`)
-          .join('')}</div></div>`
-      : '';
-
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,8 +50,6 @@ export const buildWorkOrderPrintHtml = (s: WorkOrderSubmission): string => {
   p { margin: 2px 0; }
   .l { font-weight: bold; }
   .box { border: 1px solid #999; padding: 8px; white-space: pre-wrap; }
-  .photos { display: flex; flex-wrap: wrap; gap: 8px; }
-  .photos img { width: 150px; height: 150px; object-fit: cover; border: 1px solid #999; break-inside: avoid; }
   @page { margin: 12mm; }
 </style>
 </head>
@@ -108,7 +99,6 @@ export const buildWorkOrderPrintHtml = (s: WorkOrderSubmission): string => {
       ${row('Billing Status', val(s.billing_status ? billingStatuses[s.billing_status] || s.billing_status : null))}
       ${row('Total Charges', val(s.total_charges))}
     </div>
-    <div class="full">${photos}</div>
   </div>
 </body>
 </html>`;
