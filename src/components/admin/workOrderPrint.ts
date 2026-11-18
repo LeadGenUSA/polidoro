@@ -99,6 +99,13 @@ export const buildWorkOrderPrintHtml = (s: WorkOrderSubmission): string => {
       ${row('Billing Status', val(s.billing_status ? billingStatuses[s.billing_status] || s.billing_status : null))}
       ${row('Total Charges', val(s.total_charges))}
     </div>
+    ${
+      s.extra_fields && Object.keys(s.extra_fields).length
+        ? `<div class="section full"><h2>Additional Details</h2>${Object.entries(s.extra_fields)
+            .map(([label, value]) => row(label, esc(value)))
+            .join('')}</div>`
+        : ''
+    }
   </div>
 </body>
 </html>`;
