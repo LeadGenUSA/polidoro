@@ -172,18 +172,7 @@ const handler = async (req: Request): Promise<Response> => {
         <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; white-space: pre-wrap;">${escapeHtml(data.recommendations)}</div>
         ` : ''}
 
-        ${data.photos && data.photos.length > 0 ? `
-        <h3 style="color: #1e3a5f; margin-top: 16px;">Photos</h3>
-        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-          ${data.photos.map((url, index) => {
-            const safeUrl = escapeUrl(url);
-            if (!safeUrl) return '';
-            return `<a href="${safeUrl}" target="_blank" style="display: inline-block;">
-              <img src="${safeUrl}" alt="Work order photo ${index + 1}" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid #ddd;" />
-            </a>`;
-          }).join('')}
-        </div>
-        ` : ''}
+        __PHOTOS__
 
         <h2 style="color: #1e3a5f; margin-top: 24px;">Technician Information</h2>
         <table style="width: 100%; border-collapse: collapse;">
@@ -211,20 +200,34 @@ const handler = async (req: Request): Promise<Response> => {
       </div>
     `;
 
-    const recipients = [
-      'mike@bigcityplumbing.com',
-      'diane@bigcityplumbing.com',
-      'info@bigcityplumbing.com',
-    ];
-    if (data.emailTo) recipients.push(data.emailTo);
+    const photosHtml = data.photos && data.photos.length > 0 ? `
+        <h3 style="color: #1e3a5f; margin-top: 16px;">Photos</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          ${data.photos.map((url, index) => {
+            const safeUrl = escapeUrl(url);
+            if (!safeUrl) return '';
+            return `<a href="${safeUrl}" target="_blank" style="display: inline-block;">
+              <img src="${safeUrl}" alt="Work order photo ${index + 1}" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid #ddd;" />
+            </a>`;
+          }).join('')}
+        </div>
+        ` : '';
+    const NO_PHOTO_RECIPIENTS = ['diane@bigcityplumbing.com'];
+    const recipients = ['mike@bigcityplumbing.com', 'info@bigcityplumbing.com'];
+    if (data.emailTo && !NO_PHOTO_RECIPIENTS.includes(data.emailTo.trim().toLowerCase())) recipients.push(data.emailTo);
+    const subject = [data.customerName, data.streetAddress].filter(Boolean).length
+      ? `Work Order - ${[data.customerName, data.streetAddress].filter(Boolean).join(' - ')}`
+      : 'Work Order Submission';
 
     await sendEmail({
       to: recipients,
-      subject: [data.customerName, data.streetAddress].filter(Boolean).length
-        ? `Work Order - ${[data.customerName, data.streetAddress].filter(Boolean).join(' - ')}`
-        : 'Work Order Submission',
-
-      html: compactEmailHtml(emailHtml),
+      subject,
+      html: compactEmailHtml(emailHtml.replace('__PHOTOS__', photosHtml)),
+    });
+    await sendEmail({
+      to: NO_PHOTO_RECIPIENTS,
+      subject,
+      html: compactEmailHtml(emailHtml.replace('__PHOTOS__', '')),
     });
 
     console.log("Work order email sent successfully via Resend");
